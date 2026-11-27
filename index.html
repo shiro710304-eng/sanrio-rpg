@@ -1609,7 +1609,7 @@
       if (!apiUrl) return { ok: false, count: 0 };
       try {
         const sep = apiUrl.includes("?") ? "&" : "?";
-        const resp = await fetch(`${apiUrl}${sep}action=getQuestions&grade=${encodeURIComponent(CLOUD_GRADE)}`);
+        const resp = await fetch(`${apiUrl}${sep}action=getQuestions&grade=${encodeURIComponent(CLOUD_GRADE)}&familyKey=${encodeURIComponent((cloudSession.familyKey || "").trim())}`);
         const data = await resp.json();
         if (data && data.ok && Array.isArray(data.questions)) {
           try { localStorage.setItem("sanrio_cloud_q_" + CLOUD_GRADE, JSON.stringify(data.questions)); } catch (e) {}
@@ -1751,10 +1751,10 @@
         const raw = localStorage.getItem(CLOUD_CFG_KEY);
         if (raw) {
           const obj = JSON.parse(raw);
-          return { apiUrl: obj.apiUrl || DEFAULT_CLOUD_API_URL, username: obj.username || "", pin: obj.pin || "", loggedIn: !!obj.loggedIn };
+          return { apiUrl: obj.apiUrl || DEFAULT_CLOUD_API_URL, familyKey: obj.familyKey || "", username: obj.username || "", pin: obj.pin || "", loggedIn: !!obj.loggedIn };
         }
       } catch (e) {}
-      return { apiUrl: DEFAULT_CLOUD_API_URL, username: "", pin: "", loggedIn: false };
+      return { apiUrl: DEFAULT_CLOUD_API_URL, familyKey: "", username: "", pin: "", loggedIn: false };
     }
 
     function saveCloudCfg() {
@@ -1773,7 +1773,7 @@
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ ...payload, familyKey: (cloudSession.familyKey || "").trim() })
       });
       if (!res.ok) throw new Error("雲端連線失敗 (" + res.status + ")");
       return await res.json();
@@ -1788,9 +1788,14 @@
     async function pushToCloud(silent = true) {
       if (!cloudSession.loggedIn || !getActiveCloudUrl()) return false;
       try {
+        if (typeof syncActiveGradeIntoBucket === "function") syncActiveGradeIntoBucket();
+        const saveCopy = { ...state };
+        if (Array.isArray(saveCopy.dungeons)) {
+          saveCopy.dungeons = saveCopy.dungeons.map(d => ({ id: d.id, title: d.title, grade: d.grade, cleared: !!d.cleared, perfect: !!d.perfect, plays: d.plays || 0, archived: !!d.archived }));
+        }
         const res = await cloudRequest({
           action: "save",
-          grade: CLOUD_GRADE,
+          grade: state.majorGrade || CLOUD_GRADE,
           username: cloudSession.username,
           pin: cloudSession.pin,
           level: state.level || 1,
@@ -1798,7 +1803,7 @@
           clearedCount: (state.clearedStages || []).length,
           treasureCount: (state.treasures || []).length,
           totalCorrect: state.totalCorrect || 0,
-          saveJson: JSON.stringify(state)
+          saveJson: JSON.stringify(saveCopy)
         });
         if (!res || !res.ok) {
           const reason = (res && res.error) ? res.error : "後端回傳失敗（請確認 Apps Script 已透過「建立新版本」重新部署）";
@@ -1820,7 +1825,7 @@
           ${logged ? `
             <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 space-y-2 text-center">
               <div class="text-2xl">☁️✨</div>
-              <div class="text-base font-black text-emerald-900">已登入冒險帳號：${cloudSession.username}（${CLOUD_GRADE}）</div>
+              <div class="text-base font-black text-emerald-900">已登入冒險帳號：${cloudSession.username}（主修 ${state.majorGrade || CLOUD_GRADE}）</div>
               <p class="text-xs text-stone-600">每次通關、買家具或領成就都會自動同步到 Google 試算表，換手機或平板登入同帳號即可接續進度！</p>
               <div class="flex flex-wrap justify-center gap-2 pt-1">
                 <button id="btn-cloud-sync-now" class="sanrio-btn px-4 py-2 rounded-xl bg-sky-500 text-white text-xs font-black">🔄 立即手動同步</button>
@@ -1860,7 +1865,11 @@
             <summary class="font-black text-amber-900 cursor-pointer">⚙️ 家長設定：Google Apps Script 雲端網址${curUrl ? "（已設定）" : "（尚未設定）"}</summary>
             <div class="mt-2 space-y-2">
               <input id="inp-cloud-url" type="url" value="${curUrl}" placeholder="貼上 https://script.google.com/macros/s/.../exec" class="w-full px-3 py-1.5 rounded-xl border border-amber-300 bg-white font-mono text-[11px]" />
-              <button id="btn-save-cloud-url" class="sanrio-btn px-3 py-1 rounded-xl bg-amber-400 text-amber-950 font-black text-xs">儲存網址</button>
+              <div class="pt-1">
+                <label class="block text-[11px] font-black text-amber-900 mb-1">🏠 家庭通行碼（FAMILY_KEY，每台裝置輸一次即可）</label>
+                <input id="cloud-family-key" type="password" value="${(cloudSession.familyKey || "").replace(/"/g, "&quot;")}" placeholder="若後端有設 FAMILY_KEY 請輸入" class="w-full px-3 py-1.5 rounded-xl border border-amber-300 bg-white text-xs font-bold" />
+              </div>
+              <button id="btn-save-cloud-url" class="sanrio-btn px-3 py-1 rounded-xl bg-amber-400 text-amber-950 font-black text-xs">儲存設定</button>
             </div>
           </details>
           <div class="pt-1 text-right">
@@ -1912,6 +1921,7 @@
       if (saveUrlBtn) {
         saveUrlBtn.addEventListener("click", () => {
           cloudSession.apiUrl = (document.getElementById("inp-cloud-url").value || "").trim();
+        const fkEl = document.getElementById("cloud-family-key"); if (fkEl) cloudSession.familyKey = (fkEl.value || "").trim();
           saveCloudCfg();
           SFX.click();
           const m = document.getElementById("cloud-status-msg");
@@ -1937,9 +1947,14 @@
           msg.textContent = "正在連線至 Google 試算表...";
 
           try {
+            if (typeof syncActiveGradeIntoBucket === "function") syncActiveGradeIntoBucket();
+            const loginCopy = { ...state };
+            if (Array.isArray(loginCopy.dungeons)) {
+              loginCopy.dungeons = loginCopy.dungeons.map(d => ({ id: d.id, title: d.title, grade: d.grade, cleared: !!d.cleared, perfect: !!d.perfect, plays: d.plays || 0, archived: !!d.archived }));
+            }
             const res = await cloudRequest({
               action: "login",
-              grade: CLOUD_GRADE,
+              grade: state.majorGrade || CLOUD_GRADE,
               username: user,
               pin: pin,
               level: state.level || 1,
@@ -1947,7 +1962,7 @@
               clearedCount: (state.clearedStages || []).length,
               treasureCount: (state.treasures || []).length,
               totalCorrect: state.totalCorrect || 0,
-              saveJson: JSON.stringify(state)
+              saveJson: JSON.stringify(loginCopy)
             });
             if (!res.ok) {
               msg.className = "text-xs font-bold text-rose-600";
@@ -1963,8 +1978,18 @@
 
             if (res.saveJson && !res.created) {
               const parsed = JSON.parse(res.saveJson);
+              const localDungeons = Array.isArray(state.dungeons) ? state.dungeons : [];
               state = { ...defaultState, ...parsed };
+              // Preserve full local dungeon question arrays if matching IDs exist
+              if (Array.isArray(state.dungeons)) {
+                state.dungeons = state.dungeons.map(cd => {
+                  const loc = localDungeons.find(ld => ld.id === cd.id && Array.isArray(ld.questions));
+                  return loc ? { ...loc, ...cd, questions: loc.questions } : cd;
+                }).filter(d => Array.isArray(d.questions) && d.questions.length > 0);
+              }
               try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
+              const targetGrade = state.majorGrade || state.activeGrade || CLOUD_GRADE;
+              await switchActiveGrade(targetGrade, true, true);
             }
             SFX.win();
             renderHUD();
@@ -1996,11 +2021,17 @@
 
       const logoutBtn = document.getElementById("btn-cloud-logout");
       if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
+        logoutBtn.addEventListener("click", async () => {
           SFX.click();
+          try { await pushToCloud(true); } catch (e) {}
           cloudSession.loggedIn = false;
+          cloudSession.username = "";
+          cloudSession.pin = "";
+          parentUnlockedSession = false;
           saveCloudCfg();
-          renderHUD();
+          state = JSON.parse(JSON.stringify(defaultState));
+          try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
+          await switchActiveGrade("G3", true, true);
           openCloudModal();
         });
       }
@@ -6632,7 +6663,7 @@
       if (!apiUrl) return { ok: false, count: 0 };
       try {
         const sep = apiUrl.includes("?") ? "&" : "?";
-        const resp = await fetch(`${apiUrl}${sep}action=getDungeons&grade=${encodeURIComponent(CLOUD_GRADE)}`);
+        const resp = await fetch(`${apiUrl}${sep}action=getDungeons&grade=${encodeURIComponent(CLOUD_GRADE)}&familyKey=${encodeURIComponent((cloudSession.familyKey || "").trim())}`);
         const data = await resp.json();
         if (data && data.ok && Array.isArray(data.dungeons)) {
           if (!Array.isArray(state.dungeons)) state.dungeons = [];
@@ -7318,12 +7349,13 @@
       });
     }
 
-    async function switchActiveGrade(code, silent = false) {
+    async function switchActiveGrade(code, silent = false, skipSyncPrev = false) {
       try {
-        if (STAGES.length > 0) syncActiveGradeIntoBucket();
+        if (!skipSyncPrev && STAGES.length > 0) syncActiveGradeIntoBucket();
         const bank = await loadGradeScript(code);
         CLOUD_GRADE = code;
         STAGES = bank.buildStages(ASSETS);
+        if (typeof loadCachedCloudQuestions === "function") loadCachedCloudQuestions();
         bindBucketToActiveGrade(code);
         if (!state.majorGrade) state.majorGrade = code;
         const meta = getGradeMeta(code);
