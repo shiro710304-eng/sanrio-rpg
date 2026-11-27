@@ -1627,6 +1627,102 @@
       { id: "bg_sakura",  name: "🌸 櫻花和風茶室", price: 3000, img: "https://drive.google.com/thumbnail?id=1cJAXWZqwUxhAjwnxANnvjd93adUYcu3N&sz=w1600", desc: "推開和室拉門就是滿開粉紅櫻花與清爽榻榻米！" }
     ];
 
+    const MINI_PETS = [
+      {
+        id: "pet_hood_dog", icon: "🐾", name: "戴帽小汪", rarity: "SR",
+        img: ASSETS.pet_hood_dog,
+        desc: "戴著棕白小狗毛絨帽的害羞小白汪，最愛跟在布丁狗身旁散步！",
+        quote: "汪嗚～戴著毛絨帽帽好暖和，我們一起去冒險吧！"
+      },
+      {
+        id: "pet_mint_hamster", icon: "🐹", name: "薄荷緞帶小倉鼠", rarity: "SR",
+        img: ASSETS.pet_mint_hamster,
+        desc: "戴著棕白條紋緞帶的薄荷綠小倉鼠，雙手捧著會發光的小星星！",
+        quote: "吱吱～把幸運小星星送給你，答題一定全對！"
+      },
+      {
+        id: "pet_berry_cat", icon: "🐱", name: "草莓貝雷小貓咪", rarity: "R",
+        img: ASSETS.pet_berry_cat,
+        desc: "戴著粉紅草莓帽與金鈴鐺的奶油小貓，走起路來叮噹作響！",
+        quote: "喵嗚～鈴鐺響起來代表好運降臨囉！"
+      },
+      {
+        id: "pet_cloud_duck", icon: "🐥", name: "星光圍巾小鴨鴨", rarity: "R",
+        img: ASSETS.pet_cloud_duck,
+        desc: "圍著天藍星星領巾的元氣小鴨，答對題目會開心拍翅膀！",
+        quote: "呱呱！你剛剛的表現超級棒，繼續加油！"
+      },
+      {
+        id: "pet_star_unicorn", icon: "🦄", name: "夢幻迷你小獨角獸", rarity: "SSR",
+        img: ASSETS.pet_star_unicorn,
+        desc: "擁有星光小翅膀與粉紫鬃毛的傳說小獨角獸，會帶來滿滿奇蹟！",
+        quote: "✨ 閃耀星光祝福你，今天也是滿分的一天！"
+      }
+    ];
+
+    const PET_EGG_TYPES = {
+      star:    { id: "star",    icon: "🥚", name: "神秘星光蛋", price: 1500, target: 15, desc: "累積答對 15 題孵化（優先孵出未擁有寵物！）" },
+      rainbow: { id: "rainbow", icon: "🌈", name: "奇蹟彩虹蛋", price: 3000, target: 10, desc: "累積答對 10 題快速孵化（保底 SR／SSR 稀有寵！）" }
+    };
+
+    const COTTAGE_ROOM_DEFS = [
+      { id: "room1", icon: "🏠", name: "1號客廳",     price: 0,    defaultBg: "bg_default",      desc: "溫馨經典主客廳，自由擺放你最愛的家具與畫作！" },
+      { id: "room2", icon: "🍰", name: "2號甜點吧",   price: 5000, defaultBg: "bg_dessert_cafe", desc: "附贈專屬焦糖甜點吧背景＋「🍰 下午茶派對 (200⭐)」元氣 +10% EXP！" },
+      { id: "room3", icon: "🔭", name: "3號觀星陽台", price: 8000, defaultBg: "bg_star_balcony", desc: "附贈專屬星夜觀星陽台背景＋「🌠 許願流星籤 (300⭐)」抽幸運籤與禮物！" }
+    ];
+
+    const COTTAGE_WEATHERS = [
+      { id: "none",    icon: "☀️", name: "晴朗微風", price: 0,    particles: [] },
+      { id: "sakura",  icon: "🌸", name: "櫻花飄落", price: 1200, particles: ["🌸", "✿", "🌸", "💮", "🌸", "✿"] },
+      { id: "firefly", icon: "✨", name: "星空微光", price: 1500, particles: ["✨", "⭐", "✦", "✨", "⭐", "✧"] },
+      { id: "snow",    icon: "❄️", name: "柔光飄雪", price: 1800, particles: ["❄️", "❅", "✨", "❄️", "❅", "❄️"] },
+      { id: "bubble",  icon: "🌈", name: "彩虹泡泡", price: 2200, particles: ["🫧", "🌈", "🫧", "✨", "🫧", "⭐"] }
+    ];
+
+    const TITLE_PREFIXES = [
+      { id: "pre_1",  text: "元氣滿滿的", price: 0 },
+      { id: "pre_2",  text: "愛學習的",   price: 0 },
+      { id: "pre_3",  text: "🍮 愛吃布丁的", price: 500 },
+      { id: "pre_4",  text: "🐾 帕恰狗頭號", price: 500 },
+      { id: "pre_5",  text: "⚡ 閃電心算",   price: 600 },
+      { id: "pre_6",  text: "🌸 櫻花飄落的", price: 600 },
+      { id: "pre_7",  text: "🐹 捧著星星的", price: 800 },
+      { id: "pre_8",  text: "✨ 星夜守護",   price: 800 },
+      { id: "pre_9",  text: "🍰 焦糖香氣",   price: 900 },
+      { id: "pre_10", text: "🔥 連擊不停的", price: 1000 },
+      { id: "pre_11", text: "🌈 彩虹閃耀",   price: 1200 },
+      { id: "pre_12", text: "👑 傳說級",     price: 1200 }
+    ];
+
+    const TITLE_SUFFIXES = [
+      { id: "suf_1",  text: "小冒險家",     price: 0 },
+      { id: "suf_2",  text: "雙星夥伴",     price: 0 },
+      { id: "suf_3",  text: "🛡️ 布丁騎士",  price: 500 },
+      { id: "suf_4",  text: "🐾 小汪隊長",  price: 500 },
+      { id: "suf_5",  text: "🐹 倉鼠飼養員", price: 600 },
+      { id: "suf_6",  text: "🍰 甜點品嚐師", price: 600 },
+      { id: "suf_7",  text: "🏡 小屋設計師", price: 800 },
+      { id: "suf_8",  text: "📘 單字大師",   price: 800 },
+      { id: "suf_9",  text: "⭐ 星星收藏家", price: 900 },
+      { id: "suf_10", text: "🪄 學霸魔法師", price: 1000 },
+      { id: "suf_11", text: "🐉 屠龍勇者",   price: 1200 },
+      { id: "suf_12", text: "🏆 全科傳奇",   price: 1200 }
+    ];
+
+    const AVATAR_FRAMES = [
+      { id: "frame_default",   icon: "🎀", name: "經典粉彩框",     price: 0,    cls: "",                      fxEmoji: "",   desc: "溫柔粉彩圓框。" },
+      { id: "frame_sakura",    icon: "🌸", name: "櫻花花環流光框", price: 1500, cls: "avatar-frame-sakura",    fxEmoji: "🌸", desc: "主畫面粉紅柔光＋戰鬥答對飄出櫻花瓣！" },
+      { id: "frame_starlight", icon: "⭐", name: "許願流星藍光框", price: 2500, cls: "avatar-frame-starlight", fxEmoji: "⭐", desc: "主畫面星藍光暈＋戰鬥答對閃耀金星！" },
+      { id: "frame_royal",     icon: "👑", name: "黃金皇冠榮耀框", price: 3200, cls: "avatar-frame-royal",     fxEmoji: "👑", desc: "主畫面金光圍繞＋戰鬥答對迸發皇冠金芒！" },
+      { id: "frame_rainbow",   icon: "🌈", name: "彩虹水晶流光框", price: 4000, cls: "avatar-frame-rainbow",   fxEmoji: "🌈", desc: "動態七彩流光外框＋戰鬥答對綻放彩虹星光！" }
+    ];
+
+    const FONT_SCALE_META = {
+      md: { label: "🔤 標準", next: "lg" },
+      lg: { label: "🔤 大字", next: "xl" },
+      xl: { label: "🔤 特大", next: "md" }
+    };
+
     const SHOP_ITEMS = [
       { id: "honor_dessert", type: "furniture", owner: "room", name: "🍰 焦糖布丁甜點櫃", price: 0, honorOnly: true, img: ASSETS.honor_furn_dessert, desc: "榮譽通行證限定家具！擺進小屋自由拖曳，持有永久 +3% EXP", defLeft: 76, defBottom: 24, defWidth: 20 },
       { id: "purin_beret", type: "hat", owner: "purin", name: "🍮 鮮奶油草莓貝雷帽", price: 1200, img: ASSETS.accPurinBeret, desc: "布丁狗專屬！招牌貝雷帽升級成鮮奶油草莓甜點款。" },
@@ -5048,7 +5144,6 @@
                 <img referrerpolicy="no-referrer" src="${wallArtObj.img}" alt="${wallArtObj.title}" class="w-full h-full object-cover rounded-[4px] pointer-events-none" />
               </div>
             ` : ""}
-            ${cottageRoomExtrasHtml}
           ${previewItem ? `
               <div class="absolute top-2.5 left-2.5 z-[70] flex items-center gap-2 bg-white/95 border-2 border-pink-300 rounded-full px-3 py-1 shadow text-xs font-black text-pink-700">
                 <span>✨ 正在預覽：${previewItem.name}</span>
@@ -5074,6 +5169,7 @@
                 ${renderHeroLayersHtml(leadId, previewItem)}
               </div>
             </div>
+          ${cottageRoomExtrasHtml}
             <div id="cottage-pet-partner" class="cottage-walker pet-draggable absolute w-[20%] aspect-square" style="left:${cottagePos.partner.left}%; bottom:${cottagePos.partner.bottom}%; z-index:${calcDepthZ(cottagePos.partner.bottom)};">
               <div class="pet-inner relative w-full h-full" style="transform:scaleX(${cottagePos.partner.face});">
                 ${renderHeroLayersHtml(partnerId, previewItem)}
@@ -9487,43 +9583,9 @@
 
 
     // ====== 🥚 神秘星光寵物蛋孵化系統 ======
-    const MINI_PETS = [
-      {
-        id: "pet_hood_dog", icon: "🐾", name: "戴帽小汪", rarity: "SR",
-        img: ASSETS.pet_hood_dog,
-        desc: "戴著棕白小狗毛絨帽的害羞小白汪，最愛跟在布丁狗身旁散步！",
-        quote: "汪嗚～戴著毛絨帽帽好暖和，我們一起去冒險吧！"
-      },
-      {
-        id: "pet_mint_hamster", icon: "🐹", name: "薄荷緞帶小倉鼠", rarity: "SR",
-        img: ASSETS.pet_mint_hamster,
-        desc: "戴著棕白條紋緞帶的薄荷綠小倉鼠，雙手捧著會發光的小星星！",
-        quote: "吱吱～把幸運小星星送給你，答題一定全對！"
-      },
-      {
-        id: "pet_berry_cat", icon: "🐱", name: "草莓貝雷小貓咪", rarity: "R",
-        img: ASSETS.pet_berry_cat,
-        desc: "戴著粉紅草莓帽與金鈴鐺的奶油小貓，走起路來叮噹作響！",
-        quote: "喵嗚～鈴鐺響起來代表好運降臨囉！"
-      },
-      {
-        id: "pet_cloud_duck", icon: "🐥", name: "星光圍巾小鴨鴨", rarity: "R",
-        img: ASSETS.pet_cloud_duck,
-        desc: "圍著天藍星星領巾的元氣小鴨，答對題目會開心拍翅膀！",
-        quote: "呱呱！你剛剛的表現超級棒，繼續加油！"
-      },
-      {
-        id: "pet_star_unicorn", icon: "🦄", name: "夢幻迷你小獨角獸", rarity: "SSR",
-        img: ASSETS.pet_star_unicorn,
-        desc: "擁有星光小翅膀與粉紫鬃毛的傳說小獨角獸，會帶來滿滿奇蹟！",
-        quote: "✨ 閃耀星光祝福你，今天也是滿分的一天！"
-      }
-    ];
 
-    const PET_EGG_TYPES = {
-      star:    { id: "star",    icon: "🥚", name: "神秘星光蛋", price: 1500, target: 15, desc: "累積答對 15 題孵化（優先孵出未擁有寵物！）" },
-      rainbow: { id: "rainbow", icon: "🌈", name: "奇蹟彩虹蛋", price: 3000, target: 10, desc: "累積答對 10 題快速孵化（保底 SR／SSR 稀有寵！）" }
-    };
+
+
 
     function addPetEggProgress(delta = 1) {
       if (!state || !state.petEgg) return;
@@ -9723,62 +9785,23 @@
 
 
     // ====== 🏡 三房擴建 ＋ 🔮 天氣魔法球 ＋ 🪧 小黑板 ＋ 👑 12×12 拼裝稱號＆發光頭像框 ======
-    const COTTAGE_ROOM_DEFS = [
-      { id: "room1", icon: "🏠", name: "1號客廳",     price: 0,    defaultBg: "bg_default",      desc: "溫馨經典主客廳，自由擺放你最愛的家具與畫作！" },
-      { id: "room2", icon: "🍰", name: "2號甜點吧",   price: 5000, defaultBg: "bg_dessert_cafe", desc: "附贈專屬焦糖甜點吧背景＋「🍰 下午茶派對 (200⭐)」元氣 +10% EXP！" },
-      { id: "room3", icon: "🔭", name: "3號觀星陽台", price: 8000, defaultBg: "bg_star_balcony", desc: "附贈專屬星夜觀星陽台背景＋「🌠 許願流星籤 (300⭐)」抽幸運籤與禮物！" }
-    ];
 
-    const COTTAGE_WEATHERS = [
-      { id: "none",    icon: "☀️", name: "晴朗微風", price: 0,    particles: [] },
-      { id: "sakura",  icon: "🌸", name: "櫻花飄落", price: 1200, particles: ["🌸", "✿", "🌸", "💮", "🌸", "✿"] },
-      { id: "firefly", icon: "✨", name: "星空微光", price: 1500, particles: ["✨", "⭐", "✦", "✨", "⭐", "✧"] },
-      { id: "snow",    icon: "❄️", name: "柔光飄雪", price: 1800, particles: ["❄️", "❅", "✨", "❄️", "❅", "❄️"] },
-      { id: "bubble",  icon: "🌈", name: "彩虹泡泡", price: 2200, particles: ["🫧", "🌈", "🫧", "✨", "🫧", "⭐"] }
-    ];
 
-    const TITLE_PREFIXES = [
-      { id: "pre_1",  text: "元氣滿滿的", price: 0 },
-      { id: "pre_2",  text: "愛學習的",   price: 0 },
-      { id: "pre_3",  text: "🍮 愛吃布丁的", price: 500 },
-      { id: "pre_4",  text: "🐾 帕恰狗頭號", price: 500 },
-      { id: "pre_5",  text: "⚡ 閃電心算",   price: 600 },
-      { id: "pre_6",  text: "🌸 櫻花飄落的", price: 600 },
-      { id: "pre_7",  text: "🐹 捧著星星的", price: 800 },
-      { id: "pre_8",  text: "✨ 星夜守護",   price: 800 },
-      { id: "pre_9",  text: "🍰 焦糖香氣",   price: 900 },
-      { id: "pre_10", text: "🔥 連擊不停的", price: 1000 },
-      { id: "pre_11", text: "🌈 彩虹閃耀",   price: 1200 },
-      { id: "pre_12", text: "👑 傳說級",     price: 1200 }
-    ];
 
-    const TITLE_SUFFIXES = [
-      { id: "suf_1",  text: "小冒險家",     price: 0 },
-      { id: "suf_2",  text: "雙星夥伴",     price: 0 },
-      { id: "suf_3",  text: "🛡️ 布丁騎士",  price: 500 },
-      { id: "suf_4",  text: "🐾 小汪隊長",  price: 500 },
-      { id: "suf_5",  text: "🐹 倉鼠飼養員", price: 600 },
-      { id: "suf_6",  text: "🍰 甜點品嚐師", price: 600 },
-      { id: "suf_7",  text: "🏡 小屋設計師", price: 800 },
-      { id: "suf_8",  text: "📘 單字大師",   price: 800 },
-      { id: "suf_9",  text: "⭐ 星星收藏家", price: 900 },
-      { id: "suf_10", text: "🪄 學霸魔法師", price: 1000 },
-      { id: "suf_11", text: "🐉 屠龍勇者",   price: 1200 },
-      { id: "suf_12", text: "🏆 全科傳奇",   price: 1200 }
-    ];
 
-    const AVATAR_FRAMES = [
-      { id: "frame_default",   icon: "🎀", name: "經典粉彩框",     price: 0,    cls: "",                      fxEmoji: "",   desc: "溫柔粉彩圓框。" },
-      { id: "frame_sakura",    icon: "🌸", name: "櫻花花環流光框", price: 1500, cls: "avatar-frame-sakura",    fxEmoji: "🌸", desc: "主畫面粉紅柔光＋戰鬥答對飄出櫻花瓣！" },
-      { id: "frame_starlight", icon: "⭐", name: "許願流星藍光框", price: 2500, cls: "avatar-frame-starlight", fxEmoji: "⭐", desc: "主畫面星藍光暈＋戰鬥答對閃耀金星！" },
-      { id: "frame_royal",     icon: "👑", name: "黃金皇冠榮耀框", price: 3200, cls: "avatar-frame-royal",     fxEmoji: "👑", desc: "主畫面金光圍繞＋戰鬥答對迸發皇冠金芒！" },
-      { id: "frame_rainbow",   icon: "🌈", name: "彩虹水晶流光框", price: 4000, cls: "avatar-frame-rainbow",   fxEmoji: "🌈", desc: "動態七彩流光外框＋戰鬥答對綻放彩虹星光！" }
-    ];
+
+
+
+
+
 
     function ensureCottageRooms() {
       if (!Array.isArray(state.unlockedRooms) || state.unlockedRooms.length === 0) state.unlockedRooms = ["room1"];
       if (!state.activeRoomId || !state.unlockedRooms.includes(state.activeRoomId)) state.activeRoomId = "room1";
       if (!Array.isArray(state.ownedWeathers)) state.ownedWeathers = ["none"];
+      if (!Array.isArray(state.ownedBgs)) state.ownedBgs = ["bg_default"];
+      if (!Array.isArray(state.placedFurniture)) state.placedFurniture = [];
+      if (!state.furniturePos || typeof state.furniturePos !== "object") state.furniturePos = {};
       if (!state.cottageRooms || typeof state.cottageRooms !== "object") {
         state.cottageRooms = {
           room1: {
@@ -10227,11 +10250,7 @@
 
 
     // ====== Scheme C Eye-Care Font Scale & Mobile Drawer Controls ======
-    const FONT_SCALE_META = {
-      md: { label: "🔤 標準", next: "lg" },
-      lg: { label: "🔤 大字", next: "xl" },
-      xl: { label: "🔤 特大", next: "md" }
-    };
+
     function applyFontScale(scale) {
       const s = FONT_SCALE_META[scale] ? scale : "md";
       document.body.setAttribute("data-font-scale", s);
