@@ -4790,8 +4790,10 @@
         const targetLang = useEnglish ? "en-US" : "zh-TW";
         u.lang = targetLang;
         u.rate = useEnglish ? 0.88 : 0.95;
-        const v = pickBestTtsVoice(targetLang, useEnglish);
+        const isAndroid = /Android/i.test(navigator.userAgent || "");
+        const v = isAndroid ? null : pickBestTtsVoice(targetLang, useEnglish);
         if (v) u.voice = v;
+        u.volume = 1.0;
         activeUtterance = u;
         u.onend = () => { activeUtterance = null; };
         u.onerror = () => { activeUtterance = null; };
@@ -8610,8 +8612,10 @@
         const u = new SpeechSynthesisUtterance(s);
         u.lang = "en-US";
         u.rate = rate;
-        const v = (typeof pickBestTtsVoice === "function") ? pickBestTtsVoice("en-US", true) : null;
+        const isAndroid = /Android/i.test(navigator.userAgent || "");
+        const v = (!isAndroid && typeof pickBestTtsVoice === "function") ? pickBestTtsVoice("en-US", true) : null;
         if (v) u.voice = v;
+        u.volume = 1.0;
         activeUtterance = u;
         u.onend = () => { activeUtterance = null; };
         u.onerror = () => { activeUtterance = null; };
