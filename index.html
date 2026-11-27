@@ -161,6 +161,71 @@
       line-height: 1;
     }
     .monster-boss-glow { animation: bossPulse 2.2s ease-in-out infinite; }
+    /* PWA Safe Area Insets */
+    body {
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    #modal-body {
+      padding-bottom: max(1.25rem, calc(env(safe-area-inset-bottom, 0px) + 0.75rem));
+    }
+    /* Scheme C: Eye-Care Scoped Font Scaling (md: 100%, lg: 112%, xl: 124%) */
+    :root { --read-scale: 1; }
+    body[data-font-scale="lg"] { --read-scale: 1.12; }
+    body[data-font-scale="xl"] { --read-scale: 1.24; }
+    body[data-font-scale="lg"] #battle-question-card,
+    body[data-font-scale="xl"] #battle-question-card {
+      background-color: #fffdf7 !important;
+      border-color: #f9c8d9 !important;
+    }
+    body[data-font-scale="lg"] #q-text,
+    body[data-font-scale="xl"] #q-text {
+      font-size: calc(1.05rem * var(--read-scale)) !important;
+      line-height: 1.65 !important;
+    }
+    body[data-font-scale="lg"] #q-options button,
+    body[data-font-scale="xl"] #q-options button {
+      font-size: calc(0.95rem * var(--read-scale)) !important;
+      line-height: 1.5 !important;
+    }
+    body[data-font-scale="lg"] #q-hint-box,
+    body[data-font-scale="xl"] #q-hint-box,
+    body[data-font-scale="lg"] #q-feedback-text,
+    body[data-font-scale="xl"] #q-feedback-text {
+      font-size: calc(1rem * var(--read-scale)) !important;
+      line-height: 1.65 !important;
+    }
+    body[data-font-scale="lg"] #modal-body,
+    body[data-font-scale="xl"] #modal-body {
+      font-size: calc(0.92rem * var(--read-scale));
+    }
+    body[data-font-scale="lg"] #modal-body .text-xs,
+    body[data-font-scale="xl"] #modal-body .text-xs {
+      font-size: calc(0.78rem * var(--read-scale)) !important;
+      line-height: 1.5 !important;
+    }
+    body[data-font-scale="lg"] #modal-body .text-sm,
+    body[data-font-scale="xl"] #modal-body .text-sm {
+      font-size: calc(0.9rem * var(--read-scale)) !important;
+      line-height: 1.55 !important;
+    }
+    body[data-font-scale="lg"] #modal-body .text-\[15px\],
+    body[data-font-scale="xl"] #modal-body .text-\[15px\] {
+      font-size: calc(0.96rem * var(--read-scale)) !important;
+      line-height: 1.45 !important;
+    }
+    @media (max-width: 639px) {
+      body[data-font-scale="lg"] #battle-arena-grid,
+      body[data-font-scale="xl"] #battle-arena-grid {
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.25rem !important;
+      }
+      body[data-font-scale="lg"] #battle-question-card,
+      body[data-font-scale="xl"] #battle-question-card {
+        margin-top: 0.65rem !important;
+        padding: 0.85rem !important;
+      }
+    }
     .anim-hero-attack { animation: heroAttack 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
     .anim-partner-cheer { animation: partnerCheer 0.55s ease; }
     .anim-monster-hit { animation: monsterHit 0.5s ease; }
@@ -219,6 +284,13 @@
       background: radial-gradient(circle at 50% 35%, #ffffff 0%, #fff5f9 45%, #e8f5ff 100%);
     }
   </style>
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#2b2d5c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="雙星冒險RPG" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
 </head>
 <body class="pb-10">
 
@@ -395,65 +467,71 @@
 
     <!-- VIEW 2: RPG BATTLE ARENA -->
     <section id="view-battle" class="hidden space-y-3">
-      <div class="sanrio-card p-3 sm:p-5 battle-stage-bg relative overflow-hidden">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <button id="btn-back-map" class="sanrio-btn bg-white border-2 border-pink-200 hover:bg-pink-50 rounded-full px-3 py-1 text-xs sm:text-sm font-bold">
-            ← 返回地圖
-          </button>
-          <div class="text-center">
-            <span id="battle-stage-badge" class="inline-block px-3 py-0.5 rounded-full text-xs font-bold bg-pink-100 text-pink-700 border border-pink-300">國語關卡</span>
-            <h2 id="battle-stage-title" class="text-base sm:text-xl font-black text-stone-800 mt-0.5">關卡名稱</h2>
+      <div class="sanrio-card p-2.5 sm:p-5 battle-stage-bg relative overflow-hidden">
+        <div class="space-y-1.5 mb-2 sm:mb-3">
+          <div class="flex items-center justify-between gap-1.5">
+            <button id="btn-back-map" class="sanrio-btn bg-white border-2 border-pink-200 hover:bg-pink-50 rounded-full px-2.5 sm:px-3 py-1 text-xs sm:text-sm font-black shrink-0 whitespace-nowrap">
+              ← 返回
+            </button>
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span id="battle-stage-badge" class="inline-block px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-bold bg-pink-100 text-pink-700 border border-pink-300 truncate">國語關卡</span>
+              <span id="battle-progress-text" class="text-[11px] sm:text-xs font-black bg-white/90 px-2.5 py-0.5 rounded-full border border-stone-200 whitespace-nowrap shrink-0">第 1 / 6 題</span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button id="btn-font-scale" class="sanrio-btn bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-full px-2 py-1 text-[11px] sm:text-xs font-black whitespace-nowrap" title="切換護眼字體大小">🔤 標準</button>
+              <button id="btn-battle-rule" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-900 rounded-full w-7 h-7 sm:w-auto sm:px-2.5 sm:py-1 text-xs font-black flex items-center justify-center" title="規則說明">❓<span class="hidden sm:inline ml-0.5">規則</span></button>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span id="battle-combo-badge" class="hidden px-2.5 py-1 rounded-full bg-amber-400 text-white text-xs font-black shadow">🔥 0 連擊</span>
-            <span id="battle-progress-text" class="text-xs sm:text-sm font-bold bg-white/80 px-3 py-1 rounded-full border border-stone-200">第 1 / 6 題</span>
-            <button id="btn-battle-rule" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-900 rounded-full px-2.5 py-1 text-xs font-black">❓ 規則</button>
+          <div class="flex items-center justify-center gap-2">
+            <h2 id="battle-stage-title" class="text-sm sm:text-xl font-black text-stone-800 text-center leading-tight truncate">關卡名稱</h2>
+            <span id="battle-combo-badge" class="hidden px-2 py-0.5 rounded-full bg-amber-400 text-white text-[11px] font-black shadow whitespace-nowrap shrink-0">🔥 0 連擊</span>
           </div>
         </div>
 
-        <!-- BOSS Intro Dialogue Box -->
-        <div id="boss-dialogue-box" class="hidden mb-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 via-pink-50 to-purple-50 border-2 border-pink-300 flex items-center gap-3 shadow-sm">
+        <!-- BOSS Intro Dialogue Box (Auto-collapses after Q1, or tap to dismiss) -->
+        <div id="boss-dialogue-box" class="hidden mb-2 p-2.5 sm:p-3 rounded-2xl bg-gradient-to-r from-amber-50 via-pink-50 to-purple-50 border-2 border-pink-300 flex items-center gap-2.5 shadow-sm cursor-pointer" title="輕點收起對話">
           <div id="boss-dlg-emoji" class="text-2xl sm:text-3xl shrink-0">👑</div>
-          <div class="text-xs sm:text-sm font-bold text-stone-800 leading-snug">
+          <div class="text-xs sm:text-sm font-bold text-stone-800 leading-snug flex-1 min-w-0">
             <span id="boss-dlg-speaker" class="font-black text-pink-600 mr-1">魔王：</span>
             <span id="boss-dlg-text"></span>
           </div>
+          <span class="text-[10px] text-stone-400 font-bold shrink-0">✕</span>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 sm:gap-6 items-end py-2 sm:py-4 px-2 sm:px-6 rounded-2xl bg-white/55 border-2 border-white shadow-inner relative min-h-[155px] sm:min-h-[260px]">
-          <!-- Left: Heroes -->
-          <div class="flex flex-col items-center">
-            <div class="w-full max-w-[210px] mb-2">
-              <div class="flex justify-between text-xs font-bold mb-1">
-                <span id="battle-hero-label">🍮 布丁狗小隊</span>
-                <span id="battle-shield-text">護盾 5/5</span>
+        <div id="battle-arena-grid" class="grid grid-cols-2 gap-2 sm:gap-6 items-end py-2 sm:py-4 px-1.5 sm:px-6 rounded-2xl bg-white/55 border-2 border-white shadow-inner relative min-h-[155px] sm:min-h-[260px]">
+          <!-- Left: Heroes (min-w-0 + shrink-0 prevents Boss width from ever squishing partner!) -->
+          <div class="flex flex-col items-center min-w-0">
+            <div class="w-full max-w-[210px] mb-1.5 sm:mb-2">
+              <div class="flex justify-between text-[11px] sm:text-xs font-bold mb-1">
+                <span id="battle-hero-label" class="truncate">🍮 布丁狗小隊</span>
+                <span id="battle-shield-text" class="whitespace-nowrap">護盾 5/5</span>
               </div>
-              <div id="battle-shields" class="flex gap-1 text-sm sm:text-base">❤️❤️❤️❤️❤️</div>
+              <div id="battle-shields" class="flex gap-0.5 sm:gap-1 text-xs sm:text-base">❤️❤️❤️❤️❤️</div>
             </div>
 
-            <div class="relative flex items-end justify-center gap-1.5 sm:gap-3 h-32 sm:h-44">
-              <div id="partner-wrap" class="w-16 h-16 sm:w-24 sm:h-24 opacity-95 transition-transform relative">
+            <div class="relative flex items-end justify-center w-full h-36 sm:h-48">
+              <div id="partner-wrap" class="w-[56px] h-[56px] sm:w-24 sm:h-24 shrink-0 -mr-1.5 sm:mr-1 opacity-95 transition-transform relative z-10">
                 <div id="battle-partner-layers" class="relative w-full h-full"></div>
               </div>
-              <div id="hero-wrap" class="w-28 h-28 sm:w-40 sm:h-40 anim-hero-idle relative">
+              <div id="hero-wrap" class="w-[96px] h-[96px] sm:w-40 sm:h-40 shrink-0 anim-hero-idle relative z-20">
                 <div id="battle-hero-layers" class="relative w-full h-full"></div>
-                <div id="hero-speech" class="hidden absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-100 border-2 border-amber-300 text-amber-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow z-20">加油！</div>
+                <div id="hero-speech" class="hidden absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-100 border-2 border-amber-300 text-amber-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow z-30">加油！</div>
               </div>
             </div>
           </div>
 
           <!-- Right: Monster -->
-          <div class="flex flex-col items-center relative">
-            <div class="w-full max-w-[210px] mb-2">
-              <div id="battle-monster-name" class="text-[11px] sm:text-xs font-black text-stone-800 leading-tight text-center mb-0.5">怪物</div>
+          <div class="flex flex-col items-center relative min-w-0">
+            <div class="w-full max-w-[210px] mb-1.5 sm:mb-2">
+              <div id="battle-monster-name" class="text-[11px] sm:text-xs font-black text-stone-800 leading-tight text-center mb-0.5 truncate">怪物</div>
               <div id="battle-monster-hp-text" class="text-[10px] sm:text-xs font-bold text-rose-600 text-right leading-none mb-1 whitespace-nowrap">HP 100/100</div>
-              <div class="w-full h-3.5 bg-stone-200 rounded-full overflow-hidden border border-stone-300">
+              <div class="w-full h-3 sm:h-3.5 bg-stone-200 rounded-full overflow-hidden border border-stone-300">
                 <div id="battle-monster-hp-bar" class="h-full bg-gradient-to-r from-rose-400 to-pink-500 transition-all duration-300" style="width: 100%;"></div>
               </div>
             </div>
 
-            <div id="monster-stage-box" class="relative flex items-end justify-center h-36 sm:h-48 w-full">
-              <div id="monster-wrap" class="w-20 h-20 sm:w-28 sm:h-28 origin-bottom anim-monster-idle relative flex items-end justify-center">
+            <div id="monster-stage-box" class="relative flex items-end justify-center h-36 sm:h-48 w-full overflow-visible">
+              <div id="monster-wrap" class="w-20 h-20 sm:w-28 sm:h-28 shrink-0 origin-bottom anim-monster-idle relative flex items-end justify-center">
                 <div id="monster-aura-layer" class="absolute inset-0 pointer-events-none flex items-center justify-center z-0"></div>
                 <img referrerpolicy="no-referrer" id="battle-monster-img" src="https://drive.google.com/thumbnail?id=1AMr0n1xxOhgFZsPl2FaUgkvlPLb66Kv3&sz=w800" alt="關卡怪物" class="w-full h-full object-contain sprite-cutout relative z-10" />
                 <div id="monster-particles-layer" class="absolute inset-0 pointer-events-none z-20 overflow-visible"></div>
@@ -464,11 +542,25 @@
         </div>
 
         <!-- Question Panel -->
-        <div class="mt-4 bg-white rounded-2xl border-2 border-pink-200 p-4 sm:p-5 shadow-sm">
-          <div class="space-y-2.5 mb-3">
-            <div class="flex flex-wrap items-center justify-between gap-1.5">
-              <span id="q-tag" class="inline-block text-xs font-bold px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-800">字音字形</span>
-              <div class="flex flex-wrap gap-1.5">
+        <div id="battle-question-card" class="mt-3 sm:mt-4 bg-white rounded-2xl border-2 border-pink-200 p-3.5 sm:p-5 shadow-sm transition-colors">
+          <div class="space-y-2 mb-3">
+            <!-- Clean single-row toolbar -->
+            <div class="flex items-center justify-between gap-1.5">
+              <span id="q-tag" class="inline-block text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 truncate max-w-[36%]">字音字形</span>
+              <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                <button id="btn-speak" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border-2 border-sky-300 text-sky-900 rounded-xl px-2.5 py-1 text-xs font-black whitespace-nowrap">
+                  🔊 唸題
+                </button>
+                <button id="btn-hint" class="sanrio-btn bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-900 rounded-xl px-2.5 py-1 text-xs font-black whitespace-nowrap">
+                  💡 提示
+                </button>
+                <button id="btn-toggle-bag" class="hidden sanrio-btn bg-purple-100 hover:bg-purple-200 border-2 border-purple-300 text-purple-900 rounded-xl px-2.5 py-1 text-xs font-black whitespace-nowrap">
+                  🎒 道具 (0)
+                </button>
+              </div>
+            </div>
+            <!-- Collapsible Skill & Bag Drawer -->
+            <div id="battle-bag-drawer" class="hidden flex flex-wrap gap-1.5 p-2 rounded-xl bg-purple-50/70 border border-purple-200">
               <button id="btn-skill-fifty" class="hidden sanrio-btn bg-purple-100 hover:bg-purple-200 border-2 border-purple-300 text-purple-900 rounded-xl px-2.5 py-1.5 text-xs font-bold">
                 ✂️ 刪錯 (1)
               </button>
@@ -484,13 +576,6 @@
               <button id="btn-bag-skip" class="hidden sanrio-btn bg-yellow-100 hover:bg-yellow-200 border-2 border-yellow-400 text-amber-950 rounded-xl px-2.5 py-1.5 text-xs font-bold">
                 ⚡ 跳題卡 (0)
               </button>
-              <button id="btn-speak" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border-2 border-sky-300 text-sky-900 rounded-xl px-3 py-1.5 text-xs font-bold">
-                🔊 唸題目
-              </button>
-              <button id="btn-hint" class="sanrio-btn bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-900 rounded-xl px-3 py-1.5 text-xs font-bold">
-                💡 小精靈提示
-              </button>
-            </div>
             </div>
             <h3 id="q-text" class="text-base sm:text-xl font-black text-stone-800 leading-relaxed w-full">題目載入中...</h3>
           </div>
@@ -498,13 +583,13 @@
           <div id="q-hint-box" class="hidden mb-3 p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-200 text-base sm:text-lg leading-relaxed text-amber-900 font-bold"></div>
           <div id="q-options" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
 
-          <div id="q-feedback" class="hidden mt-3.5 p-4 rounded-2xl border-2 space-y-3">
+          <div id="q-feedback" class="hidden mt-3.5 p-3.5 sm:p-4 rounded-2xl border-2 space-y-3">
             <div class="text-base sm:text-lg leading-relaxed" id="q-feedback-text"></div>
-            <div class="flex flex-wrap items-center justify-end gap-2">
-              <button id="btn-speak-explain" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border-2 border-sky-300 text-sky-900 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-black">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+              <button id="btn-speak-explain" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border-2 border-sky-300 text-sky-900 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-black w-full sm:w-auto">
                 🔊 唸解析
               </button>
-              <button id="btn-next-q" class="sanrio-btn bg-pink-500 hover:bg-pink-600 text-white rounded-xl px-5 py-2 text-sm sm:text-base font-black">
+              <button id="btn-next-q" class="sanrio-btn bg-pink-500 hover:bg-pink-600 text-white rounded-xl px-5 py-3 sm:py-2 text-sm sm:text-base font-black w-full sm:w-auto">
                 下一題 ➜
               </button>
             </div>
@@ -578,7 +663,7 @@
   </main>
 
   <!-- MODAL -->
-  <div id="modal-overlay" class="hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+  <div id="modal-overlay" class="hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-xs flex items-center justify-center p-1.5 sm:p-5">
     <div class="sanrio-card w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden bg-white">
       <div class="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b-2 border-pink-100 bg-pink-50/70">
         <h3 id="modal-title" class="text-base sm:text-lg font-black text-pink-700 truncate">圖鑑</h3>
@@ -1507,6 +1592,7 @@
       paragonExp: 0,
       clearedStages: [],
       stageMastery: {},
+      stageBestStars: {},
       masteryClaimed: {},
       treasures: [],
       achievements: [],
@@ -1553,7 +1639,9 @@
       wallArt: "",
       ownedBgs: ["bg_default"],
       activeBg: "bg_default",
-      artMilestonesClaimed: []
+      artMilestonesClaimed: [],
+      fontScale: "md",
+      vocabDecks: []
     };
 
     let state = loadState();
@@ -2350,13 +2438,24 @@
     function getStageMasteryInfo(stageId) {
       const st = STAGES.find(s => s.id === stageId);
       const total = st ? st.questions.length : 40;
+      // 護欄 3：雲端外掛題只進題池不拉高原本拿星門檻
+      const baseTotal = st ? (st.baseQuestionCount || st.questions.length) : 40;
       const arr = (state.stageMastery && state.stageMastery[stageId]) ? state.stageMastery[stageId] : [];
       const count = arr.length;
       const cleared = (state.clearedStages || []).includes(stageId);
-      const t2 = Math.max(4, Math.min(15, Math.ceil(total * 0.5)));
-      const t3 = Math.max(6, Math.min(30, Math.ceil(total * 0.85)));
-      const hallOfFame = total >= 50 && count >= 50;
-      const stars = hallOfFame ? 4 : (count >= t3 ? 3 : (count >= t2 ? 2 : (cleared || count >= 6 ? 1 : 0)));
+      // 護欄 2：分齡 3 星封頂（G1-G2: 12/18，G3-G4: 15/24，G5-G6: 15/30）
+      const gNum = Number(String(CLOUD_GRADE || "G4").replace(/\D/g, "")) || 4;
+      const t2Cap = gNum <= 2 ? 12 : 15;
+      const t3Cap = gNum <= 2 ? 18 : (gNum <= 4 ? 24 : 30);
+      const t2 = Math.max(4, Math.min(t2Cap, Math.ceil(baseTotal * 0.5)));
+      const t3 = Math.max(6, Math.min(t3Cap, Math.ceil(baseTotal * 0.85)));
+      const hallOfFame = baseTotal >= 50 && count >= 50;
+      const rawStars = hallOfFame ? 4 : (count >= t3 ? 3 : (count >= t2 ? 2 : (cleared || count >= 6 ? 1 : 0)));
+      // 護欄 1：最高星等永久鎖定，絕不因日後擴充題庫而掉星
+      if (!state.stageBestStars || typeof state.stageBestStars !== "object") state.stageBestStars = {};
+      const prevBest = Number(state.stageBestStars[stageId] || 0);
+      const stars = Math.max(rawStars, prevBest);
+      if (rawStars > prevBest) state.stageBestStars[stageId] = rawStars;
       return { count, total, stars, hallOfFame, t2, t3 };
     }
 
@@ -2872,6 +2971,31 @@
           bSkip.classList.add("hidden");
         }
       }
+    
+      const toggleBagBtn = document.getElementById("btn-toggle-bag");
+      const bagDrawer = document.getElementById("battle-bag-drawer");
+      if (toggleBagBtn) {
+        const totalItems = (battle.fiftyLeft || 0)
+          + (battle.healLeft || 0)
+          + (!battle.candyActive ? (bag.item_candy || 0) : 0)
+          + (bag.item_shield || 0)
+          + (bag.item_skip || 0);
+        const hasHealNow = (battle.healLeft > 0 && battle.shields < (battle.baseMaxShields || 3)) || ((bag.item_shield || 0) > 0);
+        const lowShieldAlert = battle.shields <= 2 && hasHealNow && !battle.answered;
+        if (totalItems > 0) {
+          toggleBagBtn.classList.remove("hidden");
+          if (lowShieldAlert) {
+            toggleBagBtn.textContent = `💖 可補盾 (${totalItems})`;
+            toggleBagBtn.className = "sanrio-btn bg-rose-100 hover:bg-rose-200 border-2 border-rose-400 text-rose-800 rounded-xl px-2.5 py-1 text-xs font-black whitespace-nowrap animate-pulse";
+          } else {
+            toggleBagBtn.textContent = `🎒 道具 (${totalItems})`;
+            toggleBagBtn.className = "sanrio-btn bg-purple-100 hover:bg-purple-200 border-2 border-purple-300 text-purple-900 rounded-xl px-2.5 py-1 text-xs font-black whitespace-nowrap";
+          }
+        } else {
+          toggleBagBtn.classList.add("hidden");
+          if (bagDrawer) bagDrawer.classList.add("hidden");
+        }
+      }
     }
 
     function startStage(stageId) {
@@ -3002,7 +3126,7 @@
         hero: "w-28 h-28 sm:w-40 sm:h-40",
         finalBoss: "w-32 h-32 sm:w-[184px] sm:h-[184px]"
       };
-      wrap.className = `${sizeClasses[visualTier]} origin-bottom anim-monster-idle relative flex items-end justify-center`;
+      wrap.className = `${sizeClasses[visualTier]} shrink-0 origin-bottom anim-monster-idle relative flex items-end justify-center`;
 
       const themes = {
         "國語": { glow: "rgba(244,114,182,0.58)", ring1: "#ec4899", ring2: "#f9a8d4", particles: ["🌸", "✿", "💮", "🌸", "✿", "✨"] },
@@ -3136,19 +3260,19 @@
       const left = battle.hintLeft ?? 0;
       if (battle.usedHintThisQ) {
         btn.disabled = true;
-        btn.textContent = "💡 本題已顯示提示";
+        btn.textContent = "💡 已提示";
         btn.className = "sanrio-btn bg-amber-50 border-2 border-amber-200 text-amber-600/80 rounded-full px-3 py-1 text-xs font-black opacity-75 cursor-not-allowed";
       } else if (left <= 0) {
         btn.disabled = true;
-        btn.textContent = battle.mode === "tower" ? "💡 提示已用完（擊敗守護靈補充）" : "💡 本關提示已用完 (0/1)";
+        btn.textContent = "💡 提示 (0)";
         btn.className = "sanrio-btn bg-stone-100 border-2 border-stone-200 text-stone-400 rounded-full px-3 py-1 text-xs font-black cursor-not-allowed";
       } else if (battle.answered) {
         btn.disabled = true;
-        btn.textContent = `💡 小精靈提示 (剩 ${left} 次)`;
+        btn.textContent = `💡 提示 (${left})`;
         btn.className = "sanrio-btn bg-stone-100 border-2 border-stone-200 text-stone-400 rounded-full px-3 py-1 text-xs font-black opacity-75 cursor-not-allowed";
       } else {
         btn.disabled = false;
-        btn.textContent = `💡 小精靈提示 (剩 ${left} 次)`;
+        btn.textContent = `💡 提示 (${left})`;
         btn.className = "sanrio-btn bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-900 rounded-full px-3 py-1 text-xs font-black";
       }
     }
@@ -3166,6 +3290,12 @@
       document.getElementById("q-hint-box").classList.add("hidden");
       document.getElementById("q-hint-box").textContent = "💡 小精靈提示：" + q.hint;
       document.getElementById("q-feedback").classList.add("hidden");
+      const bagDrawer = document.getElementById("battle-bag-drawer");
+      if (bagDrawer) bagDrawer.classList.add("hidden");
+      if (battle.qIndex >= 1) {
+        const dlg = document.getElementById("boss-dialogue-box");
+        if (dlg) dlg.classList.add("hidden");
+      }
 
       const optsEl = document.getElementById("q-options");
       const allShortOpts = q.shuffledOpts.every(t => String(t).length <= 7);
@@ -3175,7 +3305,7 @@
 
       q.shuffledOpts.forEach((optText, idx) => {
         const btn = document.createElement("button");
-        btn.className = "sanrio-btn text-left p-2.5 sm:p-3.5 rounded-2xl border-2 border-pink-200 bg-pink-50/40 hover:bg-pink-100/70 font-bold text-sm sm:text-base flex items-center gap-2.5";
+        btn.className = "sanrio-btn text-left min-h-[48px] p-2.5 sm:p-3.5 rounded-2xl border-2 border-pink-200 bg-pink-50/40 hover:bg-pink-100/70 font-bold text-sm sm:text-base flex items-center gap-2.5";
         btn.innerHTML = `<span class="w-7 h-7 rounded-full bg-white border border-pink-300 text-pink-600 flex items-center justify-center text-xs font-black shrink-0">${labels[idx]}</span><span>${optText}</span>`;
         btn.addEventListener("click", () => handleAnswer(idx));
         if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
@@ -3419,6 +3549,7 @@
         nextBtn.textContent = finalNextLabel;
       }
       fbBox.classList.remove("hidden");
+      setTimeout(() => { try { fbBox.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {} }, 120);
     }
 
     function grantTreasure(tId) {
@@ -5475,6 +5606,7 @@
           }
           state = { ...defaultState, ...parsed };
           saveState();
+          applyFontScale(state.fontScale || "md");
           renderHUD();
           renderMap();
           SFX.win();
@@ -5490,6 +5622,7 @@
       const bestFloor = state.bestTowerFloor || 0;
       const coopPlays = state.coopPlays || 0;
       const dungeonCnt = (state.dungeons || []).filter(d => !d.archived).length;
+      const vocabDeckCnt = (state.vocabDecks || []).filter(d => !d.archived).length;
       const spRem = (typeof getSpecialFullQuotaLeft === "function") ? getSpecialFullQuotaLeft() : 3;
       showModal("⚔️ 特別挑戰中心", `
         <div class="space-y-3">
@@ -5506,6 +5639,20 @@
               </div>
             </div>
             <span class="text-xs font-black text-fuchsia-700 shrink-0 whitespace-nowrap">進入 ➜</span>
+          </button>
+
+          <button id="hub-go-vocab-dojo" class="sanrio-btn w-full p-3 rounded-2xl border-2 border-sky-300 bg-gradient-to-r from-sky-50 via-indigo-50 to-purple-50 hover:from-sky-100 hover:to-purple-100 flex items-center justify-between gap-2 shadow-sm">
+            <div class="flex items-center gap-2.5 text-left min-w-0">
+              <span class="text-2xl sm:text-3xl shrink-0">📘</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-sm font-black text-indigo-900 whitespace-nowrap">AI 拍照英文單字道場</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500 text-white whitespace-nowrap">已有 ${vocabDeckCnt} 本</span>
+                </div>
+                <div class="text-[11px] font-bold text-stone-600 truncate">拍課本單字變 4 階記憶遊戲（閃卡／聽音／拼字／例句）</div>
+              </div>
+            </div>
+            <span class="text-xs font-black text-indigo-700 shrink-0 whitespace-nowrap">進入 ➜</span>
           </button>
 
           <div class="grid grid-cols-2 gap-2.5">
@@ -5562,6 +5709,7 @@
         </div>
       `);
       document.getElementById("hub-go-dungeon").addEventListener("click", () => { SFX.click(); openDungeonHub(); });
+      document.getElementById("hub-go-vocab-dojo").addEventListener("click", () => { SFX.click(); openVocabDojoHub(); });
       document.getElementById("hub-go-purify").addEventListener("click", () => { SFX.click(); closeModal(); startPurifyMode(); });
       document.getElementById("hub-go-tower").addEventListener("click", () => { SFX.click(); closeModal(); startTowerMode(); });
       document.getElementById("hub-go-tf").addEventListener("click", () => { SFX.click(); openTfLauncher(); });
@@ -7655,6 +7803,7 @@
       const b = ensureGradeBucket(CLOUD_GRADE);
       b.clearedStages = state.clearedStages || [];
       b.stageMastery = state.stageMastery || {};
+      b.stageBestStars = state.stageBestStars || {};
       b.wrongBank = state.wrongBank || [];
       if (b.clearedStages.length >= 45) {
         if (!state.gradeGradBadges) state.gradeGradBadges = {};
@@ -7666,6 +7815,7 @@
       const b = ensureGradeBucket(code);
       state.clearedStages = b.clearedStages || [];
       state.stageMastery = b.stageMastery || {};
+      state.stageBestStars = b.stageBestStars || {};
       state.wrongBank = b.wrongBank || [];
       state.activeGrade = code;
     }
@@ -7758,6 +7908,7 @@
             s.monsterImg = m.img;
           }
         });
+        STAGES.forEach(s => { s.baseQuestionCount = (s.questions || []).length; });
         if (typeof loadCachedCloudQuestions === "function") loadCachedCloudQuestions();
         bindBucketToActiveGrade(code);
         if (!state.majorGrade) state.majorGrade = code;
@@ -8127,6 +8278,1026 @@
       migrateLegacyGradesIfNeeded();
       switchActiveGrade(state.activeGrade || "G3", true);
     });
+    // ====== 📘 AI 拍照英文單字道場（三軌建本 ＋ 完整維護 ＋ 4 階記憶遊戲） ======
+    function speakVocabEn(text, rate = 1.0) {
+      try {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(String(text || ""));
+        u.lang = "en-US";
+        u.rate = rate;
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+
+    function escapeHtmlSafe(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function normalizeVocabWord(raw) {
+      const w = String((raw && raw.word) || "").trim();
+      const zh = String((raw && raw.zh) || "").trim();
+      if (!w || !zh) return null;
+      let syls = Array.isArray(raw.syllables) ? raw.syllables.map(x => String(x).trim()).filter(Boolean) : [];
+      if (syls.length === 0) {
+        if (w.length >= 6) {
+          const mid = Math.ceil(w.length / 2);
+          syls = [w.slice(0, mid), w.slice(mid)];
+        } else {
+          syls = [w];
+        }
+      }
+      const dist = Array.isArray(raw.distractorsZh)
+        ? raw.distractorsZh.map(x => String(x).trim()).filter(x => x && x !== zh).slice(0, 3)
+        : [];
+      return {
+        word: w,
+        phonetic: String(raw.phonetic || "").trim(),
+        pos: String(raw.pos || "n.").trim(),
+        zh,
+        emoji: String(raw.emoji || "📘").trim(),
+        syllables: syls,
+        exampleEn: String(raw.exampleEn || `I know the word ${w}.`).trim(),
+        exampleZh: String(raw.exampleZh || `我認識「${zh}」這個單字。`).trim(),
+        distractorsZh: dist,
+        mastery: Math.max(0, Math.min(3, Number(raw.mastery || 0))),
+        wrongCnt: Number(raw.wrongCnt || 0)
+      };
+    }
+
+    function ensureVocabDecks() {
+      if (!Array.isArray(state.vocabDecks)) state.vocabDecks = [];
+      return state.vocabDecks;
+    }
+
+    function openVocabDojoHub(activeTab = "active") {
+      const decks = ensureVocabDecks();
+      const activeList = decks.filter(d => !d.archived);
+      const archivedList = decks.filter(d => d.archived);
+      const showList = activeTab === "archived" ? archivedList : activeList;
+
+      const listHtml = showList.length === 0
+        ? `<div class="text-center py-6 px-4 rounded-2xl bg-indigo-50/60 border-2 border-dashed border-indigo-200 space-y-2">
+             <div class="text-4xl">${activeTab === "archived" ? "📦" : "📷📘"}</div>
+             <div class="text-sm font-black text-indigo-900">${activeTab === "archived" ? "目前沒有已封存的單字本" : "還沒有建立英文單字本喔！"}</div>
+             <p class="text-xs font-bold text-stone-600">${activeTab === "archived" ? "月考完的單字本可以點「封存」收在這裡，期末考隨時還原總複習。" : "拍下課本單字表或輸入單字清單，AI 會自動補齊發音、音節、例句並變出 4 種記憶遊戲！"}</p>
+           </div>`
+        : showList.map(dk => {
+            const words = dk.words || [];
+            const weakCnt = words.filter(w => (w.mastery || 0) < 3).length;
+            const cm = dk.clearedModes || {};
+            const badges = [
+              { k: "flash", lbl: "🔊閃卡" },
+              { k: "listen", lbl: "🎧聽義" },
+              { k: "spell", lbl: "🧩拼字" },
+              { k: "sentence", lbl: "💬例句" }
+            ].map(b => `<span class="px-2 py-0.5 rounded-full text-[11px] font-black border ${cm[b.k] ? "bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-white text-stone-400 border-stone-200"}">${b.lbl}${cm[b.k] ? "✓" : ""}</span>`).join("");
+
+            return `
+              <div class="p-3.5 rounded-2xl border-2 ${dk.masterClaimed ? "border-amber-300 bg-gradient-to-br from-amber-50/70 via-white to-indigo-50/50" : "border-indigo-200 bg-indigo-50/40"} space-y-2.5">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="text-[11px] font-black px-2 py-0.5 rounded-full bg-indigo-200 text-indigo-900">${escapeHtmlSafe(dk.grade || CLOUD_GRADE)}</span>
+                      <span class="text-sm sm:text-base font-black text-stone-800">${escapeHtmlSafe(dk.title)}</span>
+                      ${dk.masterClaimed ? `<span class="text-[11px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-white">🏆 單字大師</span>` : ""}
+                    </div>
+                    <div class="text-xs font-bold text-stone-600 mt-1">共 ${words.length} 個單字｜${weakCnt > 0 ? `<span class="text-rose-600">🔴 待加強 ${weakCnt} 字</span>` : `<span class="text-emerald-600">🌟 全部已精通！</span>`}</div>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-1">${badges}</div>
+
+                ${!dk.archived ? `
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    <button data-vd-play="${dk.id}" data-vd-mode="flash" class="vd-play-btn sanrio-btn py-2 px-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-black">🔊 記憶閃卡</button>
+                    <button data-vd-play="${dk.id}" data-vd-mode="listen" class="vd-play-btn sanrio-btn py-2 px-2 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-black">🎧 聽音辨義</button>
+                    <button data-vd-play="${dk.id}" data-vd-mode="spell" class="vd-play-btn sanrio-btn py-2 px-2 rounded-xl bg-purple-500 hover:bg-purple-600 text-white text-xs font-black">🧩 積木拼字</button>
+                    <button data-vd-play="${dk.id}" data-vd-mode="sentence" class="vd-play-btn sanrio-btn py-2 px-2 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-xs font-black">💬 例句填空</button>
+                  </div>
+                  ${weakCnt > 0 && weakCnt < words.length ? `
+                    <button data-vd-weak="${dk.id}" class="vd-weak-btn sanrio-btn w-full py-2 rounded-xl bg-rose-100 hover:bg-rose-200 border-2 border-rose-300 text-rose-800 text-xs font-black">🔥 考前弱點特訓（只練未滿 3★ 的 ${weakCnt} 個字）</button>
+                  ` : ""}
+                ` : ""}
+
+                <div class="flex flex-wrap items-center justify-end gap-1.5 pt-1 border-t border-indigo-100">
+                  <button data-vd-edit="${dk.id}" class="vd-edit-btn px-2.5 py-1 rounded-lg bg-white border border-stone-200 hover:bg-stone-50 text-[11px] font-black text-stone-700">⚙️ 管理單字</button>
+                  <button data-vd-share="${dk.id}" class="vd-share-btn px-2.5 py-1 rounded-lg bg-white border border-sky-200 hover:bg-sky-50 text-[11px] font-black text-sky-700">📲 分享代碼</button>
+                  <button data-vd-arch="${dk.id}" class="vd-arch-btn px-2.5 py-1 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 text-[11px] font-black text-amber-800">${dk.archived ? "📤 還原" : "📦 封存"}</button>
+                  <button data-vd-del="${dk.id}" class="vd-del-btn px-2.5 py-1 rounded-lg bg-white border border-rose-200 hover:bg-rose-50 text-[11px] font-black text-rose-600">🗑️ 刪除</button>
+                </div>
+              </div>
+            `;
+          }).join("");
+
+      showModal("📘 AI 拍照英文單字道場", `
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btn-vd-new" class="sanrio-btn py-2.5 px-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs sm:text-sm font-black shadow-sm">📷 拍照／打字建單字本</button>
+            <button id="btn-vd-import" class="sanrio-btn py-2.5 px-3 rounded-2xl bg-white border-2 border-sky-300 text-sky-800 hover:bg-sky-50 text-xs sm:text-sm font-black">📋 匯入分享代碼</button>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button id="btn-vd-tab-active" class="py-1.5 rounded-xl text-xs font-black border-2 ${activeTab === "active" ? "bg-indigo-500 text-white border-indigo-600" : "bg-white text-stone-600 border-stone-200"}">📚 進行中 (${activeList.length})</button>
+            <button id="btn-vd-tab-arch" class="py-1.5 rounded-xl text-xs font-black border-2 ${activeTab === "archived" ? "bg-amber-500 text-white border-amber-600" : "bg-white text-stone-600 border-stone-200"}">📦 已封存 (${archivedList.length})</button>
+          </div>
+          <div id="vd-toast" class="hidden text-xs font-black text-center py-1.5 px-3 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300"></div>
+          <div class="space-y-2.5">${listHtml}</div>
+          <div class="text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 rounded-xl px-3 py-2">
+            🏆 點亮單字本全部 4 顆徽章（閃卡／聽義／拼字／例句），即可領取 <b>+60 ⭐、+80 EXP</b> 單字大師首次通關大獎！
+          </div>
+        </div>
+      `);
+
+      document.getElementById("btn-vd-new").addEventListener("click", () => { SFX.click(); openVocabCreatorModal(""); });
+      document.getElementById("btn-vd-import").addEventListener("click", () => { SFX.click(); openVocabCreatorModal("", "import"); });
+      document.getElementById("btn-vd-tab-active").addEventListener("click", () => { SFX.click(); openVocabDojoHub("active"); });
+      document.getElementById("btn-vd-tab-arch").addEventListener("click", () => { SFX.click(); openVocabDojoHub("archived"); });
+
+      document.querySelectorAll(".vd-play-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const id = btn.getAttribute("data-vd-play");
+          const mode = btn.getAttribute("data-vd-mode");
+          if (mode === "flash") startVocabFlashcard(id, false);
+          else if (mode === "listen") startVocabListenQuiz(id, false);
+          else if (mode === "spell") startVocabSpelling(id, false, "syllable");
+          else if (mode === "sentence") startVocabSentenceQuiz(id, false);
+        });
+      });
+
+      document.querySelectorAll(".vd-weak-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const id = btn.getAttribute("data-vd-weak");
+          showModal("🔥 選擇弱點特訓模式", `
+            <div class="space-y-2.5 text-center">
+              <p class="text-xs font-bold text-stone-600">只會抽出這本裡還未滿 3★ 的單字集中加強！</p>
+              <div class="grid grid-cols-1 gap-2">
+                <button id="wk-listen" class="sanrio-btn py-3 rounded-2xl bg-indigo-500 text-white font-black text-sm">🎧 弱點聽音辨義</button>
+                <button id="wk-spell" class="sanrio-btn py-3 rounded-2xl bg-purple-500 text-white font-black text-sm">🧩 弱點積木拼字</button>
+                <button id="wk-sentence" class="sanrio-btn py-3 rounded-2xl bg-pink-500 text-white font-black text-sm">💬 弱點例句填空</button>
+              </div>
+              <button id="wk-back" class="text-xs font-bold text-stone-500 underline pt-1">返回單字道場</button>
+            </div>
+          `);
+          document.getElementById("wk-listen").addEventListener("click", () => { SFX.click(); startVocabListenQuiz(id, true); });
+          document.getElementById("wk-spell").addEventListener("click", () => { SFX.click(); startVocabSpelling(id, true, "letter"); });
+          document.getElementById("wk-sentence").addEventListener("click", () => { SFX.click(); startVocabSentenceQuiz(id, true); });
+          document.getElementById("wk-back").addEventListener("click", () => { SFX.click(); openVocabDojoHub(activeTab); });
+        });
+      });
+
+      document.querySelectorAll(".vd-edit-btn").forEach(btn => {
+        btn.addEventListener("click", () => { SFX.click(); openVocabDeckEditor(btn.getAttribute("data-vd-edit")); });
+      });
+
+      document.querySelectorAll(".vd-share-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const id = btn.getAttribute("data-vd-share");
+          const dk = ensureVocabDecks().find(x => x.id === id);
+          if (!dk) return;
+          const payload = { title: dk.title, grade: dk.grade, words: dk.words.map(w => ({ ...w, mastery: 0, wrongCnt: 0 })) };
+          const code = "VD1:" + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+          const toast = document.getElementById("vd-toast");
+          try { navigator.clipboard.writeText(code); } catch (e) {}
+          if (toast) {
+            toast.classList.remove("hidden");
+            toast.textContent = "✅ 已複製單字本分享代碼！可直接傳 LINE 給另一台裝置匯入。";
+          }
+        });
+      });
+
+      document.querySelectorAll(".vd-arch-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const id = btn.getAttribute("data-vd-arch");
+          const dk = ensureVocabDecks().find(x => x.id === id);
+          if (!dk) return;
+          dk.archived = !dk.archived;
+          saveState();
+          openVocabDojoHub(activeTab);
+        });
+      });
+
+      document.querySelectorAll(".vd-del-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const id = btn.getAttribute("data-vd-del");
+          const doDelete = () => {
+            state.vocabDecks = ensureVocabDecks().filter(x => x.id !== id);
+            saveState();
+            openVocabDojoHub(activeTab);
+          };
+          if (typeof isParentLocked === "function" && isParentLocked()) {
+            openParentPinPrompt(doDelete, "unlock");
+          } else {
+            doDelete();
+          }
+        });
+      });
+    }
+
+    function openVocabCreatorModal(mergeTargetId = "", initialTab = "photo") {
+      const apiUrl = (cloudSession && cloudSession.apiUrl) || DEFAULT_CLOUD_API_URL;
+      const targetDeck = mergeTargetId ? ensureVocabDecks().find(d => d.id === mergeTargetId) : null;
+      showModal(targetDeck ? `➕ 追加單字至「${targetDeck.title}」` : "📷 建立專屬英文單字本", `
+        <div class="space-y-3">
+          <div class="grid grid-cols-3 gap-1.5">
+            <button id="vct-photo" class="py-2 rounded-xl text-xs font-black border-2 ${initialTab === "photo" ? "bg-indigo-500 text-white border-indigo-600" : "bg-white text-stone-600 border-stone-200"}">📷 拍照辨識</button>
+            <button id="vct-text" class="py-2 rounded-xl text-xs font-black border-2 ${initialTab === "text" ? "bg-indigo-500 text-white border-indigo-600" : "bg-white text-stone-600 border-stone-200"}">⌨️ 輸入單字</button>
+            <button id="vct-import" class="py-2 rounded-xl text-xs font-black border-2 ${initialTab === "import" ? "bg-indigo-500 text-white border-indigo-600" : "bg-white text-stone-600 border-stone-200"}">📋 貼上代碼</button>
+          </div>
+
+          <div id="vc-pane-photo" class="${initialTab === "photo" ? "" : "hidden"} space-y-2.5">
+            <div class="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-900 leading-relaxed">
+              拍下課本單字表、習作或聯絡簿（最多可一次選 3 頁），AI 會自動辨識英文單字並補齊音標、音節與生活例句！
+            </div>
+            <input id="vc-file-input" type="file" accept="image/*" multiple class="block w-full text-xs font-bold text-stone-700 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-indigo-500 file:text-white hover:file:bg-indigo-600" />
+            <button id="vc-run-photo" class="sanrio-btn w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-sm">✨ AI 辨識照片單字</button>
+          </div>
+
+          <div id="vc-pane-text" class="${initialTab === "text" ? "" : "hidden"} space-y-2.5">
+            <div class="p-3 rounded-2xl bg-sky-50 border border-sky-200 text-xs font-bold text-sky-900 leading-relaxed">
+              輸入或貼上英文單字（可用逗號或換行分隔，例如：<code>library, hospital, sunny, rainy</code>），AI 會自動補齊中文、音節與例句！
+            </div>
+            <textarea id="vc-raw-text" rows="4" placeholder="例如：&#10;library&#10;hospital&#10;supermarket&#10;bookstore" class="w-full p-3 rounded-2xl border-2 border-sky-200 text-sm font-bold focus:outline-none focus:border-sky-400"></textarea>
+            <button id="vc-run-text" class="sanrio-btn w-full py-3 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-black text-sm">✨ AI 自動補齊單字卡</button>
+          </div>
+
+          <div id="vc-pane-import" class="${initialTab === "import" ? "" : "hidden"} space-y-2.5">
+            <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-900 leading-relaxed">
+              貼上家人傳來的「單字本分享代碼（VD1:...）」或 JSON 單字陣列，免呼叫 AI 直接 1 秒匯入！
+            </div>
+            <textarea id="vc-import-code" rows="4" placeholder="貼上 VD1:... 或 JSON 陣列" class="w-full p-3 rounded-2xl border-2 border-emerald-200 text-xs font-mono focus:outline-none focus:border-emerald-400"></textarea>
+            <button id="vc-run-import" class="sanrio-btn w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm">📥 立即解析並預覽</button>
+          </div>
+
+          <div id="vc-status" class="text-xs font-bold text-center text-indigo-700 min-h-[1.25rem]"></div>
+          <div class="text-center">
+            <button id="vc-back-hub" class="text-xs font-bold text-stone-500 underline">← 返回單字道場</button>
+          </div>
+        </div>
+      `);
+
+      document.getElementById("vct-photo").addEventListener("click", () => { SFX.click(); openVocabCreatorModal(mergeTargetId, "photo"); });
+      document.getElementById("vct-text").addEventListener("click", () => { SFX.click(); openVocabCreatorModal(mergeTargetId, "text"); });
+      document.getElementById("vct-import").addEventListener("click", () => { SFX.click(); openVocabCreatorModal(mergeTargetId, "import"); });
+      document.getElementById("vc-back-hub").addEventListener("click", () => { SFX.click(); openVocabDojoHub(); });
+
+      const setSt = (msg, isErr = false) => {
+        const el = document.getElementById("vc-status");
+        if (!el) return;
+        el.textContent = msg;
+        el.className = `text-xs font-black text-center min-h-[1.25rem] ${isErr ? "text-rose-600" : "text-indigo-700"}`;
+      };
+
+      const callVocabApi = async (payload) => {
+        if (!apiUrl) throw new Error("尚未設定雲端後端 API 網址");
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "extractEnglishVocab",
+            familyKey: (cloudSession && cloudSession.familyKey) || "",
+            grade: CLOUD_GRADE,
+            ...payload
+          })
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || "辨識失敗，請稍後再試");
+        const list = (data.words || []).map(normalizeVocabWord).filter(Boolean);
+        if (list.length === 0) throw new Error("沒有辨識到有效英文單字，請確認照片清晰度或重新輸入。");
+        return list;
+      };
+
+      const btnPhoto = document.getElementById("vc-run-photo");
+      if (btnPhoto) {
+        btnPhoto.addEventListener("click", async () => {
+          const files = Array.from((document.getElementById("vc-file-input").files) || []).slice(0, 3);
+          if (files.length === 0) { setSt("⚠️ 請先拍照或選擇至少 1 張照片！", true); return; }
+          btnPhoto.disabled = true;
+          setSt("⏳ 正在壓縮照片並請 AI 辨識英文單字（約 5～10 秒）...");
+          try {
+            const b64s = [];
+            for (const f of files) b64s.push(await compressImageToBase64(f, 1280, 0.8));
+            const words = await callVocabApi({ images: b64s });
+            SFX.win();
+            openVocabPreviewModal(words, `${getGradeMeta(CLOUD_GRADE).short} 英文單字特訓`, mergeTargetId);
+          } catch (err) {
+            setSt("❌ " + err.message, true);
+            btnPhoto.disabled = false;
+          }
+        });
+      }
+
+      const btnText = document.getElementById("vc-run-text");
+      if (btnText) {
+        btnText.addEventListener("click", async () => {
+          const rawText = (document.getElementById("vc-raw-text").value || "").trim();
+          if (!rawText) { setSt("⚠️ 請先輸入至少 1 個英文單字！", true); return; }
+          btnText.disabled = true;
+          setSt("⏳ AI 正在幫你補齊音標、音節與生活例句...");
+          try {
+            const words = await callVocabApi({ rawText });
+            SFX.win();
+            openVocabPreviewModal(words, `${getGradeMeta(CLOUD_GRADE).short} 英文單字特訓`, mergeTargetId);
+          } catch (err) {
+            setSt("❌ " + err.message, true);
+            btnText.disabled = false;
+          }
+        });
+      }
+
+      const btnImport = document.getElementById("vc-run-import");
+      if (btnImport) {
+        btnImport.addEventListener("click", () => {
+          const raw = (document.getElementById("vc-import-code").value || "").trim();
+          if (!raw) { setSt("⚠️ 請貼上分享代碼或 JSON！", true); return; }
+          try {
+            let parsed;
+            if (raw.startsWith("VD1:")) {
+              parsed = JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
+            } else {
+              parsed = JSON.parse(raw);
+            }
+            const arr = Array.isArray(parsed) ? parsed : (parsed.words || []);
+            const words = arr.map(normalizeVocabWord).filter(Boolean);
+            if (words.length === 0) throw new Error("找不到有效單字資料");
+            const ttl = (!Array.isArray(parsed) && parsed.title) ? parsed.title : `${getGradeMeta(CLOUD_GRADE).short} 匯入單字本`;
+            SFX.win();
+            openVocabPreviewModal(words, ttl, mergeTargetId);
+          } catch (err) {
+            setSt("❌ 代碼格式不正確：" + err.message, true);
+          }
+        });
+      }
+    }
+
+    function openVocabPreviewModal(wordsList, defaultTitle, mergeTargetId = "") {
+      let draftWords = wordsList.map(w => ({ ...w, checked: true }));
+      const activeDecks = ensureVocabDecks().filter(d => !d.archived);
+
+      const renderPreview = () => {
+        const rowsHtml = draftWords.map((w, idx) => `
+          <div class="p-2.5 rounded-xl border ${w.checked ? "border-indigo-200 bg-white" : "border-stone-200 bg-stone-100 opacity-60"} space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <label class="flex items-center gap-2 min-w-0 flex-1 cursor-pointer">
+                <input type="checkbox" data-vp-chk="${idx}" class="vp-chk w-4 h-4 accent-indigo-500 shrink-0" ${w.checked ? "checked" : ""} />
+                <span class="text-sm font-black text-indigo-900 truncate">${escapeHtmlSafe(w.emoji)} ${escapeHtmlSafe(w.word)}</span>
+                <span class="text-xs font-bold text-stone-600 truncate">${escapeHtmlSafe(w.zh)}</span>
+              </label>
+              <div class="flex items-center gap-1 shrink-0">
+                <button data-vp-say="${idx}" class="vp-say px-2 py-0.5 rounded-lg bg-sky-100 text-sky-800 text-[11px] font-black">🔊</button>
+                <button data-vp-edit="${idx}" class="vp-edit px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-[11px] font-black">✏️</button>
+                <button data-vp-rm="${idx}" class="vp-rm px-2 py-0.5 rounded-lg bg-rose-100 text-rose-700 text-[11px] font-black">✕</button>
+              </div>
+            </div>
+            <div class="text-[11px] text-stone-500 pl-6">音節：${escapeHtmlSafe((w.syllables || []).join(" · "))}｜例句：${escapeHtmlSafe(w.exampleEn)}</div>
+          </div>
+        `).join("");
+
+        const mergeOpts = `<option value="">✨ 建立為全新單字本</option>` + activeDecks.map(d =>
+          `<option value="${d.id}" ${d.id === mergeTargetId ? "selected" : ""}>➕ 併入現有：${escapeHtmlSafe(d.title)}（目前 ${d.words.length} 字）</option>`
+        ).join("");
+
+        showModal("✅ 10 秒確認單字清單", `
+          <div class="space-y-3">
+            <div class="space-y-1.5">
+              <label class="text-xs font-black text-stone-700">儲存方式</label>
+              <select id="vp-merge-select" class="w-full p-2.5 rounded-xl border-2 border-indigo-200 text-xs sm:text-sm font-bold bg-white">${mergeOpts}</select>
+            </div>
+            <div id="vp-title-wrap" class="space-y-1 ${mergeTargetId ? "hidden" : ""}">
+              <label class="text-xs font-black text-stone-700">單字本名稱</label>
+              <input id="vp-title" type="text" value="${escapeHtmlSafe(defaultTitle)}" class="w-full p-2.5 rounded-xl border-2 border-indigo-200 text-sm font-black" />
+            </div>
+            <div class="flex items-center justify-between text-xs font-black text-indigo-800">
+              <span>已勾選 ${draftWords.filter(x => x.checked).length} / ${draftWords.length} 個單字</span>
+              <button id="vp-add-one" class="px-2.5 py-1 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-900 text-[11px] font-black">＋ 手動補 1 字</button>
+            </div>
+            <div class="space-y-1.5 max-h-[38vh] overflow-y-auto pr-0.5">${rowsHtml}</div>
+            <button id="vp-save-btn" class="sanrio-btn w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-sm">💾 儲存單字本並開始挑戰</button>
+          </div>
+        `);
+
+        const mergeSel = document.getElementById("vp-merge-select");
+        mergeSel.addEventListener("change", () => {
+          mergeTargetId = mergeSel.value;
+          document.getElementById("vp-title-wrap").classList.toggle("hidden", !!mergeTargetId);
+        });
+
+        document.querySelectorAll(".vp-chk").forEach(el => {
+          el.addEventListener("change", () => {
+            draftWords[Number(el.getAttribute("data-vp-chk"))].checked = el.checked;
+            renderPreview();
+          });
+        });
+        document.querySelectorAll(".vp-say").forEach(el => {
+          el.addEventListener("click", () => speakVocabEn(draftWords[Number(el.getAttribute("data-vp-say"))].word, 0.95));
+        });
+        document.querySelectorAll(".vp-rm").forEach(el => {
+          el.addEventListener("click", () => {
+            draftWords.splice(Number(el.getAttribute("data-vp-rm")), 1);
+            renderPreview();
+          });
+        });
+        document.querySelectorAll(".vp-edit").forEach(el => {
+          el.addEventListener("click", () => {
+            const idx = Number(el.getAttribute("data-vp-edit"));
+            const w = draftWords[idx];
+            showModal(`✏️ 編輯單字：${w.word}`, `
+              <div class="space-y-2.5">
+                <div><label class="text-xs font-black text-stone-600">英文單字</label><input id="ve-w" value="${escapeHtmlSafe(w.word)}" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-sm font-black" /></div>
+                <div><label class="text-xs font-black text-stone-600">中文解釋</label><input id="ve-zh" value="${escapeHtmlSafe(w.zh)}" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-sm font-bold" /></div>
+                <div><label class="text-xs font-black text-stone-600">音節拆解（用逗號分隔，如 li,bra,ry）</label><input id="ve-syl" value="${escapeHtmlSafe((w.syllables||[]).join(","))}" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-xs font-bold" /></div>
+                <div><label class="text-xs font-black text-stone-600">英文例句</label><input id="ve-en" value="${escapeHtmlSafe(w.exampleEn)}" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-xs font-bold" /></div>
+                <div><label class="text-xs font-black text-stone-600">中文翻譯</label><input id="ve-ez" value="${escapeHtmlSafe(w.exampleZh)}" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-xs font-bold" /></div>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <button id="ve-cancel" class="py-2.5 rounded-xl bg-stone-200 text-stone-700 font-black text-xs">取消</button>
+                  <button id="ve-ok" class="py-2.5 rounded-xl bg-indigo-500 text-white font-black text-xs">儲存修改</button>
+                </div>
+              </div>
+            `);
+            document.getElementById("ve-cancel").addEventListener("click", renderPreview);
+            document.getElementById("ve-ok").addEventListener("click", () => {
+              const nw = document.getElementById("ve-w").value.trim();
+              const nzh = document.getElementById("ve-zh").value.trim();
+              if (nw && nzh) {
+                w.word = nw;
+                w.zh = nzh;
+                w.syllables = document.getElementById("ve-syl").value.split(",").map(s => s.trim()).filter(Boolean);
+                if (!w.syllables.length) w.syllables = [nw];
+                w.exampleEn = document.getElementById("ve-en").value.trim() || `I like ${nw}.`;
+                w.exampleZh = document.getElementById("ve-ez").value.trim() || `我認識「${nzh}」。`;
+              }
+              renderPreview();
+            });
+          });
+        });
+
+        document.getElementById("vp-add-one").addEventListener("click", () => {
+          showModal("＋ 手動補加 1 個單字", `
+            <div class="space-y-2.5">
+              <div><label class="text-xs font-black text-stone-600">英文單字</label><input id="va-w" placeholder="例如：library" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-sm font-black" /></div>
+              <div><label class="text-xs font-black text-stone-600">中文解釋</label><input id="va-zh" placeholder="例如：圖書館" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-sm font-bold" /></div>
+              <div><label class="text-xs font-black text-stone-600">英文例句（選填）</label><input id="va-en" placeholder="例如：I read in the library." class="w-full p-2 rounded-xl border-2 border-indigo-200 text-xs font-bold" /></div>
+              <div><label class="text-xs font-black text-stone-600">中文翻譯（選填）</label><input id="va-ez" placeholder="例如：我在圖書館看書。" class="w-full p-2 rounded-xl border-2 border-indigo-200 text-xs font-bold" /></div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button id="va-cancel" class="py-2.5 rounded-xl bg-stone-200 text-stone-700 font-black text-xs">取消</button>
+                <button id="va-ok" class="py-2.5 rounded-xl bg-indigo-500 text-white font-black text-xs">加入清單</button>
+              </div>
+            </div>
+          `);
+          document.getElementById("va-cancel").addEventListener("click", renderPreview);
+          document.getElementById("va-ok").addEventListener("click", () => {
+            const nw = (document.getElementById("va-w").value || "").trim();
+            const nzh = (document.getElementById("va-zh").value || "").trim();
+            if (!nw || !nzh) return;
+            const item = normalizeVocabWord({
+              word: nw, zh: nzh,
+              exampleEn: (document.getElementById("va-en").value || "").trim() || `I know the word ${nw}.`,
+              exampleZh: (document.getElementById("va-ez").value || "").trim() || `我認識「${nzh}」這個單字。`
+            });
+            if (item) { item.checked = true; draftWords.push(item); }
+            renderPreview();
+          });
+        });
+
+        document.getElementById("vp-save-btn").addEventListener("click", () => {
+          const picked = draftWords.filter(x => x.checked).map(({ checked, ...rest }) => rest);
+          if (picked.length === 0) return;
+          const decks = ensureVocabDecks();
+          if (mergeTargetId) {
+            const target = decks.find(d => d.id === mergeTargetId);
+            if (target) {
+              const exist = new Set(target.words.map(x => x.word.toLowerCase()));
+              picked.forEach(pw => { if (!exist.has(pw.word.toLowerCase())) { exist.add(pw.word.toLowerCase()); target.words.push(pw); } });
+            }
+          } else {
+            const titleVal = (document.getElementById("vp-title").value || defaultTitle || "英文單字本").trim();
+            decks.unshift({
+              id: "vd_" + Date.now(),
+              title: titleVal,
+              grade: CLOUD_GRADE,
+              createdAt: new Date().toISOString().slice(0, 10),
+              archived: false,
+              clearedModes: { flash: false, listen: false, spell: false, sentence: false },
+              masterClaimed: false,
+              words: picked
+            });
+          }
+          saveState();
+          SFX.win();
+          openVocabDojoHub("active");
+        });
+      };
+      renderPreview();
+    }
+
+    function openVocabDeckEditor(deckId) {
+      const dk = ensureVocabDecks().find(d => d.id === deckId);
+      if (!dk) return openVocabDojoHub();
+      const rows = dk.words.map((w, idx) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white border border-indigo-100">
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-black text-indigo-900">${escapeHtmlSafe(w.emoji)} ${escapeHtmlSafe(w.word)} <span class="text-xs text-amber-500">${"★".repeat(w.mastery || 0)}${"☆".repeat(3 - (w.mastery || 0))}</span></div>
+            <div class="text-xs font-bold text-stone-600">${escapeHtmlSafe(w.zh)}｜${escapeHtmlSafe(w.exampleEn)}</div>
+          </div>
+          <button data-vde-rm="${idx}" class="vde-rm px-2 py-1 rounded-lg bg-rose-100 text-rose-700 text-xs font-black shrink-0">刪除</button>
+        </div>
+      `).join("");
+
+      showModal(`⚙️ 管理：${dk.title}`, `
+        <div class="space-y-3">
+          <div class="flex gap-2">
+            <input id="vde-title" value="${escapeHtmlSafe(dk.title)}" class="flex-1 p-2 rounded-xl border-2 border-indigo-200 text-sm font-black" />
+            <button id="vde-save-title" class="px-3 py-2 rounded-xl bg-indigo-500 text-white text-xs font-black shrink-0">改名</button>
+          </div>
+          <button id="vde-add-photo" class="sanrio-btn w-full py-2.5 rounded-xl bg-sky-100 hover:bg-sky-200 border-2 border-sky-300 text-sky-900 text-xs font-black">➕ 拍照／打字追加更多單字到這本</button>
+          <div class="space-y-1.5 max-h-[42vh] overflow-y-auto">${rows}</div>
+          <button id="vde-back" class="sanrio-btn w-full py-2.5 rounded-xl bg-stone-200 text-stone-700 text-xs font-black">← 返回單字道場</button>
+        </div>
+      `);
+      document.getElementById("vde-save-title").addEventListener("click", () => {
+        const nv = document.getElementById("vde-title").value.trim();
+        if (nv) { dk.title = nv; saveState(); SFX.click(); openVocabDeckEditor(deckId); }
+      });
+      document.getElementById("vde-add-photo").addEventListener("click", () => { SFX.click(); openVocabCreatorModal(deckId, "photo"); });
+      document.querySelectorAll(".vde-rm").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (dk.words.length <= 1) return;
+          dk.words.splice(Number(btn.getAttribute("data-vde-rm")), 1);
+          saveState();
+          openVocabDeckEditor(deckId);
+        });
+      });
+      document.getElementById("vde-back").addEventListener("click", () => { SFX.click(); openVocabDojoHub(); });
+    }
+
+    function getDeckPlayWords(deckId, onlyWeak) {
+      const dk = ensureVocabDecks().find(d => d.id === deckId);
+      if (!dk || !dk.words || dk.words.length === 0) return { dk: null, list: [] };
+      const pool = onlyWeak ? dk.words.filter(w => (w.mastery || 0) < 3) : dk.words;
+      return { dk, list: shuffle(pool.length > 0 ? pool : dk.words) };
+    }
+
+    function updateWordMastery(dk, wordText, isCorrect) {
+      const target = (dk.words || []).find(w => w.word.toLowerCase() === String(wordText).toLowerCase());
+      if (!target) return;
+      if (isCorrect) {
+        target.mastery = Math.min(3, (target.mastery || 0) + 1);
+      } else {
+        target.mastery = Math.max(0, (target.mastery || 0) - 1);
+        target.wrongCnt = (target.wrongCnt || 0) + 1;
+      }
+      saveState();
+    }
+
+    function finishVocabMode(deckId, modeKey, correctCnt, totalCnt, onlyWeak) {
+      const dk = ensureVocabDecks().find(d => d.id === deckId);
+      if (!dk) return openVocabDojoHub();
+      if (!dk.clearedModes) dk.clearedModes = { flash: false, listen: false, spell: false, sentence: false };
+      const passRate = totalCnt > 0 ? (correctCnt / totalCnt) : 1;
+      const passed = modeKey === "flash" || passRate >= 0.6;
+      if (passed) dk.clearedModes[modeKey] = true;
+
+      let starsWon = passed ? applySpecialQuotaStars(modeKey === "flash" ? 12 : 25) : 0;
+      let expWon = passed ? (modeKey === "flash" ? 15 : 35) : 0;
+      let masterBonus = false;
+
+      const allFourDone = dk.clearedModes.flash && dk.clearedModes.listen && dk.clearedModes.spell && dk.clearedModes.sentence;
+      if (passed && allFourDone && !dk.masterClaimed) {
+        dk.masterClaimed = true;
+        starsWon += 60;
+        expWon += 80;
+        masterBonus = true;
+        if (typeof confetti === "function") confetti({ particleCount: 70, spread: 80, origin: { y: 0.55 } });
+      }
+
+      if (starsWon > 0) state.stars += starsWon;
+      if (expWon > 0) grantExp(expWon);
+      if (passed) state.bondExp = (state.bondExp || 0) + 2;
+      saveState();
+      renderHUD();
+      if (passed) SFX.win(); else SFX.hit();
+
+      const modeNames = { flash: "🔊 記憶閃卡", listen: "🎧 聽音辨義", spell: "🧩 積木拼字", sentence: "💬 例句填空" };
+      showModal(passed ? "🎉 單字特訓完成！" : "💪 差一點點就過關囉！", `
+        <div class="text-center space-y-3 py-2">
+          <div class="text-5xl">${masterBonus ? "🏆✨" : (passed ? "📘🌟" : "🐾")}</div>
+          <div class="text-base font-black text-indigo-900">${escapeHtmlSafe(dk.title)}｜${modeNames[modeKey]}</div>
+          ${masterBonus ? `<div class="p-3 rounded-2xl bg-gradient-to-r from-amber-100 to-pink-100 border-2 border-amber-300 text-xs sm:text-sm font-black text-amber-950">🎊 恭喜點亮全部 4 顆單字徽章！解鎖「單字大師首次通關大獎」+60⭐、+80 EXP！</div>` : ""}
+          <div class="grid grid-cols-2 gap-2 text-xs font-black">
+            <div class="p-2.5 rounded-2xl bg-indigo-50 border border-indigo-200"><div class="text-stone-500">本次表現</div><div class="text-lg text-indigo-700">${correctCnt} / ${totalCnt}</div></div>
+            <div class="p-2.5 rounded-2xl bg-amber-50 border border-amber-200"><div class="text-stone-500">獲得獎勵</div><div class="text-base text-amber-700">+${starsWon} ⭐ / +${expWon} EXP</div></div>
+          </div>
+          ${!passed ? `<p class="text-xs font-bold text-rose-600">答對率達 60% 以上即可點亮徽章並領取獎勵，先看一次記憶閃卡再挑戰吧！</p>` : ""}
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button id="vdf-retry" class="sanrio-btn py-2.5 rounded-2xl bg-indigo-500 text-white font-black text-xs sm:text-sm">再練一次</button>
+            <button id="vdf-hub" class="sanrio-btn py-2.5 rounded-2xl bg-pink-500 text-white font-black text-xs sm:text-sm">回單字道場</button>
+          </div>
+        </div>
+      `);
+      document.getElementById("vdf-retry").addEventListener("click", () => {
+        SFX.click();
+        if (modeKey === "flash") startVocabFlashcard(deckId, onlyWeak);
+        else if (modeKey === "listen") startVocabListenQuiz(deckId, onlyWeak);
+        else if (modeKey === "spell") startVocabSpelling(deckId, onlyWeak, "syllable");
+        else startVocabSentenceQuiz(deckId, onlyWeak);
+      });
+      document.getElementById("vdf-hub").addEventListener("click", () => { SFX.click(); openVocabDojoHub("active"); });
+    }
+
+    // Stage 1: 🔊 記憶閃卡
+    function startVocabFlashcard(deckId, onlyWeak = false) {
+      const { dk, list } = getDeckPlayWords(deckId, onlyWeak);
+      if (!dk) return openVocabDojoHub();
+      let queue = [...list];
+      let idx = 0, flipped = false, knownCnt = 0;
+
+      const renderCard = () => {
+        if (idx >= queue.length) {
+          finishVocabMode(deckId, "flash", knownCnt, list.length, onlyWeak);
+          return;
+        }
+        const w = queue[idx];
+        speakVocabEn(w.word, 0.95);
+        showModal(`🔊 記憶閃卡（${idx + 1}/${queue.length}）`, `
+          <div class="space-y-3">
+            <div id="vf-card" class="p-5 rounded-3xl border-2 ${flipped ? "border-amber-300 bg-amber-50/70" : "border-indigo-300 bg-gradient-to-br from-sky-50 via-white to-indigo-50"} text-center space-y-2.5 cursor-pointer shadow-sm min-h-[210px] flex flex-col justify-center">
+              <div class="text-4xl">${escapeHtmlSafe(w.emoji)}</div>
+              <div class="text-2xl sm:text-3xl font-black text-indigo-900 tracking-wide">${escapeHtmlSafe(w.word)}</div>
+              <div class="text-xs font-black text-indigo-500">音節：${escapeHtmlSafe((w.syllables || []).join(" · "))}${w.phonetic ? ` ｜ /${escapeHtmlSafe(w.phonetic)}/` : ""}</div>
+              ${flipped ? `
+                <div class="pt-2 border-t border-amber-200 space-y-1.5">
+                  <div class="text-lg font-black text-stone-800">${escapeHtmlSafe(w.pos)} ${escapeHtmlSafe(w.zh)}</div>
+                  <div class="text-sm font-bold text-indigo-900">${escapeHtmlSafe(w.exampleEn)}</div>
+                  <div class="text-xs font-bold text-stone-600">${escapeHtmlSafe(w.exampleZh)}</div>
+                </div>
+              ` : `<div class="text-xs font-bold text-stone-400 pt-2">👆 點卡片翻面看中文與例句</div>`}
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5">
+              <button id="vf-say-1" class="sanrio-btn py-2 rounded-xl bg-sky-100 border border-sky-300 text-sky-900 text-xs font-black">🔊 正常唸</button>
+              <button id="vf-say-slow" class="sanrio-btn py-2 rounded-xl bg-teal-100 border border-teal-300 text-teal-900 text-xs font-black">🐢 慢速唸</button>
+              <button id="vf-say-ex" class="sanrio-btn py-2 rounded-xl bg-purple-100 border border-purple-300 text-purple-900 text-xs font-black">📖 唸例句</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button id="vf-hard" class="sanrio-btn py-3 rounded-2xl bg-rose-100 hover:bg-rose-200 border-2 border-rose-300 text-rose-800 font-black text-sm">😵 還不熟（等等再練）</button>
+              <button id="vf-ok" class="sanrio-btn py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm">😎 我記住了 ➜</button>
+            </div>
+          </div>
+        `);
+        document.getElementById("vf-card").addEventListener("click", () => { SFX.click(); flipped = !flipped; renderCard(); });
+        document.getElementById("vf-say-1").addEventListener("click", () => speakVocabEn(w.word, 1.0));
+        document.getElementById("vf-say-slow").addEventListener("click", () => speakVocabEn(w.word, 0.75));
+        document.getElementById("vf-say-ex").addEventListener("click", () => speakVocabEn(w.exampleEn, 0.9));
+        document.getElementById("vf-hard").addEventListener("click", () => {
+          SFX.click();
+          if (queue.length < list.length * 2) queue.push(w);
+          idx++; flipped = false; renderCard();
+        });
+        document.getElementById("vf-ok").addEventListener("click", () => {
+          SFX.win();
+          knownCnt++;
+          idx++; flipped = false; renderCard();
+        });
+      };
+      renderCard();
+    }
+
+    // Stage 2: 🎧 聽音辨義（看字＋盲聽混搭）
+    function startVocabListenQuiz(deckId, onlyWeak = false) {
+      const { dk, list } = getDeckPlayWords(deckId, onlyWeak);
+      if (!dk) return openVocabDojoHub();
+      let idx = 0, correctCnt = 0;
+      const fallbackZhs = ["蘋果", "香蕉", "學校", "公園", "老師", "書本", "天氣", "開心", "跑步", "朋友"];
+
+      const renderQ = () => {
+        if (idx >= list.length) {
+          finishVocabMode(deckId, "listen", correctCnt, list.length, onlyWeak);
+          return;
+        }
+        const w = list[idx];
+        const blindMode = idx % 2 === 1;
+        const otherZhs = [...(w.distractorsZh || []), ...dk.words.filter(x => x.zh !== w.zh).map(x => x.zh), ...fallbackZhs]
+          .filter((v, i, a) => v && v !== w.zh && a.indexOf(v) === i);
+        const opts = shuffle([w.zh, ...shuffle(otherZhs).slice(0, 3)]);
+        let answered = false;
+
+        speakVocabEn(w.word, 0.95);
+        showModal(`🎧 聽音辨義（${idx + 1}/${list.length}）`, `
+          <div class="space-y-3">
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-sky-50 border-2 border-indigo-200 text-center space-y-2">
+              <div class="text-xs font-black text-indigo-600">${blindMode ? "🎧 盲聽挑戰！請仔細聽發音選出中文" : "👀 看字＋聽發音，選出正確中文"}</div>
+              <div class="text-2xl sm:text-3xl font-black text-indigo-950">${blindMode ? "🔊 ？？？" : `${escapeHtmlSafe(w.emoji)} ${escapeHtmlSafe(w.word)}`}</div>
+              <div class="flex justify-center gap-2 pt-1">
+                <button id="vl-say" class="sanrio-btn px-3 py-1.5 rounded-xl bg-sky-500 text-white text-xs font-black">🔊 再聽一次</button>
+                <button id="vl-slow" class="sanrio-btn px-3 py-1.5 rounded-xl bg-teal-500 text-white text-xs font-black">🐢 慢速唸</button>
+              </div>
+            </div>
+            <div id="vl-opts" class="grid grid-cols-1 gap-2">
+              ${opts.map((o, i) => `<button data-vl-o="${escapeHtmlSafe(o)}" class="vl-opt sanrio-btn min-h-[48px] p-3 rounded-2xl border-2 border-indigo-200 bg-white hover:bg-indigo-50 font-black text-sm sm:text-base text-left flex items-center gap-2.5"><span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-black shrink-0">${["A","B","C","D"][i]}</span><span>${escapeHtmlSafe(o)}</span></button>`).join("")}
+            </div>
+            <div id="vl-fb" class="hidden p-3 rounded-2xl border-2 text-xs sm:text-sm font-bold space-y-2"></div>
+          </div>
+        `);
+        document.getElementById("vl-say").addEventListener("click", () => speakVocabEn(w.word, 1.0));
+        document.getElementById("vl-slow").addEventListener("click", () => speakVocabEn(w.word, 0.72));
+
+        document.querySelectorAll(".vl-opt").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (answered) return;
+            answered = true;
+            const pick = btn.getAttribute("data-vl-o");
+            const ok = pick === w.zh;
+            updateWordMastery(dk, w.word, ok);
+            if (ok) { correctCnt++; SFX.win(); } else { SFX.hit(); }
+            speakVocabEn(w.word, 0.95);
+
+            document.querySelectorAll(".vl-opt").forEach(b => {
+              b.disabled = true;
+              const val = b.getAttribute("data-vl-o");
+              if (val === w.zh) b.className = "sanrio-btn min-h-[48px] p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-black text-sm sm:text-base text-left flex items-center gap-2.5";
+              else if (b === btn && !ok) b.className = "sanrio-btn min-h-[48px] p-3 rounded-2xl border-2 border-rose-400 bg-rose-100 text-rose-900 font-black text-sm sm:text-base text-left flex items-center gap-2.5";
+            });
+
+            const fb = document.getElementById("vl-fb");
+            fb.classList.remove("hidden");
+            fb.className = `p-3 rounded-2xl border-2 text-xs sm:text-sm font-bold space-y-2 ${ok ? "bg-emerald-50 border-emerald-300 text-emerald-900" : "bg-rose-50 border-rose-300 text-rose-900"}`;
+            fb.innerHTML = `
+              <div>${ok ? "🎉 答對了！" : "💪 沒關係再記一次！"} <b>${escapeHtmlSafe(w.word)}</b> = ${escapeHtmlSafe(w.zh)}</div>
+              <div class="text-xs text-stone-600">📖 ${escapeHtmlSafe(w.exampleEn)}（${escapeHtmlSafe(w.exampleZh)}）</div>
+              <button id="vl-next" class="sanrio-btn w-full py-2.5 rounded-xl bg-pink-500 text-white font-black text-sm">下一題 ➜</button>
+            `;
+            document.getElementById("vl-next").addEventListener("click", () => { SFX.click(); idx++; renderQ(); });
+          });
+        });
+      };
+      renderQ();
+    }
+
+    // Stage 3: 🧩 積木拼字（音節積木 / 字母積木自由切換）
+    function startVocabSpelling(deckId, onlyWeak = false, spellMode = "syllable") {
+      const { dk, list } = getDeckPlayWords(deckId, onlyWeak);
+      if (!dk) return openVocabDojoHub();
+      let idx = 0, correctCnt = 0;
+
+      const renderWord = () => {
+        if (idx >= list.length) {
+          finishVocabMode(deckId, "spell", correctCnt, list.length, onlyWeak);
+          return;
+        }
+        const w = list[idx];
+        const targetPieces = (spellMode === "syllable" && Array.isArray(w.syllables) && w.syllables.length >= 2)
+          ? w.syllables.map(s => s.toLowerCase())
+          : w.word.replace(/\s+/g, "").toLowerCase().split("");
+        const decoyLetters = spellMode === "letter"
+          ? shuffle(["a","e","i","o","r","s","t","n","l"].filter(ch => !targetPieces.includes(ch))).slice(0, 2)
+          : [];
+        const pool = shuffle([...targetPieces, ...decoyLetters].map((txt, i) => ({ id: i, txt, used: false })));
+        let picked = [];
+        let hadMistake = false;
+        let solved = false;
+
+        speakVocabEn(w.word, 0.9);
+
+        const draw = () => {
+          const slotsHtml = targetPieces.map((_, si) => {
+            const p = picked[si];
+            return `<button data-sp-rm="${si}" class="sp-rm min-w-[38px] h-11 px-2.5 rounded-xl border-2 font-black text-base ${p ? "bg-indigo-500 text-white border-indigo-600 shadow-sm" : "bg-white text-stone-300 border-dashed border-indigo-300"}">${p ? escapeHtmlSafe(p.txt) : "_"}</button>`;
+          }).join("");
+
+          const tilesHtml = pool.map((tile, ti) => `
+            <button data-sp-pick="${ti}" ${tile.used || solved ? "disabled" : ""} class="sp-pick sanrio-btn min-w-[44px] h-11 px-3 rounded-xl border-2 font-black text-base ${tile.used ? "bg-stone-100 text-stone-300 border-stone-200 opacity-40" : "bg-amber-50 hover:bg-amber-100 text-amber-950 border-amber-300 shadow-sm"}">${escapeHtmlSafe(tile.txt)}</button>
+          `).join("");
+
+          showModal(`🧩 積木拼字（${idx + 1}/${list.length}）`, `
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 gap-1.5">
+                <button id="sp-mode-syl" class="py-1.5 rounded-xl text-xs font-black border-2 ${spellMode === "syllable" ? "bg-purple-500 text-white border-purple-600" : "bg-white text-stone-600 border-stone-200"}">🧩 音節積木（自然發音）</button>
+                <button id="sp-mode-let" class="py-1.5 rounded-xl text-xs font-black border-2 ${spellMode === "letter" ? "bg-purple-500 text-white border-purple-600" : "bg-white text-stone-600 border-stone-200"}">🔤 字母積木（進階拼寫）</button>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-purple-50 border-2 border-purple-200 text-center space-y-1.5">
+                <div class="text-3xl">${escapeHtmlSafe(w.emoji)}</div>
+                <div class="text-lg font-black text-purple-950">${escapeHtmlSafe(w.zh)} <span class="text-xs text-purple-600">(${escapeHtmlSafe(w.pos)})</span></div>
+                <div class="flex justify-center gap-2">
+                  <button id="sp-say" class="sanrio-btn px-3 py-1 rounded-xl bg-sky-500 text-white text-xs font-black">🔊 聽發音</button>
+                  <button id="sp-hint" class="sanrio-btn px-3 py-1 rounded-xl bg-amber-400 text-white text-xs font-black">💡 提示下一塊</button>
+                </div>
+              </div>
+              <div class="flex flex-wrap justify-center gap-1.5 py-2">${slotsHtml}</div>
+              <div class="flex flex-wrap justify-center gap-2 p-3 rounded-2xl bg-white border-2 border-pink-100">${tilesHtml}</div>
+              <div id="sp-msg" class="text-center text-xs sm:text-sm font-black min-h-[1.25rem]"></div>
+              ${solved ? `<button id="sp-next" class="sanrio-btn w-full py-3 rounded-2xl bg-pink-500 text-white font-black text-sm">下一個單字 ➜</button>` : ""}
+            </div>
+          `);
+
+          document.getElementById("sp-mode-syl").addEventListener("click", () => { SFX.click(); spellMode = "syllable"; renderWord(); });
+          document.getElementById("sp-mode-let").addEventListener("click", () => { SFX.click(); spellMode = "letter"; renderWord(); });
+          document.getElementById("sp-say").addEventListener("click", () => speakVocabEn(w.word, 0.85));
+
+          const checkDone = () => {
+            if (picked.length < targetPieces.length) return;
+            const userWord = picked.map(p => p.txt).join("");
+            const ansWord = targetPieces.join("");
+            if (userWord === ansWord) {
+              solved = true;
+              if (!hadMistake) correctCnt++;
+              updateWordMastery(dk, w.word, !hadMistake);
+              SFX.win();
+              speakVocabEn(w.word, 0.95);
+              draw();
+              const msg = document.getElementById("sp-msg");
+              if (msg) { msg.className = "text-center text-sm font-black text-emerald-700"; msg.textContent = `🎉 拼對了！${w.word}（${w.zh}）`; }
+            } else {
+              hadMistake = true;
+              SFX.hit();
+              const msg = document.getElementById("sp-msg");
+              if (msg) { msg.className = "text-center text-xs font-black text-rose-600"; msg.textContent = "差一點點！點上方紫色積木可以退回重拼喔～"; }
+            }
+          };
+
+          document.querySelectorAll(".sp-pick").forEach(btn => {
+            btn.addEventListener("click", () => {
+              if (solved || picked.length >= targetPieces.length) return;
+              const ti = Number(btn.getAttribute("data-sp-pick"));
+              if (pool[ti].used) return;
+              SFX.click();
+              pool[ti].used = true;
+              picked.push(pool[ti]);
+              if (picked.length === targetPieces.length) checkDone();
+              else draw();
+            });
+          });
+
+          document.querySelectorAll(".sp-rm").forEach(btn => {
+            btn.addEventListener("click", () => {
+              if (solved) return;
+              const si = Number(btn.getAttribute("data-sp-rm"));
+              if (!picked[si]) return;
+              SFX.click();
+              picked[si].used = false;
+              picked.splice(si, 1);
+              draw();
+            });
+          });
+
+          document.getElementById("sp-hint").addEventListener("click", () => {
+            if (solved) return;
+            hadMistake = true;
+            // Clear any wrong prefix first
+            while (picked.length > 0 && picked[picked.length - 1].txt !== targetPieces[picked.length - 1]) {
+              const rem = picked.pop();
+              rem.used = false;
+            }
+            const nextIdx = picked.length;
+            if (nextIdx < targetPieces.length) {
+              const need = targetPieces[nextIdx];
+              const match = pool.find(t => !t.used && t.txt === need);
+              if (match) {
+                match.used = true;
+                picked.push(match);
+                speakVocabEn(w.word, 0.8);
+                if (picked.length === targetPieces.length) checkDone();
+                else draw();
+              }
+            }
+          });
+
+          const nextBtn = document.getElementById("sp-next");
+          if (nextBtn) nextBtn.addEventListener("click", () => { SFX.click(); idx++; renderWord(); });
+        };
+        draw();
+      };
+      renderWord();
+    }
+
+    // Stage 4: 💬 情境例句填空
+    function startVocabSentenceQuiz(deckId, onlyWeak = false) {
+      const { dk, list } = getDeckPlayWords(deckId, onlyWeak);
+      if (!dk) return openVocabDojoHub();
+      let idx = 0, correctCnt = 0;
+      const fallbackEn = ["school", "happy", "apple", "water", "music", "sunny", "tiger", "train"];
+
+      const renderQ = () => {
+        if (idx >= list.length) {
+          finishVocabMode(deckId, "sentence", correctCnt, list.length, onlyWeak);
+          return;
+        }
+        const w = list[idx];
+        const esc = w.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const re = new RegExp(`\\b${esc}\\w*\\b`, "i");
+        const blankSent = re.test(w.exampleEn)
+          ? w.exampleEn.replace(re, "________")
+          : `${w.exampleEn}（填入：________）`;
+
+        const others = [...dk.words.filter(x => x.word.toLowerCase() !== w.word.toLowerCase()).map(x => x.word), ...fallbackEn]
+          .filter((v, i, a) => v && v.toLowerCase() !== w.word.toLowerCase() && a.indexOf(v) === i);
+        const opts = shuffle([w.word, ...shuffle(others).slice(0, 3)]);
+        let answered = false;
+
+        showModal(`💬 例句填空（${idx + 1}/${list.length}）`, `
+          <div class="space-y-3">
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-pink-50 to-amber-50 border-2 border-pink-200 space-y-2">
+              <div class="text-xs font-black text-pink-600">💬 選出最適合填入空格的英文單字：</div>
+              <div class="text-base sm:text-lg font-black text-stone-800 leading-relaxed">${escapeHtmlSafe(blankSent)}</div>
+              <div class="text-xs sm:text-sm font-bold text-stone-600">中文提示：${escapeHtmlSafe(w.exampleZh)}</div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              ${opts.map((o, i) => `<button data-vs-o="${escapeHtmlSafe(o)}" class="vs-opt sanrio-btn min-h-[48px] p-3 rounded-2xl border-2 border-pink-200 bg-white hover:bg-pink-50 font-black text-sm sm:text-base flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-xs font-black shrink-0">${["A","B","C","D"][i]}</span><span class="truncate">${escapeHtmlSafe(o)}</span></button>`).join("")}
+            </div>
+            <div id="vs-fb" class="hidden p-3 rounded-2xl border-2 text-xs sm:text-sm font-bold space-y-2"></div>
+          </div>
+        `);
+
+        document.querySelectorAll(".vs-opt").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (answered) return;
+            answered = true;
+            const pick = btn.getAttribute("data-vs-o");
+            const ok = pick.toLowerCase() === w.word.toLowerCase();
+            updateWordMastery(dk, w.word, ok);
+            if (ok) { correctCnt++; SFX.win(); } else { SFX.hit(); }
+            speakVocabEn(w.exampleEn, 0.92);
+
+            document.querySelectorAll(".vs-opt").forEach(b => {
+              b.disabled = true;
+              const val = b.getAttribute("data-vs-o");
+              if (val.toLowerCase() === w.word.toLowerCase()) b.className = "sanrio-btn min-h-[48px] p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-black text-sm sm:text-base flex items-center gap-2";
+              else if (b === btn && !ok) b.className = "sanrio-btn min-h-[48px] p-3 rounded-2xl border-2 border-rose-400 bg-rose-100 text-rose-900 font-black text-sm sm:text-base flex items-center gap-2";
+            });
+
+            const fb = document.getElementById("vs-fb");
+            fb.classList.remove("hidden");
+            fb.className = `p-3 rounded-2xl border-2 text-xs sm:text-sm font-bold space-y-2 ${ok ? "bg-emerald-50 border-emerald-300 text-emerald-900" : "bg-rose-50 border-rose-300 text-rose-900"}`;
+            fb.innerHTML = `
+              <div>${ok ? "🎉 太棒了！完整句子唸一次給你聽：" : `💪 正確答案是 <b>${escapeHtmlSafe(w.word)}</b>（${escapeHtmlSafe(w.zh)}）：`}</div>
+              <div class="text-indigo-900 font-black">${escapeHtmlSafe(w.exampleEn)}</div>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button id="vs-say-full" class="sanrio-btn py-2.5 rounded-xl bg-sky-100 border border-sky-300 text-sky-900 font-black text-xs">🔊 再聽整句</button>
+                <button id="vs-next" class="sanrio-btn py-2.5 rounded-xl bg-pink-500 text-white font-black text-sm">下一題 ➜</button>
+              </div>
+            `;
+            document.getElementById("vs-say-full").addEventListener("click", () => speakVocabEn(w.exampleEn, 0.88));
+            document.getElementById("vs-next").addEventListener("click", () => { SFX.click(); idx++; renderQ(); });
+          });
+        });
+      };
+      renderQ();
+    }
+
+
+    // ====== Scheme C Eye-Care Font Scale & Mobile Drawer Controls ======
+    const FONT_SCALE_META = {
+      md: { label: "🔤 標準", next: "lg" },
+      lg: { label: "🔤 大字", next: "xl" },
+      xl: { label: "🔤 特大", next: "md" }
+    };
+    function applyFontScale(scale) {
+      const s = FONT_SCALE_META[scale] ? scale : "md";
+      document.body.setAttribute("data-font-scale", s);
+      const btn = document.getElementById("btn-font-scale");
+      if (btn) btn.textContent = FONT_SCALE_META[s].label;
+      if (state) state.fontScale = s;
+    }
+    applyFontScale((state && state.fontScale) || "md");
+
+    const fontBtnEl = document.getElementById("btn-font-scale");
+    if (fontBtnEl) {
+      fontBtnEl.addEventListener("click", () => {
+        SFX.click();
+        const cur = (state && state.fontScale) || "md";
+        const nxt = (FONT_SCALE_META[cur] || FONT_SCALE_META.md).next;
+        applyFontScale(nxt);
+        saveState();
+      });
+    }
+    const toggleBagEl = document.getElementById("btn-toggle-bag");
+    if (toggleBagEl) {
+      toggleBagEl.addEventListener("click", () => {
+        SFX.click();
+        const dr = document.getElementById("battle-bag-drawer");
+        if (dr) dr.classList.toggle("hidden");
+      });
+    }
+    const bossDlgEl = document.getElementById("boss-dialogue-box");
+    if (bossDlgEl) {
+      bossDlgEl.addEventListener("click", () => {
+        bossDlgEl.classList.add("hidden");
+      });
+    }
+
+    // PWA Service Worker registration (Network-First; only on https / localhost)
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
   </script>
 </body>
 </html>
