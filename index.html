@@ -1741,7 +1741,7 @@
 
     // ====== CLOUD SAVE CONFIG (Google Apps Script) ======
     // 將部署後的 Google Apps Script 網路應用程式網址貼到下方引號內即可預設啟用：
-    const DEFAULT_CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbypM2jcfHF_GO7FeVv6DzBehlLeuMBpkaOWZ376QweY0ebVUKeT2NrHwOt5VTHdXTPYeg/exec";
+    const DEFAULT_CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbyhgRNUtY3ByzLqqjmpr8utpaLRdQor9GQw14nkWp5g2yn_TqwafMZ40zPE4Dm7-mFy9A/exec";
     let CLOUD_GRADE = "G3";
     const CLOUD_CFG_KEY = "sanrio_rpg_cloud_cfg_G4";
     let cloudSession = loadCloudCfg();
@@ -1752,7 +1752,7 @@
         const raw = localStorage.getItem(CLOUD_CFG_KEY);
         if (raw) {
           const obj = JSON.parse(raw);
-          return { apiUrl: obj.apiUrl || DEFAULT_CLOUD_API_URL, familyKey: obj.familyKey || "", username: obj.username || "", pin: obj.pin || "", loggedIn: !!obj.loggedIn };
+          return { apiUrl: (obj.apiUrl && obj.apiUrl !== "https://script.google.com/macros/s/AKfycbypM2jcfHF_GO7FeVv6DzBehlLeuMBpkaOWZ376QweY0ebVUKeT2NrHwOt5VTHdXTPYeg/exec") ? obj.apiUrl : DEFAULT_CLOUD_API_URL, familyKey: obj.familyKey || "", username: obj.username || "", pin: obj.pin || "", loggedIn: !!obj.loggedIn };
         }
       } catch (e) {}
       return { apiUrl: DEFAULT_CLOUD_API_URL, familyKey: "", username: "", pin: "", loggedIn: false };
