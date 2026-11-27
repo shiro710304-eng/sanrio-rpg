@@ -2730,6 +2730,8 @@
     }
 
     function prepareQuestion(rawQ) {
+      const cleanRawText = String((rawQ && rawQ.q) || "").replace(/^(?:\s*【[^】]*#\d+[^】]*】\s*)+/, "").replace(/\s*[（(]#\d+[）)]\s*$/, "").trim();
+      if (rawQ && cleanRawText && cleanRawText !== rawQ.q) rawQ = { ...rawQ, q: cleanRawText };
       const indexed = rawQ.opts.map((text, idx) => ({ text, isAns: idx === rawQ.ans }));
       const mixed = shuffle(indexed);
       return {
