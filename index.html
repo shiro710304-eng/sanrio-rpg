@@ -5057,7 +5057,7 @@
 
       const ownedBgs = state.ownedBgs || ["bg_default"];
       const bgThemesHtml = COTTAGE_THEMES.map(bg => {
-        const owned = ownedBgs.includes(bg.id) || (bg.price === 0 && !bg.honorOnly);
+        const owned = ownedBgs.includes(bg.id) || (bg.price === 0 && !bg.honorOnly && !bg.roomOnly);
         const active = (state.activeBg || "bg_default") === bg.id;
         const isPrev = previewBg && previewBg.id === bg.id;
         return `
@@ -5113,7 +5113,7 @@
         { key: "default", label: "🍮 經典" },
         ...(typeof HONOR_PASS_TIERS !== "undefined"
           ? HONOR_PASS_TIERS.filter(t => t.type === "skin" && ownedHonorSet.has(t.id))
-              .map(t => ({ key: t.skinKey, label: t.icon + " " + t.name.replace(/雙犬|造型|套裝/g, "").slice(0, 4) }))
+              .map(t => ({ key: t.skinKey, label: String(t.theme || t.title || t.skinKey || "造型") }))
           : [])
       ];
       const quickSkinHtml = `
@@ -5384,7 +5384,7 @@
           const bg = COTTAGE_THEMES.find(x => x.id === bid);
           if (!bg) return;
           if (!state.ownedBgs) state.ownedBgs = ["bg_default"];
-          const owned = state.ownedBgs.includes(bid) || (bg.price === 0 && !bg.honorOnly);
+          const owned = state.ownedBgs.includes(bid) || (bg.price === 0 && !bg.honorOnly && !bg.roomOnly);
           if (!owned) {
             if (bg.honorOnly) { showCottageBubble("🔒 請先於「🌟 榮譽通行證」達 92★ 訂製解鎖喔！"); return; }
             if (state.stars < bg.price) {
