@@ -1429,9 +1429,41 @@
       }
     };
 
-    function getEquipStyle(heroId, itemId) {
+    // 依 12 張主題造型實測去背邊界校準的配件偏移表（單位：%，scale 縮放寬度）
+    const SKIN_EQUIP_OFFSETS = {
+      purin: {
+        academy:  { hat: { dx: -1, dy: 5, scale: 0.96 }, wand: { dx: 4, dy: 6, scale: 0.96 }, chest: { dx: 0, dy: 2, scale: 0.95 }, wings: { dx: 0, dy: 2, scale: 0.96 } },
+        beach:    { hat: { dx: -1, dy: 6, scale: 0.94 }, wand: { dx: 6, dy: 8, scale: 0.95 }, chest: { dx: 0, dy: 2, scale: 0.94 }, wings: { dx: 0, dy: 2, scale: 0.94 } },
+        space:    { hat: { dx: 2, dy: -2, scale: 0.88 }, wand: { dx: 3, dy: 6, scale: 0.96 }, chest: { dx: 1, dy: 3, scale: 0.92 }, wings: { dx: 0, dy: 3, scale: 0.96 } },
+        yukata:   { hat: { dx: -1, dy: 6, scale: 0.94 }, wand: { dx: 7, dy: 8, scale: 0.94 }, chest: { dx: 0, dy: 2, scale: 0.92 }, wings: { dx: 0, dy: 2, scale: 0.92 } },
+        camping:  { hat: { dx: -2, dy: 4, scale: 0.94 }, wand: { dx: 4, dy: 7, scale: 0.95 }, chest: { dx: 0, dy: 2, scale: 0.94 }, wings: { dx: 0, dy: 2, scale: 0.96 } },
+        festival: { hat: { dx: -5, dy: 5, scale: 0.92 }, wand: { dx: 6, dy: 8, scale: 0.94 }, chest: { dx: -2, dy: 2, scale: 0.92 }, wings: { dx: -2, dy: 2, scale: 0.92 } }
+      },
+      pochacco: {
+        academy:  { hat: { dx: 2, dy: 5, scale: 0.94 }, wand: { dx: -4, dy: 2, scale: 0.94 }, chest: { dx: 1, dy: 2, scale: 0.94 }, wings: { dx: 0, dy: 2, scale: 0.92 } },
+        beach:    { hat: { dx: 4, dy: 6, scale: 0.94 }, wand: { dx: -2, dy: 2, scale: 0.95 }, chest: { dx: 2, dy: 2, scale: 0.94 }, wings: { dx: 0, dy: 2, scale: 0.94 } },
+        space:    { hat: { dx: 2, dy: -2, scale: 0.86 }, wand: { dx: -4, dy: 2, scale: 0.92 }, chest: { dx: 1, dy: 3, scale: 0.92 }, wings: { dx: 0, dy: 3, scale: 0.92 } },
+        yukata:   { hat: { dx: 3, dy: 6, scale: 0.92 }, wand: { dx: -4, dy: 3, scale: 0.92 }, chest: { dx: 1, dy: 2, scale: 0.92 }, wings: { dx: 0, dy: 2, scale: 0.92 } },
+        camping:  { hat: { dx: 3, dy: 4, scale: 0.92 }, wand: { dx: -2, dy: 3, scale: 0.94 }, chest: { dx: 1, dy: 2, scale: 0.94 }, wings: { dx: 0, dy: 2, scale: 0.94 } },
+        festival: { hat: { dx: 0, dy: 5, scale: 0.94 }, wand: { dx: -4, dy: 2, scale: 0.94 }, chest: { dx: 0, dy: 2, scale: 0.92 }, wings: { dx: 0, dy: 2, scale: 0.92 } }
+      }
+    };
+
+    function getEquipStyle(heroId, itemId, skinKey = null) {
       const heroMap = HERO_EQUIP_ANCHORS[heroId] || HERO_EQUIP_ANCHORS.purin;
-      return heroMap[itemId] || "top:-12%; left:50%; width:46%; transform:translateX(-50%); z-index:12;";
+      let base = heroMap[itemId] || "top:-12%; left:50%; width:46%; transform:translateX(-50%); z-index:12;";
+      const sk = skinKey || (state && state.activeSkin) || "default";
+      if (!sk || sk === "default") return base;
+      const itemObj = (typeof SHOP_ITEMS !== "undefined") ? SHOP_ITEMS.find(x => x.id === itemId) : null;
+      const slot = itemObj ? itemObj.type : (itemId.includes("wing") ? "wings" : (itemId.includes("wand") || itemId.includes("shield") ? "wand" : (itemId.includes("bow") ? "chest" : "hat")));
+      const off = SKIN_EQUIP_OFFSETS[heroId] && SKIN_EQUIP_OFFSETS[heroId][sk] && SKIN_EQUIP_OFFSETS[heroId][sk][slot];
+      if (!off) return base;
+      base = base.replace(/top:(-?\d+(?:\.\d+)?)%/, (_, v) => `top:${(parseFloat(v) + (off.dy || 0)).toFixed(1)}%`);
+      base = base.replace(/left:(-?\d+(?:\.\d+)?)%/, (_, v) => `left:${(parseFloat(v) + (off.dx || 0)).toFixed(1)}%`);
+      if (off.scale && off.scale !== 1) {
+        base = base.replace(/width:(\d+(?:\.\d+)?)%/, (_, v) => `width:${(parseFloat(v) * off.scale).toFixed(1)}%`);
+      }
+      return base;
     }
 
     function getHeroEquipObj(heroId) {
@@ -1467,7 +1499,7 @@
         const it = SHOP_ITEMS.find(x => x.id === iid);
         if (!it) return "";
         const isP = prevSlot === slot;
-        return `<img referrerpolicy="no-referrer" src="${it.img}" style="position:absolute; ${getEquipStyle(heroId, it.id)}" class="object-contain sprite-cutout pointer-events-none ${isP ? "preview-glow" : ""}" alt="${it.name}" />`;
+        return `<img referrerpolicy="no-referrer" src="${it.img}" style="position:absolute; ${getEquipStyle(heroId, it.id, activeSk)}" class="object-contain sprite-cutout pointer-events-none ${isP ? "preview-glow" : ""}" alt="${it.name}" />`;
       };
       return `
         ${makeLayer("wings")}
@@ -4278,6 +4310,28 @@
         contentHtml = `<div class="space-y-2.5">${trainHtml}</div>`;
       }
 
+      // 準備小屋內原地快速換裝列（經典＋所有已擁有主題造型）
+      const ownedHonorSet = new Set(state.ownedHonorItems || []);
+      const curSkinKey = state.activeSkin || "default";
+      const quickSkins = [
+        { key: "default", label: "🍮 經典" },
+        ...(typeof HONOR_PASS_TIERS !== "undefined"
+          ? HONOR_PASS_TIERS.filter(t => t.type === "skin" && ownedHonorSet.has(t.id))
+              .map(t => ({ key: t.skinKey, label: t.icon + " " + t.name.replace(/雙犬|造型|套裝/g, "").slice(0, 4) }))
+          : [])
+      ];
+      const quickSkinHtml = `
+        <div class="flex items-center justify-between gap-2 p-2 rounded-2xl bg-pink-50/80 border border-pink-200">
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 flex-1">
+            <span class="text-[11px] font-black text-pink-700 shrink-0 whitespace-nowrap">👗 快換：</span>
+            ${quickSkins.map(sk => `
+              <button data-cottage-skin="${sk.key}" class="cottage-quick-skin-btn px-2.5 py-1 rounded-full text-[11px] font-black border whitespace-nowrap shrink-0 transition-all ${curSkinKey === sk.key ? "bg-pink-500 text-white border-pink-600 shadow-sm" : "bg-white text-stone-700 border-pink-200 hover:bg-pink-100"}">${sk.label}</button>
+            `).join("")}
+          </div>
+          <button id="btn-cottage-to-wardrobe" class="sanrio-btn px-2.5 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[11px] font-black whitespace-nowrap shrink-0 shadow-sm">👗 榮譽衣櫃 ➜</button>
+        </div>
+      `;
+
       showModal("🏠 小屋與樂園", `
         ${getHomeHubBar("hub")}
         <div class="space-y-3.5 mt-2">
@@ -4544,7 +4598,33 @@
     }
 
     let activeUtterance = null;
-    let speakTimer = null;
+    let cachedTtsVoices = [];
+    function warmTtsVoices() {
+      try {
+        if ("speechSynthesis" in window && window.speechSynthesis.getVoices) {
+          const v = window.speechSynthesis.getVoices();
+          if (v && v.length) cachedTtsVoices = v;
+        }
+      } catch (_) {}
+    }
+    if ("speechSynthesis" in window) {
+      warmTtsVoices();
+      try { window.speechSynthesis.onvoiceschanged = warmTtsVoices; } catch (_) {}
+    }
+
+    function pickBestTtsVoice(targetLang, isEn) {
+      warmTtsVoices();
+      const voices = cachedTtsVoices || [];
+      if (!voices.length) return null;
+      const tl = targetLang.toLowerCase();
+      const short = isEn ? "en" : "zh";
+      // Prefer localService voices on Android/iOS PWA so offline/standalone never hangs
+      return voices.find(v => v.localService && v.lang && v.lang.toLowerCase().replace("_", "-").startsWith(tl))
+        || voices.find(v => v.lang && v.lang.toLowerCase().replace("_", "-").startsWith(tl))
+        || voices.find(v => v.localService && v.lang && v.lang.toLowerCase().startsWith(short))
+        || voices.find(v => v.lang && v.lang.toLowerCase().startsWith(short))
+        || null;
+    }
 
     function speakText(text) {
       if (!text) return;
@@ -4552,10 +4632,6 @@
       saveState();
       if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return;
       try {
-        if (speakTimer) { clearTimeout(speakTimer); speakTimer = null; }
-        window.speechSynthesis.cancel();
-        try { window.speechSynthesis.resume(); } catch (_) {}
-
         const clean = String(text)
           .replace(/（\s*　*\s*）/g, "什麼")
           .replace(/_{2,}/g, "什麼")
@@ -4573,22 +4649,23 @@
           if (engMatch) speakStr = engMatch.join(" ").trim();
         }
 
-        speakTimer = setTimeout(() => {
-          try {
-            const u = new SpeechSynthesisUtterance(speakStr);
-            const targetLang = useEnglish ? "en-US" : "zh-TW";
-            u.lang = targetLang;
-            u.rate = useEnglish ? 0.88 : 0.95;
-            const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
-            const pickVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(targetLang.toLowerCase()))
-              || voices.find(v => v.lang && v.lang.toLowerCase().startsWith(useEnglish ? "en" : "zh"));
-            if (pickVoice) u.voice = pickVoice;
-            activeUtterance = u;
-            u.onend = () => { activeUtterance = null; };
-            u.onerror = () => { activeUtterance = null; };
-            window.speechSynthesis.speak(u);
-          } catch (_) {}
-        }, 60);
+        // Only cancel if actively speaking/pending (unconditional cancel wedges Android Chrome TTS)
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel();
+        }
+        try { window.speechSynthesis.resume(); } catch (_) {}
+
+        // Synchronous speak inside user gesture (no setTimeout!) for Android PWA & iOS Safari
+        const u = new SpeechSynthesisUtterance(speakStr);
+        const targetLang = useEnglish ? "en-US" : "zh-TW";
+        u.lang = targetLang;
+        u.rate = useEnglish ? 0.88 : 0.95;
+        const v = pickBestTtsVoice(targetLang, useEnglish);
+        if (v) u.voice = v;
+        activeUtterance = u;
+        u.onend = () => { activeUtterance = null; };
+        u.onerror = () => { activeUtterance = null; };
+        window.speechSynthesis.speak(u);
       } catch (e) {}
     }
 
@@ -4875,7 +4952,8 @@
 
       showModal("🏠 小屋與樂園", `
         ${getHomeHubBar("shop")}
-        <div class="space-y-3 mt-2">
+        <div class="space-y-2.5 mt-2">
+          ${quickSkinHtml}
           <div id="cottage-stage" class="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-pink-200 bg-amber-50 select-none">
             <div id="cottage-pet-bubble" class="hidden absolute bottom-[44%] left-1/2 -translate-x-1/2 z-[75] bg-white/95 border-2 border-pink-400 rounded-full px-3.5 py-1 text-xs font-black text-pink-600 shadow-lg whitespace-nowrap"></div>
             <img referrerpolicy="no-referrer" src="${activeBgUrl}" class="w-full h-full object-cover pointer-events-none" alt="冒險小屋" />
@@ -5106,6 +5184,10 @@
           const bid = btn.dataset.previewBg;
           previewBgId = (previewBgId === bid) ? null : bid;
           openShopAndCottageModal();
+          if (previewBgId) {
+            const mb = document.getElementById("modal-body");
+            if (mb) mb.scrollTo({ top: 0, behavior: "smooth" });
+          }
         });
       });
 
@@ -5136,6 +5218,23 @@
           openShopAndCottageModal();
         });
       });
+
+      document.querySelectorAll(".cottage-quick-skin-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          state.activeSkin = btn.getAttribute("data-cottage-skin") || "default";
+          saveState();
+          renderHUD();
+          openShopAndCottageModal();
+        });
+      });
+      const goWardrobeBtn = document.getElementById("btn-cottage-to-wardrobe");
+      if (goWardrobeBtn) {
+        goWardrobeBtn.addEventListener("click", () => {
+          SFX.click();
+          openHonorPassModal();
+        });
+      }
 
       document.querySelectorAll(".shop-tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -5245,6 +5344,10 @@
           const id = btn.getAttribute("data-preview-id");
           previewItemId = previewItemId === id ? null : id;
           openShopAndCottageModal();
+          if (previewItemId) {
+            const mb = document.getElementById("modal-body");
+            if (mb) mb.scrollTo({ top: 0, behavior: "smooth" });
+          }
         });
       });
 
@@ -7623,7 +7726,8 @@
       const wardrobeHtml = `
         <div class="p-3 rounded-2xl bg-pink-50/80 border-2 border-pink-200 space-y-2">
           <div class="flex items-center justify-between gap-2">
-            <span class="text-xs font-black text-pink-900">👗 雙犬主題造型衣櫃（全場景同步換裝）</span>
+            <span class="text-xs font-black text-pink-900">👗 雙犬主題造型衣櫃</span>
+            <button id="btn-wardrobe-to-cottage" class="sanrio-btn px-2.5 py-1 rounded-full bg-amber-400 hover:bg-amber-500 text-amber-950 text-[11px] font-black whitespace-nowrap shrink-0 shadow-sm">🏠 回冒險小屋 ➜</button>
             <span class="text-[10px] font-bold text-stone-500 whitespace-nowrap">目前 ⭐ ${(state.stars || 0).toLocaleString()}</span>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -7737,6 +7841,13 @@
           openHonorPassModal();
         });
       });
+      const goCottageFromWardrobe = document.getElementById("btn-wardrobe-to-cottage");
+      if (goCottageFromWardrobe) {
+        goCottageFromWardrobe.addEventListener("click", () => {
+          SFX.click();
+          openShopAndCottageModal();
+        });
+      }
       document.querySelectorAll(".skin-pick-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           if (btn.disabled) return;
@@ -8281,11 +8392,21 @@
     // ====== 📘 AI 拍照英文單字道場（三軌建本 ＋ 完整維護 ＋ 4 階記憶遊戲） ======
     function speakVocabEn(text, rate = 1.0) {
       try {
-        if (!("speechSynthesis" in window)) return;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(String(text || ""));
+        if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return;
+        const s = String(text || "").trim();
+        if (!s) return;
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+          window.speechSynthesis.cancel();
+        }
+        try { window.speechSynthesis.resume(); } catch (_) {}
+        const u = new SpeechSynthesisUtterance(s);
         u.lang = "en-US";
         u.rate = rate;
+        const v = (typeof pickBestTtsVoice === "function") ? pickBestTtsVoice("en-US", true) : null;
+        if (v) u.voice = v;
+        activeUtterance = u;
+        u.onend = () => { activeUtterance = null; };
+        u.onerror = () => { activeUtterance = null; };
         window.speechSynthesis.speak(u);
       } catch (e) {}
     }
