@@ -3003,8 +3003,23 @@
         btn.className = "sanrio-btn text-left p-2.5 sm:p-3.5 rounded-2xl border-2 border-pink-200 bg-pink-50/40 hover:bg-pink-100/70 font-bold text-sm sm:text-base flex items-center gap-2.5";
         btn.innerHTML = `<span class="w-7 h-7 rounded-full bg-white border border-pink-300 text-pink-600 flex items-center justify-center text-xs font-black shrink-0">${labels[idx]}</span><span>${optText}</span>`;
         btn.addEventListener("click", () => handleAnswer(idx));
+        if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
+          btn.disabled = true;
+          btn.classList.add("opacity-75");
+        }
         optsEl.appendChild(btn);
       });
+      clearBattleReadLock();
+      if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
+        const curQIdx = battle.qIndex;
+        battleReadLockTimer = setTimeout(() => {
+          if (!battle || battle.answered || battle.qIndex !== curQIdx) return;
+          document.querySelectorAll("#q-options button").forEach(b => {
+            b.disabled = false;
+            b.classList.remove("opacity-75");
+          });
+        }, 1500);
+      }
     }
 
     function triggerAnim(el, cls, restoreIdle = "") {
@@ -3244,7 +3259,63 @@
       });
     }
 
+    let battleReadLockTimer = null;
+    function clearBattleReadLock() {
+      if (battleReadLockTimer) { clearTimeout(battleReadLockTimer); battleReadLockTimer = null; }
+    }
+
+    function finishStageNotPassed() {
+      clearBattleReadLock();
+      SFX.hit();
+      const totalQ = (battle && battle.questions) ? battle.questions.length : 6;
+      const wrongQ = (battle && battle.wrongCount) ? battle.wrongCount : 0;
+      const answeredQ = Math.min(totalQ, (battle ? battle.qIndex + 1 : totalQ));
+      const correctQ = Math.max(0, answeredQ - wrongQ);
+      const minPass = Math.ceil(totalQ * 0.66);
+      const isStage = battle && battle.mode === "stage";
+      const stageId = isStage && battle.stage ? battle.stage.id : null;
+      const dgId = battle && battle.mode === "dungeon" ? battle.dungeonId : null;
+      const titleText = (battle && battle.stage) ? battle.stage.name : "本關挑戰";
+      const wrongBankCnt = (state.wrongBank || []).length;
+
+      showModal("💪 差一點點！先複習一下再戰", `
+        <div class="text-center space-y-3 py-2">
+          <div class="text-5xl">🍮📖🐾</div>
+          <div class="text-base sm:text-lg font-black text-amber-800">${titleText} 尚未達過關門檻</div>
+          <div class="p-3 rounded-2xl bg-rose-50 border-2 border-rose-200 text-xs sm:text-sm font-bold text-rose-800 leading-relaxed">
+            本場答對 <strong>${correctQ} 題</strong>、答錯 <strong>${wrongQ} 題</strong>（需至少答對 <strong>${minPass} / ${totalQ} 題</strong> 才能過關領取獎勵喔！）
+          </div>
+          <p class="text-xs text-stone-600 leading-relaxed">答錯的題目已幫你收進「✨ 錯題淨化道場」（目前 ${wrongBankCnt} 題），先把觀念看懂再回來挑戰，一定能順利拿滿星！</p>
+          <div class="flex flex-wrap justify-center gap-2 pt-2">
+            ${wrongBankCnt > 0 ? `<button id="btn-np-purify" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-purple-500 text-white font-black text-xs sm:text-sm">✨ 去淨化錯題</button>` : ""}
+            <button id="btn-np-retry" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-pink-500 text-white font-black text-xs sm:text-sm">🔄 重新挑戰本關</button>
+            <button id="btn-np-map" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-stone-200 text-stone-700 font-black text-xs sm:text-sm">返回地圖</button>
+          </div>
+        </div>
+      `);
+      const pBtn = document.getElementById("btn-np-purify");
+      if (pBtn) pBtn.addEventListener("click", () => { SFX.click(); closeModal(); startPurifyMode(); });
+      document.getElementById("btn-np-retry").addEventListener("click", () => {
+        SFX.click();
+        closeModal();
+        if (stageId) startStage(stageId);
+        else if (dgId) startDungeonBattle(dgId);
+        else backToMap();
+      });
+      document.getElementById("btn-np-map").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
+    }
+
     function finishBattle() {
+      clearBattleReadLock();
+      if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
+        const totalQ = battle.questions.length || 6;
+        const correctQ = Math.max(0, totalQ - (battle.wrongCount || 0));
+        const minPass = Math.ceil(totalQ * 0.66);
+        if (correctQ < minPass) {
+          finishStageNotPassed();
+          return;
+        }
+      }
       SFX.win();
       if (typeof confetti === "function") {
         confetti({ particleCount: 70, spread: 65, origin: { y: 0.6 } });
@@ -3391,6 +3462,7 @@
     }
 
     function backToMap() {
+      if (typeof clearBattleReadLock === "function") clearBattleReadLock();
       const hdr = document.getElementById("main-header");
       if (hdr) hdr.classList.remove("hidden");
       document.getElementById("view-battle").classList.add("hidden");
@@ -4412,7 +4484,7 @@
         const isEquipped = targetEq ? targetEq[item.type] === item.id : false;
         const isPlaced = (state.placedFurniture || []).includes(item.id);
         const isPreviewing = previewItemId === item.id;
-        let btnLabel = item.honorOnly ? "🔒 榮譽通行證限定" : `⭐ ${item.price} 購買`;
+        let btnLabel = item.honorOnly ? "🔒 榮譽通行證訂製" : `⭐ ${item.price} 購買`;
         let btnClass = item.honorOnly ? "bg-stone-200 text-stone-500" : "bg-amber-400 hover:bg-amber-500 text-amber-950";
         if (owned) {
           if (item.type === "furniture") {
@@ -4459,9 +4531,7 @@
             </div>
             <div class="flex items-center gap-1.5 shrink-0 ml-auto">
               <button data-preview-bg="${bg.id}" class="bg-preview-btn sanrio-btn px-2.5 py-1.5 rounded-xl text-xs font-black border ${isPrev ? "bg-pink-500 text-white border-pink-600" : "bg-white text-pink-700 border-pink-300"}">${isPrev ? "👁️ 預覽中" : "👁️ 預覽"}</button>
-              <button data-bg-id="${bg.id}" class="bg-action-btn sanrio-btn px-3 py-1.5 rounded-xl text-xs font-black ${active ? "bg-emerald-500 text-white" : (owned ? "bg-pink-500 text-white" : "bg-amber-400 hover:bg-amber-500 text-amber-950")}">
-                ${active ? "✅ 使用中" : (owned ? "✨ 套用場景" : `⭐ ${bg.price} 購買`)}
-              </button>
+              <button data-bg-id="${bg.id}" class="bg-action-btn sanrio-btn px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap ${active ? "bg-emerald-500 text-white" : (owned ? "bg-pink-500 text-white" : (bg.honorOnly ? "bg-stone-200 text-stone-500" : "bg-amber-400 text-amber-950"))}">${active ? "✓ 使用中" : (owned ? "🏡 套用場景" : (bg.honorOnly ? "🔒 榮譽通行證訂製" : `⭐ ${bg.price} 購買`))}</button>
             </div>
           </div>
         `;
@@ -4858,6 +4928,11 @@
           if (!state.placedFurniture) state.placedFurniture = [];
 
           if (!state.ownedItems.includes(id)) {
+            if (item.honorOnly) {
+              SFX.hit();
+              showCottageBubble("🔒 請先於「🌟 榮譽通行證」達標訂製解鎖喔！");
+              return;
+            }
             if (state.stars < item.price) {
               btn.textContent = "⭐ 星星還不夠喔！";
               return;
@@ -7726,6 +7801,14 @@
         if (battle.mode === "stage" && battle.stage && battle.stage.tier === "hero" && battle.shields <= 0) {
           finishHeroDefeat();
           return;
+        }
+        if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
+          const totalQ = battle.questions.length || 6;
+          const maxAllowedWrong = totalQ - Math.ceil(totalQ * 0.66); // 6 題最多只能錯 2 題，錯達 3 題即溫柔中斷
+          if ((battle.wrongCount || 0) > maxAllowedWrong) {
+            finishStageNotPassed();
+            return;
+          }
         }
         if (battle.qIndex >= battle.questions.length - 1 || battle.monsterHp <= 0) {
           finishBattle();
