@@ -1821,7 +1821,8 @@
       activeTitlePre: "pre_1",
       activeTitleSuf: "suf_1",
       ownedFrames: ["frame_default"],
-      activeFrame: "frame_default"
+      activeFrame: "frame_default",
+      furnWorkshopOwned: false
     };
 
     let state = loadState();
@@ -4870,9 +4871,11 @@
     function getFurnCoords(item) {
       const saved = (state.furniturePos && state.furniturePos[item.id]) ? state.furniturePos[item.id] : null;
       return {
-        left: saved ? saved.left : item.defLeft,
-        bottom: saved ? saved.bottom : item.defBottom,
-        width: item.defWidth
+        left: (saved && typeof saved.left === "number") ? saved.left : item.defLeft,
+        bottom: (saved && typeof saved.bottom === "number") ? saved.bottom : item.defBottom,
+        width: item.defWidth,
+        scale: (saved && typeof saved.scale === "number") ? saved.scale : 1.0,
+        flipX: !!(saved && saved.flipX)
       };
     }
 
@@ -4965,8 +4968,8 @@
         return `
           <div data-furn-id="${fid}" data-is-preview="${isPrev ? '1' : '0'}"
                class="furn-node absolute ${isPrev ? 'pointer-events-none' : 'furn-draggable'} ${isSel ? 'furn-selected' : ''}"
-               style="left:${pos.left}%; bottom:${pos.bottom}%; width:${pos.width}%; z-index:${z};">
-            <img referrerpolicy="no-referrer" src="${it.img}" alt="${it.name}" class="w-full h-auto object-contain sprite-cutout pointer-events-none ${isPrev ? 'preview-glow' : ''}" />
+               style="left:${pos.left}%; bottom:${pos.bottom}%; width:${(pos.width * (pos.scale || 1)).toFixed(1)}%; z-index:${z};">
+            <img referrerpolicy="no-referrer" src="${it.img}" alt="${it.name}" style="transform:${pos.flipX ? 'scaleX(-1)' : 'none'};" class="w-full h-auto object-contain sprite-cutout pointer-events-none ${isPrev ? 'preview-glow' : ''}" />
           </div>
         `;
       }).join("");
@@ -5073,7 +5076,7 @@
             </div>
             <div class="flex items-center gap-1.5 shrink-0 ml-auto">
               <button data-preview-bg="${bg.id}" class="bg-preview-btn sanrio-btn px-2.5 py-1.5 rounded-xl text-xs font-black border ${isPrev ? "bg-pink-500 text-white border-pink-600" : "bg-white text-pink-700 border-pink-300"}">${isPrev ? "👁️ 預覽中" : "👁️ 預覽"}</button>
-              <button data-bg-id="${bg.id}" class="bg-action-btn sanrio-btn px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap ${active ? "bg-emerald-500 text-white" : (owned ? "bg-pink-500 text-white" : (bg.honorOnly ? "bg-stone-200 text-stone-500" : "bg-amber-400 text-amber-950"))}">${active ? "✓ 使用中" : (owned ? "🏡 套用場景" : (bg.honorOnly ? "🔒 榮譽通行證訂製" : `⭐ ${bg.price} 購買`))}</button>
+              <button data-bg-id="${bg.id}" class="bg-action-btn sanrio-btn px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap ${active ? "bg-emerald-500 text-white" : (owned ? "bg-pink-500 text-white" : ((bg.honorOnly || bg.roomOnly) ? "bg-stone-200 text-stone-500" : "bg-amber-400 text-amber-950"))}">${active ? "✓ 使用中" : (owned ? "🏡 套用場景" : (bg.honorOnly ? "🔒 榮譽通行證訂製" : (bg.roomOnly ? (bg.roomOnly === "room2" ? "🔒 擴建 2 號房解鎖" : "🔒 擴建 3 號房解鎖") : `⭐ ${bg.price} 購買`)))}</button>
             </div>
           </div>
         `;
@@ -5388,7 +5391,8 @@
           if (!state.ownedBgs) state.ownedBgs = ["bg_default"];
           const owned = state.ownedBgs.includes(bid) || (bg.price === 0 && !bg.honorOnly && !bg.roomOnly);
           if (!owned) {
-            if (bg.honorOnly) { showCottageBubble("🔒 請先於「🌟 榮譽通行證」達 92★ 訂製解鎖喔！"); return; }
+            if (bg.honorOnly) { SFX.hit(); showCottageBubble("🔒 請先於「🌟 榮譽通行證」達 92★ 訂製解鎖喔！"); return; }
+            if (bg.roomOnly) { SFX.hit(); showCottageBubble("🔒 請先點小屋上方的房間分頁擴建新房間即可解鎖此場景喔！"); return; }
             if (state.stars < bg.price) {
               SFX.hit();
               showCottageBubble(`⚠️ 星星不足！需要 ⭐ ${bg.price}（目前 ⭐ ${state.stars}）`);
@@ -9922,10 +9926,47 @@
       } else {
         roomActionBtn = `<button id="btn-cottage-weather-bar" class="sanrio-btn py-2 px-2.5 rounded-xl bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black whitespace-nowrap">🔮 天氣魔法球</button>`;
       }
+      let workshopHtml = "";
+      const hasFurnInRoom = (state.placedFurniture || []).length > 0;
+      if (hasFurnInRoom) {
+        if (!state.furnWorkshopOwned) {
+          workshopHtml = `
+            <button id="btn-buy-furn-workshop" class="sanrio-btn w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-100 via-yellow-50 to-amber-100 hover:from-amber-200 border-2 border-amber-300 text-amber-950 text-xs font-black flex items-center justify-between gap-2">
+              <span>🔧 解鎖家具「縮放＆左右翻轉」工坊</span>
+              <span class="px-2 py-0.5 rounded-full bg-amber-400 text-amber-950 whitespace-nowrap shrink-0">⭐ 2,500</span>
+            </button>
+          `;
+        } else {
+          const selItem = selectedFurnId ? SHOP_ITEMS.find(x => x.id === selectedFurnId) : null;
+          if (selItem && (state.placedFurniture || []).includes(selItem.id)) {
+            const cPos = getFurnCoords(selItem);
+            const pct = Math.round((cPos.scale || 1) * 100);
+            workshopHtml = `
+              <div class="p-2 rounded-xl bg-sky-50 border-2 border-sky-200 space-y-1.5">
+                <div class="flex items-center justify-between text-[11px] font-black text-sky-900">
+                  <span>🔧 家具工坊｜調整「${selItem.name}」（${pct}%）</span>
+                  <button id="btn-fw-reset" class="text-[10px] underline text-stone-500">↺ 重設</button>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <button id="btn-fw-smaller" class="sanrio-btn py-1.5 rounded-lg bg-white border border-sky-300 text-sky-900 text-xs font-black">➖ 縮小</button>
+                  <button id="btn-fw-bigger" class="sanrio-btn py-1.5 rounded-lg bg-white border border-sky-300 text-sky-900 text-xs font-black">➕ 放大</button>
+                  <button id="btn-fw-flip" class="sanrio-btn py-1.5 rounded-lg bg-sky-500 text-white text-xs font-black">↔️ 左右翻轉</button>
+                </div>
+              </div>
+            `;
+          } else {
+            workshopHtml = `<div class="text-[11px] font-bold text-center text-sky-800 bg-sky-50/80 border border-sky-200 rounded-xl py-1 px-2">🔧 家具工坊已啟用：輕點小屋裡的任一件家具即可縮放或左右翻轉！</div>`;
+          }
+        }
+      }
+
       return `
-        <div class="grid grid-cols-2 gap-1.5">
-          ${roomActionBtn}
-          <button id="btn-open-title-studio" class="sanrio-btn py-2 px-2.5 rounded-xl bg-gradient-to-r from-sky-100 to-pink-100 hover:from-sky-200 hover:to-pink-200 border-2 border-pink-300 text-pink-900 text-xs font-black whitespace-nowrap">👑 稱號＆發光頭像框</button>
+        <div class="space-y-1.5">
+          <div class="grid grid-cols-2 gap-1.5">
+            ${roomActionBtn}
+            <button id="btn-open-title-studio" class="sanrio-btn py-2 px-2.5 rounded-xl bg-gradient-to-r from-sky-100 to-pink-100 hover:from-sky-200 hover:to-pink-200 border-2 border-pink-300 text-pink-900 text-xs font-black whitespace-nowrap">👑 稱號＆發光頭像框</button>
+          </div>
+          ${workshopHtml}
         </div>
       `;
     }
@@ -10197,6 +10238,45 @@
       if (wBtn1) wBtn1.addEventListener("click", (e) => { e.stopPropagation(); SFX.click(); openWeatherOrbModal(); });
       const wBtn2 = document.getElementById("btn-cottage-weather-bar");
       if (wBtn2) wBtn2.addEventListener("click", () => { SFX.click(); openWeatherOrbModal(); });
+      const buyFwBtn = document.getElementById("btn-buy-furn-workshop");
+      if (buyFwBtn) {
+        buyFwBtn.addEventListener("click", () => {
+          if ((state.stars || 0) < 2500) {
+            SFX.hit();
+            showCottageBubble("⚠️ 解鎖家具縮放＆翻轉工坊需要 2,500 ⭐ 喔！");
+            return;
+          }
+          state.stars -= 2500;
+          state.furnWorkshopOwned = true;
+          saveState(); renderHUD(); SFX.win();
+          if (typeof confetti === "function") confetti({ particleCount: 50, spread: 65, origin: { y: 0.5 } });
+          openShopAndCottageModal();
+          setTimeout(() => showCottageBubble("🔧 家具工坊解鎖成功！點小屋裡的家具就能自由縮放與翻轉囉！"), 80);
+        });
+      }
+      const adjustSelFurn = (mutator) => {
+        if (!selectedFurnId) return;
+        const item = SHOP_ITEMS.find(x => x.id === selectedFurnId);
+        if (!item) return;
+        if (!state.furniturePos) state.furniturePos = {};
+        const cur = getFurnCoords(item);
+        const next = { left: cur.left, bottom: cur.bottom, scale: cur.scale, flipX: cur.flipX };
+        mutator(next);
+        state.furniturePos[selectedFurnId] = next;
+        saveLegacyStateIntoActiveRoom();
+        saveState();
+        SFX.click();
+        openShopAndCottageModal();
+      };
+      const fwSmall = document.getElementById("btn-fw-smaller");
+      if (fwSmall) fwSmall.addEventListener("click", () => adjustSelFurn(n => { n.scale = Math.max(0.65, Math.round((n.scale - 0.15) * 100) / 100); }));
+      const fwBig = document.getElementById("btn-fw-bigger");
+      if (fwBig) fwBig.addEventListener("click", () => adjustSelFurn(n => { n.scale = Math.min(1.5, Math.round((n.scale + 0.15) * 100) / 100); }));
+      const fwFlip = document.getElementById("btn-fw-flip");
+      if (fwFlip) fwFlip.addEventListener("click", () => adjustSelFurn(n => { n.flipX = !n.flipX; }));
+      const fwReset = document.getElementById("btn-fw-reset");
+      if (fwReset) fwReset.addEventListener("click", () => adjustSelFurn(n => { n.scale = 1.0; n.flipX = false; }));
+
       const tBtn = document.getElementById("btn-open-title-studio");
       if (tBtn) tBtn.addEventListener("click", () => { SFX.click(); openTitleAndFrameStudio("title"); });
 
