@@ -1332,9 +1332,7 @@
 
     function renderHeroLayersHtml(heroId, previewItem = null) {
       const activeSk = state.activeSkin || "default";
-      if (!previewItem && activeSk !== "default" && typeof getHeroSkinImg === "function") {
-        return `<img src="${getHeroSkinImg(heroId, activeSk)}" alt="${heroId}" class="w-full h-full object-contain drop-shadow-md select-none pointer-events-none" />`;
-      }
+      const skinBaseImg = (typeof getHeroSkinImg === "function") ? getHeroSkinImg(heroId, activeSk) : HEROES[heroId].img;
       const eq = getHeroEquipObj(heroId);
       const active = { ...eq };
       let prevSlot = "";
@@ -1355,7 +1353,7 @@
       };
       return `
         ${makeLayer("wings")}
-        <img referrerpolicy="no-referrer" src="${HEROES[heroId].img}" style="position:relative; z-index:5;" class="w-full h-full object-contain sprite-cutout" alt="${HEROES[heroId].short}" />
+        <img referrerpolicy="no-referrer" src="${skinBaseImg}" style="position:relative; z-index:5;" class="w-full h-full object-contain sprite-cutout" alt="${HEROES[heroId].short}" />
         ${makeLayer("hat")}
         ${makeLayer("chest")}
         ${makeLayer("wand")}
@@ -1439,12 +1437,12 @@
       { id: "bg_default", name: "🏠 粉彩溫馨小屋", price: 0,    img: ASSETS.cottageBg, desc: "經典的粉紅蕾絲窗簾與溫暖木質地板小屋。" },
       { id: "bg_camping", name: "🏕️ 星空露營營地", price: 2000, img: "https://drive.google.com/thumbnail?id=1zAPMXAAGPD1Q1QwzNiE213qbSOA-tS__&sz=w1600", desc: "夢幻紫藍星空、小帳篷與溫馨木棧板草地營地！" },
       { id: "bg_seaside", name: "🏖️ 海邊甜點咖啡廳", price: 2500, img: "https://drive.google.com/thumbnail?id=1hQtrNyqP4G5chAfiq085TwHc3Ds05vUX&sz=w1600", desc: "陽光閃耀的藍海露台，隨時吹海風吃下午茶！" },
-      { id: "bg_pajama", name: "🌙 星夜雲朵睡衣派對", price: 0, honorOnly: true, img: ASSETS.honor_bg_pajama },
+      { id: "bg_pajama", name: "🌙 星夜雲朵睡衣派對", price: 0, honorOnly: true, img: ASSETS.honor_bg_pajama, desc: "星夜雲朵與暖黃串燈的夢幻睡衣派對小屋！（榮譽通行證限定，持有 +5% EXP）" },
       { id: "bg_sakura",  name: "🌸 櫻花和風茶室", price: 3000, img: "https://drive.google.com/thumbnail?id=1cJAXWZqwUxhAjwnxANnvjd93adUYcu3N&sz=w1600", desc: "推開和室拉門就是滿開粉紅櫻花與清爽榻榻米！" }
     ];
 
     const SHOP_ITEMS = [
-      { id: "honor_dessert", name: "🍰 焦糖布丁甜點櫃", type: "furniture", owner: "all", price: 0, honorOnly: true, desc: "榮譽通行證限定家具！持有永久 +3% EXP", img: ASSETS.honor_furn_dessert },
+      { id: "honor_dessert", type: "furniture", owner: "room", name: "🍰 焦糖布丁甜點櫃", price: 0, honorOnly: true, img: ASSETS.honor_furn_dessert, desc: "榮譽通行證限定家具！擺進小屋自由拖曳，持有永久 +3% EXP", defLeft: 76, defBottom: 24, defWidth: 20 },
       { id: "purin_beret", type: "hat", owner: "purin", name: "🍮 鮮奶油草莓貝雷帽", price: 1200, img: ASSETS.accPurinBeret, desc: "布丁狗專屬！招牌貝雷帽升級成鮮奶油草莓甜點款。" },
       { id: "purin_bow", type: "chest", owner: "purin", name: "🍮 焦糖布丁星光領結", price: 1350, img: ASSETS.accPurinBow, desc: "布丁狗專屬！貼合戴在紅披風領口的發光小領結。" },
       { id: "purin_wings", type: "wings", owner: "purin", name: "🍮 奶油天使小翅膀", price: 1650, img: ASSETS.accPurinWings, desc: "布丁狗專屬！長在背後的蓬鬆奶油小翅膀，散步超可愛。" },
@@ -4414,8 +4412,8 @@
         const isEquipped = targetEq ? targetEq[item.type] === item.id : false;
         const isPlaced = (state.placedFurniture || []).includes(item.id);
         const isPreviewing = previewItemId === item.id;
-        let btnLabel = `⭐ ${item.price} 購買`;
-        let btnClass = "bg-amber-400 hover:bg-amber-500 text-amber-950";
+        let btnLabel = item.honorOnly ? "🔒 榮譽通行證限定" : `⭐ ${item.price} 購買`;
+        let btnClass = item.honorOnly ? "bg-stone-200 text-stone-500" : "bg-amber-400 hover:bg-amber-500 text-amber-950";
         if (owned) {
           if (item.type === "furniture") {
             btnLabel = isPlaced ? "📦 收起家具" : "🏠 擺進小屋";
@@ -4447,7 +4445,7 @@
 
       const ownedBgs = state.ownedBgs || ["bg_default"];
       const bgThemesHtml = COTTAGE_THEMES.map(bg => {
-        const owned = ownedBgs.includes(bg.id) || bg.price === 0;
+        const owned = ownedBgs.includes(bg.id) || (bg.price === 0 && !bg.honorOnly);
         const active = (state.activeBg || "bg_default") === bg.id;
         const isPrev = previewBg && previewBg.id === bg.id;
         return `
@@ -4716,8 +4714,9 @@
           const bg = COTTAGE_THEMES.find(x => x.id === bid);
           if (!bg) return;
           if (!state.ownedBgs) state.ownedBgs = ["bg_default"];
-          const owned = state.ownedBgs.includes(bid) || bg.price === 0;
+          const owned = state.ownedBgs.includes(bid) || (bg.price === 0 && !bg.honorOnly);
           if (!owned) {
+            if (bg.honorOnly) { showCottageBubble("🔒 請先於「🌟 榮譽通行證」達 92★ 訂製解鎖喔！"); return; }
             if (state.stars < bg.price) {
               SFX.hit();
               showCottageBubble(`⚠️ 星星不足！需要 ⭐ ${bg.price}（目前 ⭐ ${state.stars}）`);
@@ -7245,7 +7244,7 @@
             const isHung = state.wallArt === ASSETS[t.imgKey];
             actionBtn = `<button data-hang-art="${t.imgKey}" class="honor-hang-btn sanrio-btn px-2.5 py-1 rounded-xl ${isHung ? "bg-emerald-500 text-white" : "bg-amber-500 text-white"} font-black text-[11px] whitespace-nowrap">${isHung ? "✓ 已掛小屋" : "🖼️ 掛小屋"}</button>`;
           } else if (t.type === "bg") {
-            const isUsed = state.cottageBg === "bg_pajama";
+            const isUsed = (state.activeBg || "bg_default") === "bg_pajama";
             actionBtn = `<button id="btn-use-pajama-bg" class="sanrio-btn px-2.5 py-1 rounded-xl ${isUsed ? "bg-emerald-500 text-white" : "bg-violet-500 text-white"} font-black text-[11px] whitespace-nowrap">${isUsed ? "✓ 使用中" : "🏡 套用夜景"}</button>`;
           } else {
             actionBtn = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white whitespace-nowrap">✓ 已擁有</span>`;
@@ -7306,6 +7305,10 @@
           if (t.id === "h_dessert" && !state.ownedItems.includes("honor_dessert")) {
             state.ownedItems.push("honor_dessert");
           }
+          if (t.id === "h_pajama") {
+            if (!state.ownedBgs) state.ownedBgs = ["bg_default"];
+            if (!state.ownedBgs.includes("bg_pajama")) state.ownedBgs.push("bg_pajama");
+          }
           saveState();
           renderHUD();
           openHonorPassModal();
@@ -7333,7 +7336,7 @@
       if (pjBtn) {
         pjBtn.addEventListener("click", () => {
           SFX.click();
-          state.cottageBg = "bg_pajama";
+          if (!state.ownedBgs) state.ownedBgs = ["bg_default"]; if (!state.ownedBgs.includes("bg_pajama")) state.ownedBgs.push("bg_pajama"); state.activeBg = "bg_pajama";
           saveState();
           openHonorPassModal();
         });
@@ -7456,8 +7459,23 @@
         CLOUD_GRADE = code;
         STAGES = bank.buildStages(ASSETS);
         STAGES.forEach(s => {
-          if (!s.monsterImg || !String(s.monsterImg).startsWith("https://")) {
-            s.monsterImg = s.isBoss ? ASSETS.dragon : ((s.stageNum || 1) % 2 === 0 ? ASSETS.owl : ASSETS.slime);
+          const nm = String(s.monsterName || "");
+          if (s.stageNum === 9 || /龍|大魔王|星王|星宮王|英語王/.test(nm)) {
+            s.monsterImg = ASSETS.dragon;
+          } else if (/貓頭鷹|守望鳥|博士/.test(nm) || (s.tier === "elite" && s.isBoss)) {
+            s.monsterImg = ASSETS.owl;
+          } else if (/史萊姆/.test(nm)) {
+            s.monsterImg = ASSETS.slime;
+          } else if (/時鐘|守衛兵|發條|雪怪|機械/.test(nm) || (s.subject === "數學" && s.tier === "normal")) {
+            s.monsterImg = ASSETS.robot;
+          } else if (/放大鏡|自然|葉|花|森|風|兔|種子|試紙|氣壓|板塊/.test(nm) || (s.subject === "自然" && s.tier === "normal")) {
+            s.monsterImg = ASSETS.nature;
+          } else if (/書靈|字母|英文|獅王|果園|課表|日曆/.test(nm) || (s.subject === "英文" && s.tier === "normal")) {
+            s.monsterImg = ASSETS.english;
+          } else if (s.subject === "社會" && s.tier === "normal") {
+            s.monsterImg = ASSETS.owl;
+          } else if (!s.monsterImg || !String(s.monsterImg).startsWith("https://")) {
+            s.monsterImg = s.isBoss ? ASSETS.owl : ASSETS.slime;
           }
         });
         if (typeof loadCachedCloudQuestions === "function") loadCachedCloudQuestions();
