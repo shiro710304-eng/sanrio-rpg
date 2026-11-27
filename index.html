@@ -161,6 +161,30 @@
       line-height: 1;
     }
     .monster-boss-glow { animation: bossPulse 2.2s ease-in-out infinite; }
+    @keyframes weatherFall {
+      0% { transform: translateY(-10%) translateX(0px) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.92; }
+      85% { opacity: 0.92; }
+      100% { transform: translateY(115%) translateX(18px) rotate(180deg); opacity: 0; }
+    }
+    @keyframes frameRainbow {
+      0% { box-shadow: 0 0 0 3px #f472b6, 0 0 12px rgba(244,114,182,0.8); }
+      33% { box-shadow: 0 0 0 3px #fbbf24, 0 0 14px rgba(251,191,36,0.85); }
+      66% { box-shadow: 0 0 0 3px #38bdf8, 0 0 14px rgba(56,189,248,0.85); }
+      100% { box-shadow: 0 0 0 3px #f472b6, 0 0 12px rgba(244,114,182,0.8); }
+    }
+    .cottage-weather-item {
+      position: absolute;
+      top: -12%;
+      pointer-events: none;
+      animation: weatherFall linear infinite;
+      z-index: 55;
+      text-shadow: 0 1px 4px rgba(255,255,255,0.8);
+    }
+    .avatar-frame-sakura { box-shadow: 0 0 0 3px #f9a8d4, 0 0 10px rgba(244,114,182,0.75) !important; border-color: #ec4899 !important; }
+    .avatar-frame-starlight { box-shadow: 0 0 0 3px #7dd3fc, 0 0 12px rgba(56,189,248,0.85) !important; border-color: #0284c7 !important; }
+    .avatar-frame-royal { box-shadow: 0 0 0 3px #fde047, 0 0 14px rgba(234,179,8,0.9) !important; border-color: #d97706 !important; }
+    .avatar-frame-rainbow { animation: frameRainbow 3.2s linear infinite !important; border-color: #ffffff !important; }
     /* PWA Safe Area Insets */
     body {
       padding-top: env(safe-area-inset-top, 0px);
@@ -309,10 +333,13 @@
           </button>
         </div>
         <div class="flex items-center gap-2.5">
-          <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white/90 border-2 border-pink-300 shadow-sm flex items-center justify-center text-xl sm:text-2xl shrink-0">🐾</span>
+          <button id="hud-avatar-frame" title="點擊編輯稱號與發光頭像框" class="sanrio-btn w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white/95 border-2 border-pink-300 shadow-sm flex items-center justify-center text-xl sm:text-2xl shrink-0">🐾</button>
           <div class="min-w-0 flex-1">
             <h1 class="text-base sm:text-xl font-black text-pink-600 leading-tight tracking-tight whitespace-nowrap">布丁狗＆帕恰狗的知識大冒險</h1>
-            <p id="header-grade-subtitle" class="text-[11px] sm:text-xs font-bold text-amber-800/85 whitespace-nowrap mt-0.5">國小三年級｜國・數・自・社・英</p>
+            <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+              <p id="header-grade-subtitle" class="text-[11px] sm:text-xs font-bold text-amber-800/85 whitespace-nowrap">國小三年級｜國・數・自・社・英</p>
+              <button id="hud-custom-title" class="sanrio-btn px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-100 to-pink-100 border border-pink-300 text-[10px] sm:text-[11px] font-black text-pink-800 whitespace-nowrap shadow-xs">👑 元氣滿滿的小冒險家</button>
+            </div>
           </div>
         </div>
       </div>
@@ -701,6 +728,8 @@
       pet_berry_cat: "https://drive.google.com/thumbnail?id=1kaPxagNcHuOMJQ27QmCU0alUntZ6Bx2J&sz=w600",
       pet_star_unicorn: "https://drive.google.com/thumbnail?id=1HYT1Xivz9OHD1o7Xzccpa74rIKSixVAU&sz=w600",
       pet_cloud_duck: "https://drive.google.com/thumbnail?id=1DnmeN9xJfwANr0eRd2BUb0ROGLrfjvZu&sz=w600",
+      room_dessert_cafe: "https://drive.google.com/thumbnail?id=1f2KfXRnnZ3lMqPYEPNpwPXiiW_aEmr1I&sz=w1600",
+      room_star_balcony: "https://drive.google.com/thumbnail?id=1G0FQzcnoCcnpRGk79Og4Ow53cwgtiABl&sz=w1600",
       honor_bg_pajama: "https://drive.google.com/thumbnail?id=1V5tK76NrjcjUU2C7tQTwiAJDEydze5nQ&sz=w1200",
       honor_art_concert: "https://drive.google.com/thumbnail?id=1gZ3tg31an0F-wrcmQzvU3pD8wIgu6NsU&sz=w1000",
       map2: "https://drive.google.com/thumbnail?id=1fejS5ps5iRZtZH_5tnoKBRlSBNzuVMgA&sz=w1600",
@@ -1590,6 +1619,8 @@
 
     const COTTAGE_THEMES = [
       { id: "bg_default", name: "🏠 粉彩溫馨小屋", price: 0,    img: ASSETS.cottageBg, desc: "經典的粉紅蕾絲窗簾與溫暖木質地板小屋。" },
+      { id: "bg_dessert_cafe", name: "🍰 焦糖布丁甜點吧", price: 0, roomOnly: "room2", img: ASSETS.room_dessert_cafe, desc: "解鎖 2 號焦糖甜點吧附贈的專屬溫暖甜點咖啡廳背景！" },
+      { id: "bg_star_balcony", name: "🔭 星夜觀星陽台", price: 0, roomOnly: "room3", img: ASSETS.room_star_balcony, desc: "解鎖 3 號星夜觀星陽台附贈的專屬流星夜景背景！" },
       { id: "bg_camping", name: "🏕️ 星空露營營地", price: 2000, img: "https://drive.google.com/thumbnail?id=1zAPMXAAGPD1Q1QwzNiE213qbSOA-tS__&sz=w1600", desc: "夢幻紫藍星空、小帳篷與溫馨木棧板草地營地！" },
       { id: "bg_seaside", name: "🏖️ 海邊甜點咖啡廳", price: 2500, img: "https://drive.google.com/thumbnail?id=1hQtrNyqP4G5chAfiq085TwHc3Ds05vUX&sz=w1600", desc: "陽光閃耀的藍海露台，隨時吹海風吃下午茶！" },
       { id: "bg_pajama", name: "🌙 星夜雲朵睡衣派對", price: 0, honorOnly: true, img: ASSETS.honor_bg_pajama, desc: "星夜雲朵與暖黃串燈的夢幻睡衣派對小屋！（榮譽通行證限定，持有 +5% EXP）" },
@@ -1681,7 +1712,20 @@
       vocabDecks: [],
       petEgg: null,
       ownedMiniPets: {},
-      activeMiniPets: []
+      activeMiniPets: [],
+      activeRoomId: "room1",
+      unlockedRooms: ["room1"],
+      cottageRooms: null,
+      ownedWeathers: ["none"],
+      activeWeather: "none",
+      teaPartyBuff: false,
+      lastWishDate: "",
+      ownedTitlePre: ["pre_1", "pre_2"],
+      ownedTitleSuf: ["suf_1", "suf_2"],
+      activeTitlePre: "pre_1",
+      activeTitleSuf: "suf_1",
+      ownedFrames: ["frame_default"],
+      activeFrame: "frame_default"
     };
 
     let state = loadState();
@@ -2332,6 +2376,7 @@
     }
 
     function grantExp(amount) {
+      if (state && state.teaPartyBuff) { amount = Math.round(amount * 1.1); state.teaPartyBuff = false; }
       if (!amount || amount <= 0) return { added: 0, levelsGained: 0, giftStars: 0, paragonChests: 0, oldLevel: state.level || 1, newLevel: state.level || 1 };
       if (typeof state.level !== "number" || state.level < 1) state.level = 1;
       if (typeof state.exp !== "number" || state.exp < 0) state.exp = 0;
@@ -2373,6 +2418,7 @@
     function renderHUD() {
       if (typeof syncHonorUnlocks === "function") syncHonorUnlocks();
       document.getElementById("hud-stars").textContent = state.stars;
+      if (typeof renderTitleAndFrameHUD === "function") renderTitleAndFrameHUD();
       const clBtn = document.getElementById("btn-cloud-login");
       if (clBtn) {
         if (cloudSession && cloudSession.loggedIn) {
@@ -3458,6 +3504,7 @@
         setTimeout(() => {
           triggerAnim(monsterWrap, "anim-monster-hit", "anim-monster-idle");
           spawnBattleFX(battle.combo >= 3 ? `Combo×${battle.combo}! -${dmg}` : `-${dmg}!`, isSubjectBonus || battle.combo >= 3);
+          if (typeof spawnFrameBattleCelebration === "function") spawnFrameBattleCelebration(battle.combo);
         }, 220);
 
         speech.textContent = battle.combo >= 5 ? "🌟雙星合體技！" : (battle.combo >= 3 ? "超厲害連擊！" : "太棒了！");
@@ -4797,6 +4844,8 @@
 
     function openShopAndCottageModal() {
       stopCottageWalk();
+      if (typeof ensureCottageRooms === "function") ensureCottageRooms();
+      if (typeof loadActiveRoomIntoLegacyState === "function") loadActiveRoomIntoLegacyState();
       const previewItem = previewItemId ? SHOP_ITEMS.find(x => x.id === previewItemId) : null;
       const previewBg = (typeof previewBgId !== "undefined" && previewBgId) ? COTTAGE_THEMES.find(x => x.id === previewBgId) : null;
       const curBgObj = previewBg || COTTAGE_THEMES.find(x => x.id === (state.activeBg || "bg_default")) || COTTAGE_THEMES[0];
@@ -4937,6 +4986,11 @@
       const leadId = state.hero;
       const partnerId = state.hero === "purin" ? "pochacco" : "purin";
 
+      const roomTabsHtml = (typeof buildCottageRoomTabsHtml === "function") ? buildCottageRoomTabsHtml() : "";
+      const weatherOverlayHtml = (typeof buildCottageWeatherOverlayHtml === "function") ? buildCottageWeatherOverlayHtml() : "";
+      const cottageRoomExtrasHtml = (typeof buildCottageRoomExtrasHtml === "function") ? buildCottageRoomExtrasHtml() : "";
+      const curRoomId = state.activeRoomId || "room1";
+
       const eggNow = state.petEgg;
       const eggReady = !!(eggNow && (eggNow.progress || 0) >= (eggNow.target || 15));
       const eggBtnLabel = eggReady ? "🥚 可孵化!" : (eggNow ? `🥚 ${eggNow.progress}/${eggNow.target}` : "🥚 寵物蛋");
@@ -4984,6 +5038,7 @@
       showModal("🏠 小屋與樂園", `
         ${getHomeHubBar("shop")}
         <div class="space-y-2.5 mt-2">
+          ${roomTabsHtml}
           ${quickSkinHtml}
           <div id="cottage-stage" class="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-pink-200 bg-amber-50 select-none">
             <div id="cottage-pet-bubble" class="hidden absolute bottom-[44%] left-1/2 -translate-x-1/2 z-[75] bg-white/95 border-2 border-pink-400 rounded-full px-3.5 py-1 text-xs font-black text-pink-600 shadow-lg whitespace-nowrap"></div>
@@ -4993,7 +5048,8 @@
                 <img referrerpolicy="no-referrer" src="${wallArtObj.img}" alt="${wallArtObj.title}" class="w-full h-full object-cover rounded-[4px] pointer-events-none" />
               </div>
             ` : ""}
-            ${previewItem ? `
+            ${cottageRoomExtrasHtml}
+          ${previewItem ? `
               <div class="absolute top-2.5 left-2.5 z-[70] flex items-center gap-2 bg-white/95 border-2 border-pink-300 rounded-full px-3 py-1 shadow text-xs font-black text-pink-700">
                 <span>✨ 正在預覽：${previewItem.name}</span>
                 <button id="btn-stop-preview" class="text-stone-400 hover:text-rose-600 font-black">✕</button>
@@ -5010,6 +5066,9 @@
             ` : ""}
             ${placedHtml}
             ${miniPetsStageHtml}
+            ${weatherOverlayHtml}
+            <button id="btn-cottage-chalkboard" title="查看雙星與小跟班的誇獎留言" class="sanrio-btn absolute top-2 left-2 z-[65] px-2 py-1 rounded-xl bg-amber-900/85 hover:bg-amber-900 border-2 border-amber-300 text-amber-100 text-[10px] sm:text-xs font-black shadow">🪧 留言板</button>
+            <button id="btn-cottage-weather" title="切換小屋天氣魔法球" class="sanrio-btn absolute top-2 right-2 z-[65] px-2 py-1 rounded-full bg-white/90 hover:bg-pink-50 border-2 border-purple-300 text-purple-800 text-[10px] sm:text-xs font-black shadow">🔮 天氣球</button>
             <div id="cottage-pet-lead" class="cottage-walker pet-draggable absolute w-[22%] aspect-square"  style="left:${cottagePos.lead.left}%; bottom:${cottagePos.lead.bottom}%; z-index:${calcDepthZ(cottagePos.lead.bottom)};">
               <div class="pet-inner relative w-full h-full" style="transform:scaleX(${cottagePos.lead.face});">
                 ${renderHeroLayersHtml(leadId, previewItem)}
@@ -5245,6 +5304,7 @@
           }
           state.activeBg = bid;
           previewBgId = null;
+          if (typeof saveLegacyStateIntoActiveRoom === "function") saveLegacyStateIntoActiveRoom();
           saveState();
           renderHUD();
           openShopAndCottageModal();
@@ -5274,6 +5334,7 @@
           openPetEggModal();
         });
       }
+      if (typeof bindCottageRoomAndExtrasEvents === "function") bindCottageRoomAndExtrasEvents();
       document.querySelectorAll(".cottage-minipet").forEach(el => {
         el.addEventListener("click", (e) => {
           e.stopPropagation();
@@ -5439,6 +5500,7 @@
             }
             previewItemId = null;
           }
+          if (typeof saveLegacyStateIntoActiveRoom === "function") saveLegacyStateIntoActiveRoom();
           saveState();
           renderHUD();
           openShopAndCottageModal();
@@ -9658,6 +9720,510 @@
         });
       });
     }
+
+
+    // ====== 🏡 三房擴建 ＋ 🔮 天氣魔法球 ＋ 🪧 小黑板 ＋ 👑 12×12 拼裝稱號＆發光頭像框 ======
+    const COTTAGE_ROOM_DEFS = [
+      { id: "room1", icon: "🏠", name: "1號客廳",     price: 0,    defaultBg: "bg_default",      desc: "溫馨經典主客廳，自由擺放你最愛的家具與畫作！" },
+      { id: "room2", icon: "🍰", name: "2號甜點吧",   price: 5000, defaultBg: "bg_dessert_cafe", desc: "附贈專屬焦糖甜點吧背景＋「🍰 下午茶派對 (200⭐)」元氣 +10% EXP！" },
+      { id: "room3", icon: "🔭", name: "3號觀星陽台", price: 8000, defaultBg: "bg_star_balcony", desc: "附贈專屬星夜觀星陽台背景＋「🌠 許願流星籤 (300⭐)」抽幸運籤與禮物！" }
+    ];
+
+    const COTTAGE_WEATHERS = [
+      { id: "none",    icon: "☀️", name: "晴朗微風", price: 0,    particles: [] },
+      { id: "sakura",  icon: "🌸", name: "櫻花飄落", price: 1200, particles: ["🌸", "✿", "🌸", "💮", "🌸", "✿"] },
+      { id: "firefly", icon: "✨", name: "星空微光", price: 1500, particles: ["✨", "⭐", "✦", "✨", "⭐", "✧"] },
+      { id: "snow",    icon: "❄️", name: "柔光飄雪", price: 1800, particles: ["❄️", "❅", "✨", "❄️", "❅", "❄️"] },
+      { id: "bubble",  icon: "🌈", name: "彩虹泡泡", price: 2200, particles: ["🫧", "🌈", "🫧", "✨", "🫧", "⭐"] }
+    ];
+
+    const TITLE_PREFIXES = [
+      { id: "pre_1",  text: "元氣滿滿的", price: 0 },
+      { id: "pre_2",  text: "愛學習的",   price: 0 },
+      { id: "pre_3",  text: "🍮 愛吃布丁的", price: 500 },
+      { id: "pre_4",  text: "🐾 帕恰狗頭號", price: 500 },
+      { id: "pre_5",  text: "⚡ 閃電心算",   price: 600 },
+      { id: "pre_6",  text: "🌸 櫻花飄落的", price: 600 },
+      { id: "pre_7",  text: "🐹 捧著星星的", price: 800 },
+      { id: "pre_8",  text: "✨ 星夜守護",   price: 800 },
+      { id: "pre_9",  text: "🍰 焦糖香氣",   price: 900 },
+      { id: "pre_10", text: "🔥 連擊不停的", price: 1000 },
+      { id: "pre_11", text: "🌈 彩虹閃耀",   price: 1200 },
+      { id: "pre_12", text: "👑 傳說級",     price: 1200 }
+    ];
+
+    const TITLE_SUFFIXES = [
+      { id: "suf_1",  text: "小冒險家",     price: 0 },
+      { id: "suf_2",  text: "雙星夥伴",     price: 0 },
+      { id: "suf_3",  text: "🛡️ 布丁騎士",  price: 500 },
+      { id: "suf_4",  text: "🐾 小汪隊長",  price: 500 },
+      { id: "suf_5",  text: "🐹 倉鼠飼養員", price: 600 },
+      { id: "suf_6",  text: "🍰 甜點品嚐師", price: 600 },
+      { id: "suf_7",  text: "🏡 小屋設計師", price: 800 },
+      { id: "suf_8",  text: "📘 單字大師",   price: 800 },
+      { id: "suf_9",  text: "⭐ 星星收藏家", price: 900 },
+      { id: "suf_10", text: "🪄 學霸魔法師", price: 1000 },
+      { id: "suf_11", text: "🐉 屠龍勇者",   price: 1200 },
+      { id: "suf_12", text: "🏆 全科傳奇",   price: 1200 }
+    ];
+
+    const AVATAR_FRAMES = [
+      { id: "frame_default",   icon: "🎀", name: "經典粉彩框",     price: 0,    cls: "",                      fxEmoji: "",   desc: "溫柔粉彩圓框。" },
+      { id: "frame_sakura",    icon: "🌸", name: "櫻花花環流光框", price: 1500, cls: "avatar-frame-sakura",    fxEmoji: "🌸", desc: "主畫面粉紅柔光＋戰鬥答對飄出櫻花瓣！" },
+      { id: "frame_starlight", icon: "⭐", name: "許願流星藍光框", price: 2500, cls: "avatar-frame-starlight", fxEmoji: "⭐", desc: "主畫面星藍光暈＋戰鬥答對閃耀金星！" },
+      { id: "frame_royal",     icon: "👑", name: "黃金皇冠榮耀框", price: 3200, cls: "avatar-frame-royal",     fxEmoji: "👑", desc: "主畫面金光圍繞＋戰鬥答對迸發皇冠金芒！" },
+      { id: "frame_rainbow",   icon: "🌈", name: "彩虹水晶流光框", price: 4000, cls: "avatar-frame-rainbow",   fxEmoji: "🌈", desc: "動態七彩流光外框＋戰鬥答對綻放彩虹星光！" }
+    ];
+
+    function ensureCottageRooms() {
+      if (!Array.isArray(state.unlockedRooms) || state.unlockedRooms.length === 0) state.unlockedRooms = ["room1"];
+      if (!state.activeRoomId || !state.unlockedRooms.includes(state.activeRoomId)) state.activeRoomId = "room1";
+      if (!Array.isArray(state.ownedWeathers)) state.ownedWeathers = ["none"];
+      if (!state.cottageRooms || typeof state.cottageRooms !== "object") {
+        state.cottageRooms = {
+          room1: {
+            activeBg: state.activeBg || "bg_default",
+            wallArt: state.wallArt || "",
+            placedFurniture: Array.isArray(state.placedFurniture) ? [...state.placedFurniture] : [],
+            furniturePos: state.furniturePos ? JSON.parse(JSON.stringify(state.furniturePos)) : {},
+            weather: state.activeWeather || "none"
+          },
+          room2: { activeBg: "bg_dessert_cafe", wallArt: "", placedFurniture: [], furniturePos: {}, weather: "sakura" },
+          room3: { activeBg: "bg_star_balcony", wallArt: "", placedFurniture: [], furniturePos: {}, weather: "firefly" }
+        };
+      }
+      ["room1", "room2", "room3"].forEach((rid, idx) => {
+        if (!state.cottageRooms[rid]) {
+          state.cottageRooms[rid] = { activeBg: COTTAGE_ROOM_DEFS[idx].defaultBg, wallArt: "", placedFurniture: [], furniturePos: {}, weather: "none" };
+        }
+      });
+    }
+
+    function loadActiveRoomIntoLegacyState() {
+      ensureCottageRooms();
+      const rm = state.cottageRooms[state.activeRoomId] || state.cottageRooms.room1;
+      state.activeBg = rm.activeBg || "bg_default";
+      state.wallArt = rm.wallArt || "";
+      state.placedFurniture = Array.isArray(rm.placedFurniture) ? rm.placedFurniture : [];
+      state.furniturePos = rm.furniturePos || {};
+      state.activeWeather = rm.weather || "none";
+    }
+
+    function saveLegacyStateIntoActiveRoom() {
+      ensureCottageRooms();
+      const rid = state.activeRoomId || "room1";
+      state.cottageRooms[rid] = {
+        activeBg: state.activeBg || "bg_default",
+        wallArt: state.wallArt || "",
+        placedFurniture: Array.isArray(state.placedFurniture) ? [...state.placedFurniture] : [],
+        furniturePos: state.furniturePos ? JSON.parse(JSON.stringify(state.furniturePos)) : {},
+        weather: state.activeWeather || "none"
+      };
+    }
+
+    function getComposedTitleText() {
+      const pre = TITLE_PREFIXES.find(x => x.id === (state.activeTitlePre || "pre_1")) || TITLE_PREFIXES[0];
+      const suf = TITLE_SUFFIXES.find(x => x.id === (state.activeTitleSuf || "suf_1")) || TITLE_SUFFIXES[0];
+      return `${pre.text} ${suf.text}`;
+    }
+
+    function renderTitleAndFrameHUD() {
+      const titleEl = document.getElementById("hud-custom-title");
+      if (titleEl) titleEl.textContent = `👑 ${getComposedTitleText()}`;
+      const avEl = document.getElementById("hud-avatar-frame");
+      if (avEl) {
+        const fr = AVATAR_FRAMES.find(f => f.id === (state.activeFrame || "frame_default")) || AVATAR_FRAMES[0];
+        avEl.className = `sanrio-btn w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white/95 border-2 border-pink-300 shadow-sm flex items-center justify-center text-xl sm:text-2xl shrink-0 ${fr.cls}`;
+      }
+    }
+
+    function spawnFrameBattleCelebration(combo = 0) {
+      const fr = AVATAR_FRAMES.find(f => f.id === (state && state.activeFrame)) || AVATAR_FRAMES[0];
+      if (!fr || !fr.fxEmoji) return;
+      const fx = document.getElementById("fx-layer");
+      if (!fx) return;
+      const cnt = combo >= 3 ? 4 : 2;
+      for (let i = 0; i < cnt; i++) {
+        const sp = document.createElement("span");
+        sp.textContent = fr.fxEmoji;
+        sp.className = "absolute pointer-events-none text-lg sm:text-2xl anim-float-dmg";
+        sp.style.left = `${20 + Math.random() * 60}%`;
+        sp.style.top = `${15 + Math.random() * 40}%`;
+        fx.appendChild(sp);
+        setTimeout(() => sp.remove(), 950);
+      }
+    }
+
+    function buildCottageRoomTabsHtml() {
+      ensureCottageRooms();
+      const cur = state.activeRoomId || "room1";
+      return `
+        <div class="grid grid-cols-3 gap-1.5">
+          ${COTTAGE_ROOM_DEFS.map(rm => {
+            const unlocked = state.unlockedRooms.includes(rm.id);
+            const active = cur === rm.id;
+            return `
+              <button data-pick-room="${rm.id}" class="pick-room-btn sanrio-btn py-1.5 px-1.5 rounded-xl border-2 text-center transition-all ${active ? "bg-pink-500 text-white border-pink-600 shadow-sm" : (unlocked ? "bg-white text-stone-700 border-pink-200 hover:bg-pink-50" : "bg-amber-50/80 text-amber-900 border-amber-300")}">
+                <div class="text-xs font-black leading-tight whitespace-nowrap">${rm.icon} ${rm.name}</div>
+                <div class="text-[10px] font-bold ${active ? "text-pink-100" : (unlocked ? "text-emerald-600" : "text-amber-700")}">${unlocked ? (active ? "參觀中" : "已解鎖") : `🔒 ${rm.price.toLocaleString()}⭐`}</div>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function buildCottageWeatherOverlayHtml() {
+      ensureCottageRooms();
+      const wid = state.activeWeather || "none";
+      const wObj = COTTAGE_WEATHERS.find(w => w.id === wid);
+      if (!wObj || !wObj.particles || wObj.particles.length === 0) return "";
+      return wObj.particles.map((em, i) => `
+        <span class="cottage-weather-item text-sm sm:text-base" style="left:${10 + i * 15}%; animation-duration:${4.2 + (i % 3) * 1.1}s; animation-delay:${i * 0.65}s;">${em}</span>
+      `).join("");
+    }
+
+    function buildCottageRoomExtrasHtml() {
+      const rid = state.activeRoomId || "room1";
+      const today = new Date().toISOString().slice(0, 10);
+      const wishedToday = state.lastWishDate === today;
+      let roomActionBtn = "";
+      if (rid === "room2") {
+        roomActionBtn = `<button id="btn-room-teaparty" class="sanrio-btn py-2 px-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-pink-400 text-white text-xs font-black shadow-sm whitespace-nowrap">${state.teaPartyBuff ? "🍰 元氣+10%EXP生效中!" : "🍰 辦下午茶派對 (200⭐)"}</button>`;
+      } else if (rid === "room3") {
+        roomActionBtn = `<button id="btn-room-wishstar" class="sanrio-btn py-2 px-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-xs font-black shadow-sm whitespace-nowrap">${wishedToday ? "🌠 今日已許願完成" : "🌠 許願流星籤 (300⭐)"}</button>`;
+      } else {
+        roomActionBtn = `<button id="btn-cottage-weather-bar" class="sanrio-btn py-2 px-2.5 rounded-xl bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 text-xs font-black whitespace-nowrap">🔮 天氣魔法球</button>`;
+      }
+      return `
+        <div class="grid grid-cols-2 gap-1.5">
+          ${roomActionBtn}
+          <button id="btn-open-title-studio" class="sanrio-btn py-2 px-2.5 rounded-xl bg-gradient-to-r from-sky-100 to-pink-100 hover:from-sky-200 hover:to-pink-200 border-2 border-pink-300 text-pink-900 text-xs font-black whitespace-nowrap">👑 稱號＆發光頭像框</button>
+        </div>
+      `;
+    }
+
+    function openWeatherOrbModal() {
+      ensureCottageRooms();
+      const owned = new Set(state.ownedWeathers || ["none"]);
+      const cur = state.activeWeather || "none";
+      const cards = COTTAGE_WEATHERS.map(w => {
+        const has = owned.has(w.id);
+        const active = cur === w.id;
+        return `
+          <div class="p-3 rounded-2xl border-2 ${active ? "border-purple-500 bg-purple-50" : "border-pink-200 bg-white"} flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl">${w.icon}</span>
+              <div>
+                <div class="text-sm font-black text-stone-800">${w.name}</div>
+                <div class="text-[11px] font-bold text-stone-500">${w.id === "none" ? "預設晴朗氣氛" : "套用後目前房間會飄落夢幻粒子特效"}</div>
+              </div>
+            </div>
+            <button data-pick-weather="${w.id}" class="pick-weather-btn sanrio-btn px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap ${active ? "bg-purple-500 text-white" : (has ? "bg-pink-100 text-pink-800 border border-pink-300" : "bg-amber-400 text-amber-950")}">${active ? "✓ 使用中" : (has ? "套用" : `⭐ ${w.price.toLocaleString()}`)}</button>
+          </div>
+        `;
+      }).join("");
+      showModal("🔮 小屋天氣魔法球", `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between text-xs font-black">
+            <span class="bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">⭐ ${(state.stars || 0).toLocaleString()}</span>
+            <button id="wb-back" class="px-3 py-1 rounded-full bg-pink-500 text-white">🏠 回冒險小屋</button>
+          </div>
+          <div id="wb-msg" class="hidden text-center text-xs font-black text-rose-600"></div>
+          <div class="space-y-2">${cards}</div>
+        </div>
+      `);
+      document.getElementById("wb-back").addEventListener("click", () => { SFX.click(); openShopAndCottageModal(); });
+      document.querySelectorAll(".pick-weather-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const wid = btn.getAttribute("data-pick-weather");
+          const wObj = COTTAGE_WEATHERS.find(x => x.id === wid);
+          if (!wObj) return;
+          if (!owned.has(wid)) {
+            if ((state.stars || 0) < wObj.price) {
+              const m = document.getElementById("wb-msg");
+              if (m) { m.classList.remove("hidden"); m.textContent = `⚠️ 星星還不夠喔！需要 ${wObj.price.toLocaleString()} ⭐。`; }
+              SFX.hit();
+              return;
+            }
+            state.stars -= wObj.price;
+            state.ownedWeathers.push(wid);
+            SFX.win();
+          } else {
+            SFX.click();
+          }
+          state.activeWeather = wid;
+          saveLegacyStateIntoActiveRoom();
+          saveState();
+          renderHUD();
+          openShopAndCottageModal();
+        });
+      });
+    }
+
+    function openChalkboardModal() {
+      const petNotes = (state.activeMiniPets || []).map(pid => MINI_PETS.find(p => p.id === pid)).filter(Boolean);
+      const msgs = [
+        { who: "🍮 布丁狗", text: `主人現在已經 Lv.${state.level || 1}、累積答對 ${state.totalCorrect || 0} 題囉！一起吃焦糖布丁慶祝吧～` },
+        { who: "🐾 帕恰狗", text: `今天也在「${getGradeMeta(CLOUD_GRADE).label}」努力學習！我最佩服你的毅力了！` },
+        ...petNotes.map(p => ({ who: `${p.icon} ${p.name}`, text: p.quote }))
+      ];
+      showModal("🪧 雙星小屋留言小黑板", `
+        <div class="space-y-2.5">
+          <div class="p-3.5 rounded-2xl bg-emerald-950 border-4 border-amber-700 text-amber-50 space-y-2.5 shadow-inner">
+            ${msgs.map(m => `<div class="p-2.5 rounded-xl bg-white/10 border border-white/15"><div class="text-xs font-black text-amber-300">${m.who}</div><div class="text-xs sm:text-sm font-bold mt-0.5 leading-relaxed">${m.text}</div></div>`).join("")}
+          </div>
+          <button id="cb-back" class="sanrio-btn w-full py-2.5 rounded-2xl bg-pink-500 text-white font-black text-sm">🏠 回到冒險小屋</button>
+        </div>
+      `);
+      document.getElementById("cb-back").addEventListener("click", () => { SFX.click(); openShopAndCottageModal(); });
+    }
+
+    function openTitleAndFrameStudio(tab = "title") {
+      if (!Array.isArray(state.ownedTitlePre)) state.ownedTitlePre = ["pre_1", "pre_2"];
+      if (!Array.isArray(state.ownedTitleSuf)) state.ownedTitleSuf = ["suf_1", "suf_2"];
+      if (!Array.isArray(state.ownedFrames)) state.ownedFrames = ["frame_default"];
+      const curPre = state.activeTitlePre || "pre_1";
+      const curSuf = state.activeTitleSuf || "suf_1";
+      const curFr = AVATAR_FRAMES.find(f => f.id === (state.activeFrame || "frame_default")) || AVATAR_FRAMES[0];
+
+      const titleBody = `
+        <div class="space-y-3">
+          <div>
+            <div class="text-xs font-black text-pink-800 mb-1.5">1️⃣ 選擇前綴詞條（12 款）</div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              ${TITLE_PREFIXES.map(p => {
+                const owned = state.ownedTitlePre.includes(p.id);
+                const active = curPre === p.id;
+                return `<button data-pick-pre="${p.id}" class="pick-pre-btn sanrio-btn p-2 rounded-xl border-2 text-xs font-black text-center ${active ? "bg-pink-500 text-white border-pink-600" : (owned ? "bg-white text-stone-800 border-pink-200 hover:bg-pink-50" : "bg-amber-50 text-amber-900 border-amber-300")}">${p.text}${!owned ? `<div class="text-[10px] text-amber-700 mt-0.5">⭐ ${p.price}</div>` : ""}</button>`;
+              }).join("")}
+            </div>
+          </div>
+          <div>
+            <div class="text-xs font-black text-indigo-800 mb-1.5">2️⃣ 選擇後綴稱呼（12 款，共 144 種自由混搭！）</div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              ${TITLE_SUFFIXES.map(s => {
+                const owned = state.ownedTitleSuf.includes(s.id);
+                const active = curSuf === s.id;
+                return `<button data-pick-suf="${s.id}" class="pick-suf-btn sanrio-btn p-2 rounded-xl border-2 text-xs font-black text-center ${active ? "bg-indigo-500 text-white border-indigo-600" : (owned ? "bg-white text-stone-800 border-indigo-200 hover:bg-indigo-50" : "bg-amber-50 text-amber-900 border-amber-300")}">${s.text}${!owned ? `<div class="text-[10px] text-amber-700 mt-0.5">⭐ ${s.price}</div>` : ""}</button>`;
+              }).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+
+      const frameBody = `
+        <div class="space-y-2">
+          ${AVATAR_FRAMES.map(f => {
+            const owned = state.ownedFrames.includes(f.id);
+            const active = curFr.id === f.id;
+            return `
+              <div class="p-3 rounded-2xl border-2 ${active ? "border-pink-500 bg-pink-50/70" : "border-pink-200 bg-white"} flex items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <div class="w-11 h-11 rounded-2xl bg-white border-2 border-pink-300 flex items-center justify-center text-2xl shrink-0 ${f.cls}">${f.icon}</div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-black text-stone-800">${f.name}</div>
+                    <div class="text-[11px] font-bold text-stone-600 leading-snug">${f.desc}</div>
+                  </div>
+                </div>
+                <button data-pick-frame="${f.id}" class="pick-frame-btn sanrio-btn px-3 py-1.5 rounded-xl text-xs font-black whitespace-nowrap shrink-0 ${active ? "bg-pink-500 text-white" : (owned ? "bg-indigo-100 text-indigo-800" : "bg-amber-400 text-amber-950")}">${active ? "✓ 配戴中" : (owned ? "配戴" : `⭐ ${f.price.toLocaleString()}`)}</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      showModal("👑 自由拼裝稱號 ＆ 發光頭像框", `
+        <div class="space-y-3">
+          <div class="p-3 rounded-2xl bg-gradient-to-r from-amber-50 via-pink-50 to-sky-50 border-2 border-pink-200 flex items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-12 h-12 rounded-2xl bg-white border-2 border-pink-300 flex items-center justify-center text-2xl shrink-0 ${curFr.cls}">🐾</div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold text-stone-500">目前名牌預覽</div>
+                <div class="text-sm sm:text-base font-black text-pink-800 truncate">👑 ${getComposedTitleText()}</div>
+              </div>
+            </div>
+            <span class="text-xs font-black bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-full whitespace-nowrap shrink-0">⭐ ${(state.stars || 0).toLocaleString()}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button id="tfs-tab-title" class="py-2 rounded-xl text-xs font-black border-2 ${tab === "title" ? "bg-pink-500 text-white border-pink-600" : "bg-white text-stone-600 border-stone-200"}">🧩 自由拼裝稱號</button>
+            <button id="tfs-tab-frame" class="py-2 rounded-xl text-xs font-black border-2 ${tab === "frame" ? "bg-purple-500 text-white border-purple-600" : "bg-white text-stone-600 border-stone-200"}">✨ 發光頭像框</button>
+          </div>
+          <div id="tfs-msg" class="hidden text-center text-xs font-black text-rose-600"></div>
+          ${tab === "title" ? titleBody : frameBody}
+          <button id="tfs-back-cottage" class="sanrio-btn w-full py-2.5 rounded-2xl bg-stone-200 text-stone-700 font-black text-xs">🏠 前往冒險小屋</button>
+        </div>
+      `);
+
+      document.getElementById("tfs-tab-title").addEventListener("click", () => { SFX.click(); openTitleAndFrameStudio("title"); });
+      document.getElementById("tfs-tab-frame").addEventListener("click", () => { SFX.click(); openTitleAndFrameStudio("frame"); });
+      document.getElementById("tfs-back-cottage").addEventListener("click", () => { SFX.click(); openShopAndCottageModal(); });
+
+      const showErr = (txt) => {
+        const m = document.getElementById("tfs-msg");
+        if (m) { m.classList.remove("hidden"); m.textContent = txt; }
+        SFX.hit();
+      };
+
+      document.querySelectorAll(".pick-pre-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-pick-pre");
+          const obj = TITLE_PREFIXES.find(x => x.id === id);
+          if (!obj) return;
+          if (!state.ownedTitlePre.includes(id)) {
+            if ((state.stars || 0) < obj.price) return showErr(`⚠️ 星星不夠喔！鑄造此詞條需要 ${obj.price} ⭐。`);
+            state.stars -= obj.price;
+            state.ownedTitlePre.push(id);
+            SFX.win();
+          } else SFX.click();
+          state.activeTitlePre = id;
+          saveState(); renderHUD(); openTitleAndFrameStudio("title");
+        });
+      });
+
+      document.querySelectorAll(".pick-suf-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-pick-suf");
+          const obj = TITLE_SUFFIXES.find(x => x.id === id);
+          if (!obj) return;
+          if (!state.ownedTitleSuf.includes(id)) {
+            if ((state.stars || 0) < obj.price) return showErr(`⚠️ 星星不夠喔！鑄造此詞條需要 ${obj.price} ⭐。`);
+            state.stars -= obj.price;
+            state.ownedTitleSuf.push(id);
+            SFX.win();
+          } else SFX.click();
+          state.activeTitleSuf = id;
+          saveState(); renderHUD(); openTitleAndFrameStudio("title");
+        });
+      });
+
+      document.querySelectorAll(".pick-frame-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-pick-frame");
+          const obj = AVATAR_FRAMES.find(x => x.id === id);
+          if (!obj) return;
+          if (!state.ownedFrames.includes(id)) {
+            if ((state.stars || 0) < obj.price) return showErr(`⚠️ 星星不夠喔！解鎖此頭像框需要 ${obj.price.toLocaleString()} ⭐。`);
+            state.stars -= obj.price;
+            state.ownedFrames.push(id);
+            SFX.win();
+          } else SFX.click();
+          state.activeFrame = id;
+          saveState(); renderHUD(); openTitleAndFrameStudio("frame");
+        });
+      });
+    }
+
+    function bindCottageRoomAndExtrasEvents() {
+      document.querySelectorAll(".pick-room-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const rid = btn.getAttribute("data-pick-room");
+          const def = COTTAGE_ROOM_DEFS.find(r => r.id === rid);
+          if (!def) return;
+          if (state.unlockedRooms.includes(rid)) {
+            SFX.click();
+            saveLegacyStateIntoActiveRoom();
+            state.activeRoomId = rid;
+            loadActiveRoomIntoLegacyState();
+            previewBgId = null; previewItemId = null;
+            saveState();
+            openShopAndCottageModal();
+          } else {
+            showModal(`🏡 擴建「${def.icon} ${def.name}」`, `
+              <div class="text-center space-y-3 py-2">
+                <div class="text-5xl">${def.icon}</div>
+                <div class="text-base font-black text-pink-800">${def.name}</div>
+                <p class="text-xs sm:text-sm font-bold text-stone-600 leading-relaxed">${def.desc}</p>
+                <div class="text-xs font-black text-amber-800 bg-amber-50 border border-amber-200 rounded-xl py-2">擴建費用：⭐ ${def.price.toLocaleString()}（目前擁有 ⭐ ${(state.stars || 0).toLocaleString()}）</div>
+                <div id="rm-buy-err" class="hidden text-xs font-black text-rose-600"></div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button id="rm-cancel" class="sanrio-btn py-2.5 rounded-xl bg-stone-200 text-stone-700 font-black text-xs">先等等</button>
+                  <button id="rm-confirm" class="sanrio-btn py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-pink-500 text-white font-black text-xs">✨ 立刻擴建！</button>
+                </div>
+              </div>
+            `);
+            document.getElementById("rm-cancel").addEventListener("click", () => { SFX.click(); openShopAndCottageModal(); });
+            document.getElementById("rm-confirm").addEventListener("click", () => {
+              if ((state.stars || 0) < def.price) {
+                const e = document.getElementById("rm-buy-err");
+                if (e) { e.classList.remove("hidden"); e.textContent = "⚠️ 星星還不夠喔，多闖幾關再來擴建吧！"; }
+                SFX.hit(); return;
+              }
+              saveLegacyStateIntoActiveRoom();
+              state.stars -= def.price;
+              state.unlockedRooms.push(rid);
+              if (!Array.isArray(state.ownedBgs)) state.ownedBgs = ["bg_default"];
+              if (!state.ownedBgs.includes(def.defaultBg)) state.ownedBgs.push(def.defaultBg);
+              state.activeRoomId = rid;
+              loadActiveRoomIntoLegacyState();
+              saveState(); renderHUD(); SFX.win();
+              if (typeof confetti === "function") confetti({ particleCount: 70, spread: 75, origin: { y: 0.55 } });
+              openShopAndCottageModal();
+            });
+          }
+        });
+      });
+
+      const cbBtn = document.getElementById("btn-cottage-chalkboard");
+      if (cbBtn) cbBtn.addEventListener("click", (e) => { e.stopPropagation(); SFX.click(); openChalkboardModal(); });
+      const wBtn1 = document.getElementById("btn-cottage-weather");
+      if (wBtn1) wBtn1.addEventListener("click", (e) => { e.stopPropagation(); SFX.click(); openWeatherOrbModal(); });
+      const wBtn2 = document.getElementById("btn-cottage-weather-bar");
+      if (wBtn2) wBtn2.addEventListener("click", () => { SFX.click(); openWeatherOrbModal(); });
+      const tBtn = document.getElementById("btn-open-title-studio");
+      if (tBtn) tBtn.addEventListener("click", () => { SFX.click(); openTitleAndFrameStudio("title"); });
+
+      const teaBtn = document.getElementById("btn-room-teaparty");
+      if (teaBtn) {
+        teaBtn.addEventListener("click", () => {
+          if (state.teaPartyBuff) { showCottageBubble("🍰 下午茶元氣 Buff 已經生效中，快去闖關拿 +10% EXP 吧！"); return; }
+          if ((state.stars || 0) < 200) { showCottageBubble("⚠️ 辦下午茶派對需要 200 ⭐ 喔！"); SFX.hit(); return; }
+          state.stars -= 200;
+          state.teaPartyBuff = true;
+          state.bondExp = (state.bondExp || 0) + 5;
+          saveState(); renderHUD(); SFX.win();
+          if (typeof confetti === "function") confetti({ particleCount: 45, spread: 60, origin: { y: 0.5 } });
+          openShopAndCottageModal();
+          setTimeout(() => showCottageBubble("🍰 乾杯！雙星默契 +5，下一場戰鬥 EXP +10%！"), 90);
+        });
+      }
+
+      const wishBtn = document.getElementById("btn-room-wishstar");
+      if (wishBtn) {
+        wishBtn.addEventListener("click", () => {
+          const today = new Date().toISOString().slice(0, 10);
+          if (state.lastWishDate === today) { showCottageBubble("🌠 今天已經向流星許過願囉，明天晚上再來吧！"); return; }
+          if ((state.stars || 0) < 300) { showCottageBubble("⚠️ 向流星許願需要 300 ⭐ 喔！"); SFX.hit(); return; }
+          state.stars -= 300;
+          state.lastWishDate = today;
+          const fortunes = [
+            { f: "🌟 大吉｜今日靈感大爆發，難題都能迎刃而解！", gift: "🍬 雙倍幸運糖 ×1", fn: () => { if (!state.bag) state.bag = {}; state.bag.item_candy = (state.bag.item_candy || 0) + 1; } },
+            { f: "✨ 上吉｜星光守護著你，連擊手感超級順！", gift: "🛡️ 黃金備用盾 ×1", fn: () => { if (!state.bag) state.bag = {}; state.bag.item_shield = (state.bag.item_shield || 0) + 1; } },
+            { f: "🌈 幸運｜雙星與小跟班今天特別黏你喔！", gift: "💕 雙星默契 +12", fn: () => { state.bondExp = (state.bondExp || 0) + 12; } }
+          ];
+          const pick = fortunes[Math.floor(Math.random() * fortunes.length)];
+          pick.fn();
+          saveState(); renderHUD(); SFX.win();
+          if (typeof confetti === "function") confetti({ particleCount: 55, spread: 70, origin: { y: 0.5 } });
+          showModal("🌠 流星許願幸運籤", `
+            <div class="text-center space-y-3 py-2">
+              <div class="text-5xl">🌠✨</div>
+              <div class="text-base font-black text-indigo-900">${pick.f}</div>
+              <div class="inline-block px-4 py-1.5 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-900 text-sm font-black">獲得流星禮物：${pick.gift}</div>
+              <button id="wish-ok" class="sanrio-btn w-full py-2.5 rounded-2xl bg-indigo-500 text-white font-black text-sm">🏠 開心收下回陽台</button>
+            </div>
+          `);
+          document.getElementById("wish-ok").addEventListener("click", () => { SFX.click(); openShopAndCottageModal(); });
+        });
+      }
+    }
+
+    // Bind main header avatar frame & custom title pill clicks
+    const hudAvBtn = document.getElementById("hud-avatar-frame");
+    if (hudAvBtn) hudAvBtn.addEventListener("click", () => { SFX.click(); openTitleAndFrameStudio("frame"); });
+    const hudTiBtn = document.getElementById("hud-custom-title");
+    if (hudTiBtn) hudTiBtn.addEventListener("click", () => { SFX.click(); openTitleAndFrameStudio("title"); });
+    renderTitleAndFrameHUD();
 
 
     // ====== Scheme C Eye-Care Font Scale & Mobile Drawer Controls ======
