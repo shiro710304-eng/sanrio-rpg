@@ -130,6 +130,37 @@
 
     .anim-hero-idle { animation: heroIdle 2.4s ease-in-out infinite; }
     .anim-monster-idle { animation: monsterIdle 2.6s ease-in-out infinite; }
+    @keyframes auraPulse {
+      0%, 100% { transform: scale(0.92); opacity: 0.55; }
+      50% { transform: scale(1.08); opacity: 0.92; }
+    }
+    @keyframes ringSpinCW {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes ringSpinCCW {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes particleFloat {
+      0%, 100% { transform: translateY(0px) scale(0.86); opacity: 0.6; }
+      50% { transform: translateY(-9px) scale(1.14); opacity: 1; }
+    }
+    @keyframes bossPulse {
+      0%, 100% { filter: drop-shadow(0 0 7px var(--aura-color, rgba(236,72,153,0.65))); }
+      50% { filter: drop-shadow(0 0 16px var(--aura-color, rgba(236,72,153,0.95))); }
+    }
+    .monster-aura-glow { animation: auraPulse 2.4s ease-in-out infinite; }
+    .monster-magic-ring-cw { animation: ringSpinCW 11s linear infinite; }
+    .monster-magic-ring-ccw { animation: ringSpinCCW 8s linear infinite; }
+    .monster-fx-particle {
+      position: absolute;
+      pointer-events: none;
+      animation: particleFloat 2.2s ease-in-out infinite;
+      text-shadow: 0 1px 4px rgba(255,255,255,0.9);
+      line-height: 1;
+    }
+    .monster-boss-glow { animation: bossPulse 2.2s ease-in-out infinite; }
     .anim-hero-attack { animation: heroAttack 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
     .anim-partner-cheer { animation: partnerCheer 0.55s ease; }
     .anim-monster-hit { animation: monsterHit 0.5s ease; }
@@ -421,11 +452,13 @@
               </div>
             </div>
 
-            <div class="relative flex items-end justify-center h-32 sm:h-44 w-full">
-              <div id="monster-wrap" class="w-24 h-24 sm:w-40 sm:h-40 anim-monster-idle relative">
-                <img referrerpolicy="no-referrer" id="battle-monster-img" src="https://drive.google.com/thumbnail?id=1AMr0n1xxOhgFZsPl2FaUgkvlPLb66Kv3&sz=w800" alt="關卡怪物" class="w-full h-full object-contain sprite-cutout" />
+            <div id="monster-stage-box" class="relative flex items-end justify-center h-36 sm:h-48 w-full">
+              <div id="monster-wrap" class="w-20 h-20 sm:w-28 sm:h-28 origin-bottom anim-monster-idle relative flex items-end justify-center">
+                <div id="monster-aura-layer" class="absolute inset-0 pointer-events-none flex items-center justify-center z-0"></div>
+                <img referrerpolicy="no-referrer" id="battle-monster-img" src="https://drive.google.com/thumbnail?id=1AMr0n1xxOhgFZsPl2FaUgkvlPLb66Kv3&sz=w800" alt="關卡怪物" class="w-full h-full object-contain sprite-cutout relative z-10" />
+                <div id="monster-particles-layer" class="absolute inset-0 pointer-events-none z-20 overflow-visible"></div>
               </div>
-              <div id="fx-layer" class="absolute inset-0 pointer-events-none flex items-center justify-center"></div>
+              <div id="fx-layer" class="absolute inset-0 pointer-events-none flex items-center justify-center z-30"></div>
             </div>
           </div>
         </div>
@@ -2527,72 +2560,125 @@
       cardsGrid.appendChild(subjectBar);
     }
 
-    function openSubjectStagesModal(subj) {
+    function openSubjectStagesModal(subj, activeTier = null) {
       const subjectStyle = {
-        "國語": { icon: "🌸", card: "bg-pink-50 border-pink-200 hover:bg-pink-100", badge: "bg-pink-200 text-pink-800", tab: "bg-pink-500 text-white border-pink-600" },
-        "數學": { icon: "⭐", card: "bg-sky-50 border-sky-200 hover:bg-sky-100", badge: "bg-sky-200 text-sky-800", tab: "bg-sky-500 text-white border-sky-600" },
-        "自然": { icon: "🌿", card: "bg-emerald-50 border-emerald-200 hover:bg-emerald-100", badge: "bg-emerald-200 text-emerald-800", tab: "bg-emerald-500 text-white border-emerald-600" },
-        "社會": { icon: "⛵", card: "bg-amber-50 border-amber-200 hover:bg-amber-100", badge: "bg-amber-200 text-amber-800", tab: "bg-amber-500 text-white border-amber-600" },
-        "英文": { icon: "🪄", card: "bg-purple-50 border-purple-200 hover:bg-purple-100", badge: "bg-purple-200 text-purple-800", tab: "bg-purple-500 text-white border-purple-600" }
+        "國語": { icon: "🌸", card: "bg-pink-50 border-pink-200 hover:bg-pink-100", badge: "bg-pink-200 text-pink-800", tab: "bg-pink-500 text-white border-pink-600", bar: "bg-pink-400" },
+        "數學": { icon: "⭐", card: "bg-sky-50 border-sky-200 hover:bg-sky-100", badge: "bg-sky-200 text-sky-800", tab: "bg-sky-500 text-white border-sky-600", bar: "bg-sky-400" },
+        "自然": { icon: "🌿", card: "bg-emerald-50 border-emerald-200 hover:bg-emerald-100", badge: "bg-emerald-200 text-emerald-800", tab: "bg-emerald-500 text-white border-emerald-600", bar: "bg-emerald-400" },
+        "社會": { icon: "⛵", card: "bg-amber-50 border-amber-200 hover:bg-amber-100", badge: "bg-amber-200 text-amber-800", tab: "bg-amber-500 text-white border-amber-600", bar: "bg-amber-400" },
+        "英文": { icon: "🪄", card: "bg-purple-50 border-purple-200 hover:bg-purple-100", badge: "bg-purple-200 text-purple-800", tab: "bg-purple-500 text-white border-purple-600", bar: "bg-purple-400" }
       };
       const allSubjects = ["國語", "數學", "自然", "社會", "英文"];
       const stStyle = subjectStyle[subj] || subjectStyle["國語"];
       const subjStages = STAGES.filter(s => s.subject === subj);
       const luckyIds = getDailyBonusStages();
 
+      // 5 科等寬 5 格橫排（手機不換行、單手好點）
       const swTabs = allSubjects.map(s => {
         const st = subjectStyle[s];
-        return `<button data-pick-subj="${s}" class="pick-subj-tab px-2.5 py-1 rounded-full text-xs font-black border whitespace-nowrap ${s === subj ? st.tab : "bg-white text-stone-700 border-pink-200 hover:bg-pink-50"}">${st.icon} ${s}</button>`;
+        return `<button data-pick-subj="${s}" class="pick-subj-tab py-2 px-1 rounded-xl text-xs sm:text-sm font-black border text-center whitespace-nowrap transition-all ${s === subj ? st.tab + " shadow-sm" : "bg-white text-stone-700 border-pink-200 hover:bg-pink-50"}">${st.icon}${s}</button>`;
       }).join("");
 
       const tiers = [
-        { key: "normal", label: "🟢 普通級（第 1～3 關）", desc: "自由挑戰" },
-        { key: "elite", label: "🔵 菁英級（第 4～6 關）", desc: "需通過普通級全部 3 關" },
-        { key: "hero", label: "🟣 英雄級（第 7～9 關）", desc: "需通過菁英級全部 3 關" }
+        { key: "normal", icon: "🟢", short: "普通", label: "普通級（1～3 關）", desc: "自由挑戰", activeCls: "bg-emerald-500 text-white border-emerald-600 shadow-sm" },
+        { key: "elite", icon: "🔵", short: "菁英", label: "菁英級（4～6 關）", desc: "通過普通級 3 關解鎖", activeCls: "bg-sky-500 text-white border-sky-600 shadow-sm" },
+        { key: "hero", icon: "🟣", short: "英雄", label: "英雄級（7～9 關）", desc: "通過菁英級 3 關解鎖", activeCls: "bg-purple-500 text-white border-purple-600 shadow-sm" }
       ];
 
-      const tiersHtml = tiers.map(tr => {
-        const tierStages = subjStages.filter(s => s.tier === tr.key);
-        const cards = tierStages.map(st => {
-          const unlocked = isStageUnlocked(st);
-          const mInfo = getStageMasteryInfo(st.id);
-          const isLucky = luckyIds.includes(st.id);
-          const starStr = mInfo.stars >= 4 ? "👑★★★" : ("★".repeat(Math.min(3, mInfo.stars)) + "☆".repeat(Math.max(0, 3 - mInfo.stars)));
-          const nextHint = !unlocked ? "🔒 完成前一階級解鎖"
-            : (mInfo.stars >= 3 ? "👑 已達成 ★★★ 單元精通！"
-            : (mInfo.stars === 2 ? `🔥 再答對 ${30 - mInfo.count} 題拿 ★★★ (+200⭐)`
-            : (mInfo.stars === 1 ? `⭐ 再答對 ${Math.max(1, 15 - mInfo.count)} 題拿 ★★ (+80⭐)` : "⚔️ 通關 1 次即可獲得 ★")));
-          return `
-            <button data-launch-stage="${st.id}" class="launch-stage-btn sanrio-btn p-2.5 rounded-2xl border-2 text-left flex flex-col justify-between ${unlocked ? stStyle.card : "bg-stone-100 border-stone-200 opacity-70"}">
-              <div class="flex items-center justify-between w-full gap-1">
-                <span class="text-[11px] font-black px-2 py-0.5 rounded-full whitespace-nowrap ${unlocked ? stStyle.badge : "bg-stone-200 text-stone-600"}">${st.id}${isLucky ? " 🔥2x" : ""}</span>
-                <span class="text-xs font-black text-amber-500 whitespace-nowrap">${!unlocked ? "🔒 未解鎖" : `${starStr} ${mInfo.count}/${mInfo.total}${st.subject === "數學" ? " ♾️" : ""}`}</span>
-              </div>
-              <div class="text-xs sm:text-sm font-black text-stone-800 mt-1">${st.name}</div>
-              <div class="text-[11px] text-stone-500 mt-0.5">守關：${st.monsterName}</div>
-              <div class="text-[11px] font-bold mt-0.5 ${mInfo.stars >= 3 ? "text-emerald-600" : "text-amber-700"}">${nextHint}</div>
-            </button>
-          `;
-        }).join("");
+      // 計算每個階級的解鎖狀態與星數進度
+      const tierStats = {};
+      tiers.forEach(tr => {
+        const list = subjStages.filter(s => s.tier === tr.key);
+        const unlocked = list.length > 0 && isStageUnlocked(list[0]);
+        const starsSum = list.reduce((acc, s) => acc + Math.min(3, getStageMasteryInfo(s.id).stars), 0);
+        const maxStars = list.length * 3;
+        tierStats[tr.key] = { list, unlocked, starsSum, maxStars };
+      });
+
+      // 未指定分頁時，自動定位在目前最新解鎖的最高階級
+      let selectedTier = activeTier;
+      if (!selectedTier || !tierStats[selectedTier]) {
+        if (tierStats.hero.unlocked) selectedTier = "hero";
+        else if (tierStats.elite.unlocked) selectedTier = "elite";
+        else selectedTier = "normal";
+      }
+
+      const tierTabsHtml = tiers.map(tr => {
+        const ts = tierStats[tr.key];
+        const isActive = tr.key === selectedTier;
+        const subText = ts.unlocked ? `${ts.starsSum}/${ts.maxStars}★` : "🔒 未解鎖";
         return `
-          <div class="space-y-1.5">
-            <div class="flex flex-wrap items-center justify-between gap-1 text-xs font-black text-stone-700">
-              <span>${tr.label}</span>
-              <span class="text-[11px] font-medium text-stone-500">${tr.desc}</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">${cards}</div>
-          </div>
+          <button data-pick-tier="${tr.key}" class="pick-tier-tab py-2 px-1.5 rounded-2xl border-2 text-center transition-all ${isActive ? tr.activeCls : (ts.unlocked ? "bg-white text-stone-700 border-stone-200 hover:bg-stone-50" : "bg-stone-100 text-stone-500 border-stone-200")}">
+            <div class="text-xs sm:text-sm font-black leading-tight">${tr.icon} ${tr.short}</div>
+            <div class="text-[11px] font-bold mt-0.5 ${isActive ? "text-white/90" : (ts.unlocked ? "text-amber-600" : "text-stone-400")}">${subText}</div>
+          </button>
         `;
       }).join("");
 
-      const totalSubjQs = subjStages.reduce((acc, s) => acc + s.questions.length, 0);
+      const curTierObj = tiers.find(t => t.key === selectedTier) || tiers[0];
+      const curTierStages = tierStats[selectedTier].list;
+
+      const cardsHtml = curTierStages.map(st => {
+        const unlocked = isStageUnlocked(st);
+        const mInfo = getStageMasteryInfo(st.id);
+        const isLucky = luckyIds.includes(st.id);
+        const isFinalBoss = !!st.isFinalBoss || Number(st.stageNum) === 9;
+        const starStr = mInfo.stars >= 4 ? "👑★★★" : ("★".repeat(Math.min(3, mInfo.stars)) + "☆".repeat(Math.max(0, 3 - mInfo.stars)));
+        const pct = Math.min(100, Math.round((mInfo.count / Math.max(1, mInfo.t3)) * 100));
+        const nextHint = !unlocked ? `🔒 ${getLockReason(st)}`
+          : (mInfo.stars >= 3 ? `👑 已達成 ★★★ 單元精通！（累積 ${mInfo.count}/${mInfo.total} 題${st.subject === "數學" ? " ♾️" : ""}）`
+          : (mInfo.stars === 2 ? `🔥 再答對 ${Math.max(1, mInfo.t3 - mInfo.count)} 題拿 ★★★（+200⭐）`
+          : (mInfo.stars === 1 ? `⭐ 再答對 ${Math.max(1, mInfo.t2 - mInfo.count)} 題拿 ★★（+80⭐）` : `⚔️ 通關 1 次即可獲得 ★（本關共 ${mInfo.total} 題）`)));
+
+        return `
+          <button data-launch-stage="${st.id}" class="launch-stage-btn sanrio-btn w-full p-3.5 sm:p-4 rounded-2xl border-2 text-left transition-all ${unlocked ? stStyle.card : "bg-stone-100 border-stone-200 opacity-75"}">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-black px-2.5 py-0.5 rounded-full whitespace-nowrap ${unlocked ? stStyle.badge : "bg-stone-200 text-stone-600"}">${st.id}${isLucky ? " 🔥2x" : ""}</span>
+                ${isFinalBoss ? `<span class="text-[11px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-white whitespace-nowrap">👑 最終魔王</span>` : ""}
+              </div>
+              <span class="text-sm sm:text-base font-black text-amber-500 whitespace-nowrap">${!unlocked ? "🔒 未解鎖" : starStr}</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 mt-2">
+              <div class="min-w-0 flex-1">
+                <div class="text-[15px] sm:text-base font-black text-stone-800 leading-snug">${st.name}</div>
+                <div class="text-xs sm:text-sm font-bold text-stone-600 mt-1">👾 守關：${st.monsterName}</div>
+              </div>
+              ${unlocked
+                ? `<span class="shrink-0 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-black border shadow-sm whitespace-nowrap ${stStyle.tab}">開戰 ➜</span>`
+                : `<span class="shrink-0 px-2.5 py-1.5 rounded-xl text-xs font-black bg-stone-200 text-stone-500 whitespace-nowrap">🔒 鎖定</span>`}
+            </div>
+
+            ${unlocked ? `
+              <div class="mt-2.5 space-y-1">
+                <div class="w-full h-2 bg-white/80 rounded-full overflow-hidden border border-stone-200/80">
+                  <div class="h-full ${mInfo.stars >= 3 ? "bg-emerald-400" : stStyle.bar} transition-all duration-300" style="width: ${pct}%;"></div>
+                </div>
+                <div class="flex items-center justify-between gap-2 text-xs sm:text-[13px] font-bold ${mInfo.stars >= 3 ? "text-emerald-700" : "text-amber-800"}">
+                  <span class="leading-snug">${nextHint}</span>
+                  <span class="text-[11px] sm:text-xs font-black text-stone-500 whitespace-nowrap shrink-0">${mInfo.count}/${mInfo.total} 題</span>
+                </div>
+              </div>
+            ` : `
+              <div class="mt-2 text-xs font-bold text-stone-500">${nextHint}</div>
+            `}
+          </button>
+        `;
+      }).join("");
+
       showModal(`${stStyle.icon} ${subj}科關卡（9 關）`, `
         <div class="space-y-3">
-          <div class="flex flex-wrap gap-1.5 pb-2 border-b border-pink-100">${swTabs}</div>
-          <div class="text-[11px] sm:text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 rounded-xl px-3 py-1.5">
-            💡 熟練度規則：15 題 ★★(+80⭐)｜30 題 ★★★(+200⭐)｜50 題 👑殿堂(+150⭐)
+          <div class="grid grid-cols-5 gap-1.5 pb-2.5 border-b border-pink-100">${swTabs}</div>
+          <div class="grid grid-cols-3 gap-1.5">${tierTabsHtml}</div>
+          <div class="flex items-center justify-between text-xs font-bold text-stone-600 px-1">
+            <span>${curTierObj.icon} ${curTierObj.label}</span>
+            <span class="text-[11px] text-stone-500">${curTierObj.desc}</span>
           </div>
-          ${tiersHtml}
+          <div class="grid grid-cols-1 gap-2.5">${cardsHtml}</div>
+          <div class="text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 rounded-xl px-3 py-2 leading-relaxed">
+            💡 熟練度：通關拿 ★｜答對題庫 50% 拿 ★★(+80⭐)｜達 85% 拿 ★★★(+200⭐)
+          </div>
         </div>
       `);
 
@@ -2600,6 +2686,13 @@
         btn.addEventListener("click", () => {
           SFX.click();
           openSubjectStagesModal(btn.getAttribute("data-pick-subj"));
+        });
+      });
+
+      document.querySelectorAll(".pick-tier-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          openSubjectStagesModal(subj, btn.getAttribute("data-pick-tier"));
         });
       });
 
@@ -2888,6 +2981,85 @@
       openBattleView();
     }
 
+    function applyMonsterVisualEffects(stage, mode = "stage") {
+      const wrap = document.getElementById("monster-wrap");
+      const img = document.getElementById("battle-monster-img");
+      const auraLayer = document.getElementById("monster-aura-layer");
+      const partLayer = document.getElementById("monster-particles-layer");
+      if (!wrap || !auraLayer || !partLayer) return;
+
+      const isFinalBoss = mode === "stage" && stage && (stage.isFinalBoss || Number(stage.stageNum) === 9 || (stage.tier === "hero" && stage.isBoss));
+      const visualTier = isFinalBoss ? "finalBoss"
+        : ((mode === "stage" && stage && stage.tier === "hero") || mode === "dungeon" ? "hero"
+        : ((mode === "stage" && stage && stage.tier === "elite") || mode === "tower" ? "elite" : "normal"));
+
+      // 1.6 倍階梯體型（普通 80px → 菁英 96px → 英雄 112px → 魔王 128px；電腦版 112→136→160→184px）
+      const sizeClasses = {
+        normal: "w-20 h-20 sm:w-28 sm:h-28",
+        elite: "w-24 h-24 sm:w-[136px] sm:h-[136px]",
+        hero: "w-28 h-28 sm:w-40 sm:h-40",
+        finalBoss: "w-32 h-32 sm:w-[184px] sm:h-[184px]"
+      };
+      wrap.className = `${sizeClasses[visualTier]} origin-bottom anim-monster-idle relative flex items-end justify-center`;
+
+      const themes = {
+        "國語": { glow: "rgba(244,114,182,0.58)", ring1: "#ec4899", ring2: "#f9a8d4", particles: ["🌸", "✿", "💮", "🌸", "✿", "✨"] },
+        "數學": { glow: "rgba(56,189,248,0.58)", ring1: "#0284c7", ring2: "#7dd3fc", particles: ["✦", "◈", "⚙️", "✦", "◈", "✨"] },
+        "自然": { glow: "rgba(52,211,153,0.58)", ring1: "#059669", ring2: "#6ee7b7", particles: ["🍃", "✨", "🌿", "🍃", "🌱", "✨"] },
+        "社會": { glow: "rgba(251,191,36,0.58)", ring1: "#d97706", ring2: "#fcd34d", particles: ["⭐", "🧭", "✦", "⭐", "✨", "🧭"] },
+        "英文": { glow: "rgba(168,85,247,0.58)", ring1: "#7c3aed", ring2: "#d8b4fe", particles: ["✧", "🪄", "✨", "✧", "⭐", "🪄"] }
+      };
+      const subj = (stage && stage.subject) ? stage.subject : "英文";
+      const th = themes[subj] || themes["英文"];
+
+      if (img) {
+        img.style.setProperty("--aura-color", th.glow);
+        img.classList.toggle("monster-boss-glow", visualTier === "finalBoss" || visualTier === "hero");
+      }
+
+      if (visualTier === "normal") {
+        auraLayer.innerHTML = "";
+        partLayer.innerHTML = "";
+        return;
+      }
+
+      if (visualTier === "elite") {
+        auraLayer.innerHTML = `
+          <div class="monster-aura-glow w-[112%] h-[112%] rounded-full" style="background: radial-gradient(circle, ${th.glow} 0%, rgba(255,255,255,0) 70%);"></div>
+        `;
+        partLayer.innerHTML = `
+          <span class="monster-fx-particle text-xs sm:text-sm" style="top: 4%; left: -8%; animation-delay: 0s;">${th.particles[0]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="top: 10%; right: -8%; animation-delay: 0.9s;">${th.particles[1]}</span>
+        `;
+      } else if (visualTier === "hero") {
+        auraLayer.innerHTML = `
+          <div class="monster-aura-glow absolute w-[118%] h-[118%] rounded-full" style="background: radial-gradient(circle, ${th.glow} 0%, rgba(255,255,255,0) 72%);"></div>
+          <div class="monster-magic-ring-cw absolute w-[108%] h-[108%] rounded-full border-2 border-dashed opacity-75" style="border-color: ${th.ring1};"></div>
+        `;
+        partLayer.innerHTML = `
+          <span class="monster-fx-particle text-xs sm:text-base" style="top: -4%; left: -8%; animation-delay: 0s;">${th.particles[0]}</span>
+          <span class="monster-fx-particle text-xs sm:text-base" style="top: 2%; right: -8%; animation-delay: 0.6s;">${th.particles[1]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="bottom: 18%; left: -12%; animation-delay: 1.2s;">${th.particles[2]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="bottom: 22%; right: -12%; animation-delay: 1.7s;">${th.particles[3]}</span>
+        `;
+      } else {
+        // finalBoss: 雙層反向旋轉魔法陣 ＋ 6 顆科目屬性微粒
+        auraLayer.innerHTML = `
+          <div class="monster-aura-glow absolute w-[124%] h-[124%] rounded-full" style="background: radial-gradient(circle, ${th.glow} 0%, rgba(255,255,255,0) 74%);"></div>
+          <div class="monster-magic-ring-cw absolute w-[112%] h-[112%] rounded-full border-[2.5px] border-dashed opacity-85" style="border-color: ${th.ring1};"></div>
+          <div class="monster-magic-ring-ccw absolute w-[94%] h-[94%] rounded-full border-2 border-dotted opacity-90" style="border-color: ${th.ring2};"></div>
+        `;
+        partLayer.innerHTML = `
+          <span class="monster-fx-particle text-sm sm:text-base" style="top: -6%; left: -8%; animation-delay: 0s;">${th.particles[0]}</span>
+          <span class="monster-fx-particle text-sm sm:text-base" style="top: -4%; right: -8%; animation-delay: 0.45s;">${th.particles[1]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="top: 38%; left: -14%; animation-delay: 0.9s;">${th.particles[2]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="top: 40%; right: -14%; animation-delay: 1.35s;">${th.particles[3]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="bottom: 10%; left: -6%; animation-delay: 1.75s;">${th.particles[4]}</span>
+          <span class="monster-fx-particle text-xs sm:text-sm" style="bottom: 12%; right: -6%; animation-delay: 2.1s;">${th.particles[5]}</span>
+        `;
+      }
+    }
+
     function openBattleView() {
       const hdr = document.getElementById("main-header");
       if (hdr) hdr.classList.add("hidden");
@@ -2906,6 +3078,7 @@
 
       document.getElementById("battle-monster-name").textContent = battle.stage.monsterName;
       document.getElementById("battle-monster-img").src = battle.stage.monsterImg;
+      applyMonsterVisualEffects(battle.stage, battle.mode);
       document.getElementById("battle-stage-title").textContent = battle.stage.name + (battle.mode === "stage" && battle.stage.tier === "hero" ? " ⚠️答錯-2盾" : "");
 
       const badge = document.getElementById("battle-stage-badge");
@@ -3219,7 +3392,30 @@
       const nextBtn = document.getElementById("btn-next-q");
       const isHeroDefeat = (battle.mode === "stage" && battle.stage && battle.stage.tier === "hero" && battle.shields <= 0);
       const isLast = battle.qIndex >= battle.questions.length - 1 || battle.monsterHp <= 0;
-      nextBtn.textContent = isHeroDefeat ? "查看挑戰結果 💔" : (isLast ? "查看冒險結算 🏆" : "下一題 ➜");
+      const finalNextLabel = isHeroDefeat ? "查看挑戰結果 💔" : (isLast ? "查看冒險結算 🏆" : "下一題 ➜");
+      if (battleExplainLockTimer) { clearInterval(battleExplainLockTimer); battleExplainLockTimer = null; }
+      if (!isCorrect && (battle.mode === "stage" || battle.mode === "dungeon")) {
+        let secLeft = 3;
+        nextBtn.disabled = true;
+        nextBtn.classList.add("opacity-60", "cursor-not-allowed");
+        nextBtn.textContent = `📖 請先看解析 (${secLeft} 秒)`;
+        battleExplainLockTimer = setInterval(() => {
+          secLeft -= 1;
+          if (secLeft <= 0) {
+            clearInterval(battleExplainLockTimer);
+            battleExplainLockTimer = null;
+            nextBtn.disabled = false;
+            nextBtn.classList.remove("opacity-60", "cursor-not-allowed");
+            nextBtn.textContent = finalNextLabel;
+          } else {
+            nextBtn.textContent = `📖 請先看解析 (${secLeft} 秒)`;
+          }
+        }, 1000);
+      } else {
+        nextBtn.disabled = false;
+        nextBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        nextBtn.textContent = finalNextLabel;
+      }
       fbBox.classList.remove("hidden");
     }
 
@@ -3260,8 +3456,10 @@
     }
 
     let battleReadLockTimer = null;
+    let battleExplainLockTimer = null;
     function clearBattleReadLock() {
       if (battleReadLockTimer) { clearTimeout(battleReadLockTimer); battleReadLockTimer = null; }
+      if (battleExplainLockTimer) { clearInterval(battleExplainLockTimer); battleExplainLockTimer = null; }
     }
 
     function finishStageNotPassed() {
@@ -3577,12 +3775,12 @@
       }).join("");
 
       const monsters = [
-        { name: "墨水史萊姆", img: ASSETS.slime, desc: "（國語）喜歡把課本的字弄亂，其實很愛聽故事。" },
-        { name: "時鐘機器人", img: ASSETS.robot, desc: "（數學）肚子上有個時鐘，最喜歡考大家時間與數學題。" },
-        { name: "葉子小精靈", img: ASSETS.nature, desc: "（自然）拿著放大鏡，最愛觀察葉片氣孔與小昆蟲。" },
-        { name: "星光貓頭鷹博士", img: ASSETS.owl, desc: "（社會／Boss）熟悉台灣各地地理與歷史的守門者。" },
-        { name: "魔法書小惡魔", img: ASSETS.english, desc: "（英文）戴著巫師帽，最喜歡用英文單字變魔術。" },
-        { name: "彩虹水晶龍", img: ASSETS.dragon, desc: "（英雄Boss）天空彩虹競技場的終極守護者！" }
+        { name: "墨水史萊姆", img: ASSETS.slime, desc: "（國語專屬）喜歡把課本的字弄亂，菁英與英雄級會綻放櫻花粉墨光環。" },
+        { name: "時鐘機器人", img: ASSETS.robot, desc: "（數學專屬）肚子上有個時鐘，高階形態會展開星藍幾何魔法陣。" },
+        { name: "葉子小精靈", img: ASSETS.nature, desc: "（自然專屬）最愛觀察植物與自然奧秘，高階形態會圍繞翠綠森靈微粒。" },
+        { name: "星光貓頭鷹博士", img: ASSETS.owl, desc: "（社會專屬）熟悉地理歷史的智者，高階形態會散發金色星海羅盤光環。" },
+        { name: "魔法書小惡魔", img: ASSETS.english, desc: "（英文專屬）愛用英文單字變魔術，高階形態會啟動秘紫奧術符文陣。" },
+        { name: "彩虹水晶龍", img: ASSETS.dragon, desc: "（各科第 9 關最終魔王）會依科目化身花墨、星算、森靈、星海、魔典五大屬性魔王！" }
       ];
       const monsterHtml = monsters.map(m => {
         const keyWord = m.name.slice(0, 2);
@@ -7533,24 +7731,29 @@
         const bank = await loadGradeScript(code);
         CLOUD_GRADE = code;
         STAGES = bank.buildStages(ASSETS);
+        const SUBJECT_MONSTER_MAP = {
+          "國語": { baseName: "墨水史萊姆", img: ASSETS.slime, bossName: "花墨・彩虹水晶龍" },
+          "數學": { baseName: "時鐘機器人", img: ASSETS.robot, bossName: "星算・彩虹水晶龍" },
+          "自然": { baseName: "葉子小精靈", img: ASSETS.nature, bossName: "森靈・彩虹水晶龍" },
+          "社會": { baseName: "星光貓頭鷹博士", img: ASSETS.owl, bossName: "星海・彩虹水晶龍" },
+          "英文": { baseName: "魔法書小惡魔", img: ASSETS.english, bossName: "魔典・彩虹水晶龍" }
+        };
         STAGES.forEach(s => {
-          const nm = String(s.monsterName || "");
-          if (s.stageNum === 9 || /龍|大魔王|星王|星宮王|英語王/.test(nm)) {
+          const m = SUBJECT_MONSTER_MAP[s.subject] || SUBJECT_MONSTER_MAP["國語"];
+          const isFinalBoss = Number(s.stageNum) === 9 || (s.tier === "hero" && s.isBoss);
+          s.isFinalBoss = isFinalBoss;
+          if (isFinalBoss) {
+            s.monsterName = m.bossName;
             s.monsterImg = ASSETS.dragon;
-          } else if (/貓頭鷹|守望鳥|博士/.test(nm) || (s.tier === "elite" && s.isBoss)) {
-            s.monsterImg = ASSETS.owl;
-          } else if (/史萊姆/.test(nm)) {
-            s.monsterImg = ASSETS.slime;
-          } else if (/時鐘|守衛兵|發條|雪怪|機械/.test(nm) || (s.subject === "數學" && s.tier === "normal")) {
-            s.monsterImg = ASSETS.robot;
-          } else if (/放大鏡|自然|葉|花|森|風|兔|種子|試紙|氣壓|板塊/.test(nm) || (s.subject === "自然" && s.tier === "normal")) {
-            s.monsterImg = ASSETS.nature;
-          } else if (/書靈|字母|英文|獅王|果園|課表|日曆/.test(nm) || (s.subject === "英文" && s.tier === "normal")) {
-            s.monsterImg = ASSETS.english;
-          } else if (s.subject === "社會" && s.tier === "normal") {
-            s.monsterImg = ASSETS.owl;
-          } else if (!s.monsterImg || !String(s.monsterImg).startsWith("https://")) {
-            s.monsterImg = s.isBoss ? ASSETS.owl : ASSETS.slime;
+          } else if (s.tier === "hero") {
+            s.monsterName = `英雄・${m.baseName}`;
+            s.monsterImg = m.img;
+          } else if (s.tier === "elite") {
+            s.monsterName = `菁英・${m.baseName}`;
+            s.monsterImg = m.img;
+          } else {
+            s.monsterName = m.baseName;
+            s.monsterImg = m.img;
           }
         });
         if (typeof loadCachedCloudQuestions === "function") loadCachedCloudQuestions();
