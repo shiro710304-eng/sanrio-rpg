@@ -2360,6 +2360,8 @@
       petEgg: null,
       ownedMiniPets: {},
       activeMiniPets: [],
+      miniPetNames: {},
+      miniPetRenameCount: {},
       activeRoomId: "room1",
       unlockedRooms: ["room1"],
       cottageRooms: null,
@@ -6272,37 +6274,38 @@
               </div>
             ` : ""}
           ${previewItem ? `
-              <div class="absolute top-2.5 left-2.5 z-[70] flex items-center gap-2 bg-white/95 border-2 border-pink-300 rounded-full px-3 py-1 shadow text-xs font-black text-pink-700">
-                <span>✨ 正在預覽：${previewItem.name}</span>
+              <div class="absolute top-2 left-1/2 -translate-x-1/2 z-[70] flex items-center gap-2 bg-white/95 border-2 border-pink-300 rounded-full px-3 py-1 shadow text-xs font-black text-pink-700 whitespace-nowrap">
+                <span>✨ 預覽：${previewItem.name}</span>
                 <button id="btn-stop-preview" class="text-stone-400 hover:text-rose-600 font-black">✕</button>
               </div>
-            ` : `
-              <div class="absolute top-2.5 left-2.5 z-[70] bg-white/90 border border-pink-200 rounded-full px-2.5 py-0.5 text-[11px] font-bold text-amber-800">
-                ${selectedFurnId ? "👇 點擊地板任意位置即可移動家具！" : (hasPlaced ? "✋ 可拖曳家具，或點選家具再點地板移動" : "🐾 布丁狗與帕恰狗正在小屋散步中")}
-              </div>
-            `}
-            ${hasPlaced ? `
-              <button id="btn-reset-furn" class="sanrio-btn absolute top-2 right-2 z-[70] bg-white/95 hover:bg-pink-50 border border-pink-300 text-pink-700 rounded-full px-2.5 py-1 text-[11px] font-black shadow">
-                ↩️ 恢復預設擺位
-              </button>
             ` : ""}
             ${placedHtml}
             ${miniPetsStageHtml}
             ${weatherOverlayHtml}
-            <button id="btn-cottage-chalkboard" title="查看雙星與小跟班的誇獎留言" class="sanrio-btn absolute top-2 left-2 z-[65] px-2 py-1 rounded-xl bg-amber-900/85 hover:bg-amber-900 border-2 border-amber-300 text-amber-100 text-[10px] sm:text-xs font-black shadow">🪧 留言板</button>
-            <button id="btn-cottage-weather" title="切換小屋天氣魔法球" class="sanrio-btn absolute top-2 right-2 z-[65] px-2 py-1 rounded-full bg-white/90 hover:bg-pink-50 border-2 border-purple-300 text-purple-800 text-[10px] sm:text-xs font-black shadow">🔮 天氣球</button>
+            <button id="btn-cottage-chalkboard" title="查看雙星與小跟班的誇獎留言" class="sanrio-btn absolute top-2 left-2 z-[65] px-2.5 py-1 rounded-xl bg-amber-900/85 hover:bg-amber-900 border-2 border-amber-300 text-amber-100 text-[11px] sm:text-xs font-black shadow">🪧 留言板</button>
+            <button id="btn-cottage-weather" title="切換小屋天氣魔法球" class="sanrio-btn absolute top-2 right-2 z-[65] px-2.5 py-1 rounded-full bg-white/90 hover:bg-pink-50 border-2 border-purple-300 text-purple-800 text-[11px] sm:text-xs font-black shadow">🔮 天氣球</button>
             <div id="cottage-pet-lead" class="cottage-walker pet-draggable absolute w-[22%] aspect-square"  style="left:${cottagePos.lead.left}%; bottom:${cottagePos.lead.bottom}%; z-index:${calcDepthZ(cottagePos.lead.bottom)};">
               <div class="pet-inner relative w-full h-full" style="transform:scaleX(${cottagePos.lead.face});">
                 ${renderHeroLayersHtml(leadId, previewItem)}
               </div>
             </div>
-          ${cottageRoomExtrasHtml}
             <div id="cottage-pet-partner" class="cottage-walker pet-draggable absolute w-[20%] aspect-square" style="left:${cottagePos.partner.left}%; bottom:${cottagePos.partner.bottom}%; z-index:${calcDepthZ(cottagePos.partner.bottom)};">
               <div class="pet-inner relative w-full h-full" style="transform:scaleX(${cottagePos.partner.face});">
                 ${renderHeroLayersHtml(partnerId, previewItem)}
               </div>
             </div>
           </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+            <div class="text-[11px] font-bold text-amber-800">
+              ${selectedFurnId ? "👇 點擊地板任意位置即可移動家具，或用下方工坊縮放／翻轉！" : (hasPlaced ? "✋ 可拖曳家具，或輕點家具移動＆縮放" : "🐾 布丁狗與帕恰狗正在小屋散步中")}
+            </div>
+            ${hasPlaced ? `
+              <button id="btn-reset-furn" class="sanrio-btn shrink-0 bg-white hover:bg-pink-50 border border-pink-300 text-pink-700 rounded-full px-2.5 py-1 text-[11px] font-black shadow-sm">
+                ↩️ 恢復預設擺位
+              </button>
+            ` : ""}
+          </div>
+          ${cottageRoomExtrasHtml}
           <div class="p-2.5 rounded-2xl bg-gradient-to-r from-amber-50 via-pink-50 to-sky-50 border border-pink-200 text-[11px] font-bold text-stone-700 space-y-1">
             <div class="font-black text-pink-700">✨ 收藏總加成（持有即永久生效，免穿戴）</div>
             <div class="flex flex-wrap gap-x-2.5 gap-y-0.5 text-amber-900">
@@ -6565,7 +6568,7 @@
           SFX.click();
           const pid = el.getAttribute("data-minipet-id");
           const pet = MINI_PETS.find(x => x.id === pid);
-          if (pet) showCottageBubble(`${pet.icon} ${pet.name}：${pet.quote}`);
+          if (pet) showCottageBubble(`${pet.icon} ${getMiniPetDisplayName(pet)}：${pet.quote}`);
         });
       });
 
@@ -6944,17 +6947,68 @@
 
     function openRadarAndBackupModal() {
       const subjs = ["國語", "數學", "自然", "社會", "英文"];
+      const subjColors = { "國語": "bg-pink-400", "數學": "bg-sky-400", "自然": "bg-emerald-400", "社會": "bg-amber-400", "英文": "bg-purple-400" };
       const stats = state.subjectStats || {};
       const rates = subjs.map(s => {
         const st = stats[s] || { ok: 0, ng: 0 };
         const tot = st.ok + st.ng;
         const acc = tot > 0 ? Math.round((st.ok / tot) * 100) : 0;
-        const cleared = STAGES.filter(x => x.subject === s && (state.clearedStages || []).includes(x.id)).length;
-        const val = tot > 0 ? Math.max(15, acc) : Math.max(12, Math.round((cleared / 9) * 100));
-        return { subj: s, ok: st.ok, ng: st.ng, acc, cleared, val };
+        const subjStages = STAGES.filter(x => x.subject === s);
+        const cleared = subjStages.filter(x => (state.clearedStages || []).includes(x.id)).length;
+        const starsSum = subjStages.reduce((accS, x) => accS + Math.min(3, getStageMasteryInfo(x.id).stars), 0);
+        const maxStars = Math.max(27, subjStages.length * 3);
+        const mastPct = Math.round((starsSum / maxStars) * 100);
+        const accVal = tot > 0 ? Math.max(15, acc) : 12;
+        const mastVal = Math.max(12, mastPct);
+        return { subj: s, ok: st.ok, ng: st.ng, tot, acc, cleared, starsSum, maxStars, mastPct, accVal, mastVal };
       });
 
-      // Build SVG Pentagon Radar Chart
+      // 1. 實戰戰力與各階怪物速殺試算
+      const tb = getTreasureBonuses("");
+      const cb = getCollectionBonuses();
+      const tr = state.training || { ultLv: 0, atkLv: 0, shieldLv: 0 };
+      const lvAtk = getLevelAtkBonus();
+      const flatAtk = tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + lvAtk;
+      const ultBonus = (tr.ultLv || 0) * 10 + cb.ultBonus;
+      const ultNeed = tb.ultThreshold || 5;
+      const dmgMult = tb.dmgMult || 1;
+      const cpScore = Math.round((20 + flatAtk) * dmgMult * 12 + (state.level || 1) * 15 + (state.paragonStars || 0) * 120 + (state.treasures || []).length * 10 + (state.ownedItems || []).length * 8);
+      const cpRank = cpScore >= 2600 ? { code: "SSS 👑", cls: "from-amber-400 via-pink-500 to-purple-500 text-white" }
+        : (cpScore >= 1900 ? { code: "SS 🔥", cls: "from-rose-500 to-amber-400 text-white" }
+        : (cpScore >= 1300 ? { code: "S ⭐", cls: "from-amber-400 to-yellow-300 text-amber-950" }
+        : (cpScore >= 850 ? { code: "A 💎", cls: "from-sky-400 to-indigo-400 text-white" }
+        : (cpScore >= 450 ? { code: "B 🛡️", cls: "from-emerald-400 to-teal-400 text-white" }
+        : { code: "C 🌱", cls: "from-stone-300 to-stone-400 text-stone-800" }))));
+
+      const estKill = (maxHp, isBoss = false) => {
+        const maxQ = isBoss ? 8 : 6;
+        let hp = maxHp;
+        let phase = 1;
+        let shieldHits = 0;
+        const halfHp = Math.ceil(maxHp * 0.5);
+        for (let q = 1; q <= maxQ; q++) {
+          const isUlt = q >= ultNeed;
+          const raw = (isUlt ? (45 + ultBonus) : (20 + (q >= 3 ? 5 : 0))) + flatAtk;
+          const dmg = Math.round(raw * dmgMult);
+          if (isBoss && phase === 2 && shieldHits > 0) {
+            shieldHits -= 1;
+          } else if (isBoss && phase === 1 && (hp - dmg) <= halfHp) {
+            hp = halfHp;
+            phase = 2;
+            shieldHits = 2;
+          } else {
+            hp = Math.max(0, hp - dmg);
+          }
+          if (hp <= 0) return { killed: true, label: isBoss ? `${q} 題斬殺` : `${q} 題速殺`, cls: "text-rose-600" };
+        }
+        return { killed: false, label: isBoss ? "8 題擊退" : "6 題擊退", cls: "text-sky-700" };
+      };
+      const simNormal = estKill(180, false);
+      const simElite = estKill(320, false);
+      const simHero = estKill(480, false);
+      const simBoss = estKill(720, true);
+
+      // 2. 雙層 SVG 五角雷達圖（粉紅實心＝答對率準度，藍虛線＝精通熟練度）
       const cx = 130, cy = 120, R = 82;
       const pt = (idx, r) => {
         const ang = (-90 + idx * 72) * Math.PI / 180;
@@ -6970,36 +7024,137 @@
         return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#f472b6" stroke-width="1" opacity="0.5"/>
                 <text x="${lx.toFixed(1)}" y="${(ly + 4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="900" fill="#5c3d2e">${s}</text>`;
       }).join("");
-      const dataPts = rates.map((r, i) => pt(i, (r.val / 100) * R).map(n => n.toFixed(1)).join(",")).join(" ");
+      const accPts = rates.map((r, i) => pt(i, (r.accVal / 100) * R).map(n => n.toFixed(1)).join(",")).join(" ");
+      const mastPts = rates.map((r, i) => pt(i, (r.mastVal / 100) * R).map(n => n.toFixed(1)).join(",")).join(" ");
 
-      const weakTags = Object.entries(state.tagMistakes || {}).sort((a, b) => b[1] - a[1]).slice(0, 3);
+      // 3. 弱點處方箋（反查對應關卡，一鍵直達特訓）
+      const findStageForTag = (tag) => {
+        const t = String(tag || "").trim();
+        if (!t) return null;
+        return STAGES.find(s => (s.short && s.short.includes(t)) || (s.name && s.name.includes(t)) || (Array.isArray(s.questions) && s.questions.some(q => q.tag === t))) || null;
+      };
+      const weakTags = Object.entries(state.tagMistakes || {}).filter(([, c]) => c > 0).sort((a, b) => b[1] - a[1]).slice(0, 3);
+      const wrongCnt = (state.wrongBank || []).length;
       const weakHtml = weakTags.length
-        ? weakTags.map(([t, c]) => `<span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 text-xs font-black">⚠️ ${t}（錯 ${c} 次）</span>`).join("")
-        : `<span class="text-xs font-bold text-emerald-700">🌟 目前沒有明顯弱點單元，繼續保持！</span>`;
+        ? weakTags.map(([tag, c]) => {
+            const st = findStageForTag(tag);
+            const canLaunch = st && isStageUnlocked(st);
+            return `
+              <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-rose-50 border border-rose-200">
+                <div class="text-xs font-black text-rose-800 truncate">⚠️ ${tag} <span class="text-[11px] font-bold text-rose-600">（錯 ${c} 次）</span></div>
+                ${canLaunch
+                  ? `<button data-drill-stage="${st.id}" class="btn-radar-drill sanrio-btn shrink-0 px-2.5 py-1 rounded-lg bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-black whitespace-nowrap">⚔️ 特訓 ${st.id}</button>`
+                  : `<span class="text-[10px] font-bold text-stone-400 shrink-0">${st ? "🔒 尚未解鎖" : "錯題本複習"}</span>`}
+              </div>`;
+          }).join("")
+        : `<div class="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-700 text-center">🌟 目前沒有明顯弱點單元，表現超穩！</div>`;
+
+      // 4. 學習習慣、五科偏科診斷條 & 雙星教練短評
+      const totalAnsAll = rates.reduce((a, r) => a + r.tot, 0);
+      const stamped = (state.daily && Array.isArray(state.daily.stampedDates)) ? state.daily.stampedDates : [];
+      const nowMs = Date.now();
+      const recent7Days = stamped.filter(d => {
+        const t = Date.parse(d);
+        return !isNaN(t) && (nowMs - t) <= 7 * 86400000 && (nowMs - t) >= -86400000;
+      }).length;
+
+      const shareBarHtml = totalAnsAll > 0
+        ? `<div class="w-full h-3 rounded-full overflow-hidden flex border border-pink-200 bg-stone-100">
+            ${rates.map(r => {
+              const p = Math.round((r.tot / totalAnsAll) * 100);
+              return p > 0 ? `<div class="${subjColors[r.subj]} h-full" style="width:${p}%" title="${r.subj} ${p}%"></div>` : "";
+            }).join("")}
+          </div>
+          <div class="flex flex-wrap justify-between gap-1 text-[10px] font-bold text-stone-600">
+            ${rates.map(r => `<span>${r.subj} ${Math.round((r.tot / totalAnsAll) * 100)}%</span>`).join("")}
+          </div>`
+        : `<div class="text-[11px] text-stone-500 text-center">尚未累積各科作答紀錄，快去挑戰第一關吧！</div>`;
+
+      const bestSubj = [...rates].filter(r => r.tot >= 3).sort((a, b) => b.acc - a.acc)[0];
+      const leastSubj = [...rates].sort((a, b) => a.tot - b.tot)[0];
+      let coachLine = "🍮 布丁狗教練：今天也一起挑戰每日雙倍關卡，讓五科雷達圖長得又大又圓吧！";
+      if (bestSubj && leastSubj && bestSubj.subj !== leastSubj.subj && totalAnsAll >= 10) {
+        coachLine = `🍮 布丁狗教練：你的「${bestSubj.subj}」正確率高達 ${bestSubj.acc}% 超厲害！不過「${leastSubj.subj}」練習量較少（${leastSubj.tot} 題），今天可以多打 1 關${leastSubj.subj}均衡一下喔！`;
+      } else if (weakTags.length > 0) {
+        coachLine = `🐾 帕恰狗教練：我幫你抓出最常卡關的「${weakTags[0][0]}」，點上方特訓按鈕把牠練到滾瓜爛熟吧！`;
+      }
 
       const rateRows = rates.map(r => `
-        <div class="p-2 rounded-xl bg-white border border-pink-100 text-center">
-          <div class="text-xs font-black text-stone-700">${r.subj}</div>
-          <div class="text-sm font-black text-pink-600">${r.ok + r.ng > 0 ? r.acc + "%" : "未作答"}</div>
-          <div class="text-[10px] text-stone-500">通關 ${r.cleared}/9</div>
+        <div class="p-1.5 rounded-xl bg-white border border-pink-100 text-center">
+          <div class="text-[11px] font-black text-stone-700">${r.subj}</div>
+          <div class="text-xs sm:text-sm font-black text-pink-600">${r.tot > 0 ? r.acc + "%" : "未作答"}</div>
+          <div class="text-[10px] font-bold text-sky-700">${r.starsSum}/${r.maxStars}★</div>
         </div>
       `).join("");
 
-      showModal("📖 冒險手冊｜戰力與備份", `
+      showModal("📖 冒險手冊｜戰力分析與備份", `
         ${getBookHubBar("radar")}
-        <div class="space-y-4 mt-2">
-          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-pink-50 to-sky-50 border-2 border-pink-200 space-y-3">
-            <div class="text-sm font-black text-pink-700 text-center">📊 五科戰力雷達圖</div>
-            <svg viewBox="0 0 260 245" class="w-56 h-52 mx-auto block">
+        <div class="space-y-3.5 mt-2">
+          <div class="p-3 rounded-2xl bg-gradient-to-br from-amber-50 via-pink-50 to-purple-50 border-2 border-amber-200 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="text-xs font-black text-amber-900">⚔️ 勇者實戰戰力儀表板</div>
+                <div class="text-[11px] font-bold text-stone-600">綜合戰力 <strong class="text-rose-600">${cpScore.toLocaleString()}</strong>｜單擊基礎 +${flatAtk}（${ultNeed}連大絕）</div>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-gradient-to-r ${cpRank.cls} text-xs sm:text-sm font-black shadow-sm whitespace-nowrap">${cpRank.code}</span>
+            </div>
+            <div class="flex flex-wrap gap-1 text-[10px] font-black text-stone-700">
+              <span class="px-2 py-0.5 rounded-full bg-white border border-pink-200">等級 +${lvAtk}</span>
+              <span class="px-2 py-0.5 rounded-full bg-white border border-amber-200">圖鑑 +${tb.atkBonus}</span>
+              <span class="px-2 py-0.5 rounded-full bg-white border border-sky-200">魔杖 +${cb.atkBonus}</span>
+              <span class="px-2 py-0.5 rounded-full bg-white border border-purple-200">特訓 +${(tr.atkLv || 0) * 2}</span>
+              <span class="px-2 py-0.5 rounded-full bg-white border border-emerald-200">星星 +${tb.starPct + cb.starPct}%</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-center">
+              <div class="p-1.5 rounded-xl bg-white/90 border border-emerald-200"><div class="text-[10px] text-stone-500 font-bold">普通 180</div><div class="text-[11px] font-black ${simNormal.cls}">${simNormal.label}</div></div>
+              <div class="p-1.5 rounded-xl bg-white/90 border border-sky-200"><div class="text-[10px] text-stone-500 font-bold">菁英 320</div><div class="text-[11px] font-black ${simElite.cls}">${simElite.label}</div></div>
+              <div class="p-1.5 rounded-xl bg-white/90 border border-purple-200"><div class="text-[10px] text-stone-500 font-bold">英雄 480</div><div class="text-[11px] font-black ${simHero.cls}">${simHero.label}</div></div>
+              <div class="p-1.5 rounded-xl bg-white/90 border border-amber-300"><div class="text-[10px] text-stone-500 font-bold">魔王 720</div><div class="text-[11px] font-black ${simBoss.cls}">${simBoss.label}</div></div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-gradient-to-br from-pink-50 to-sky-50 border-2 border-pink-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-black text-pink-700">📊 五科雙層雷達圖</div>
+              <div class="flex items-center gap-2 text-[10px] font-black">
+                <span class="text-pink-600">■ 準度%</span>
+                <span class="text-sky-600">┄ 精通★</span>
+              </div>
+            </div>
+            <svg viewBox="0 0 260 245" class="w-52 h-48 mx-auto block">
               ${gridPolys}
               ${axes}
-              <polygon points="${dataPts}" fill="rgba(255, 122, 168, 0.35)" stroke="#ec4899" stroke-width="2.5"/>
+              <polygon points="${mastPts}" fill="rgba(56, 189, 248, 0.18)" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,3"/>
+              <polygon points="${accPts}" fill="rgba(255, 122, 168, 0.35)" stroke="#ec4899" stroke-width="2.5"/>
             </svg>
-            <div class="grid grid-cols-5 gap-1.5">${rateRows}</div>
-            <div class="pt-1 flex flex-wrap items-center gap-1.5">
-              <span class="text-xs font-black text-stone-700">弱點分析：</span>
-              ${weakHtml}
+            <div class="grid grid-cols-5 gap-1">${rateRows}</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-white border-2 border-rose-200 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-xs sm:text-sm font-black text-rose-800">🎯 弱點單元處方箋（點按鈕直接特訓）</div>
+              ${wrongCnt > 0 ? `<button id="btn-radar-purify" class="sanrio-btn px-2.5 py-1 rounded-xl bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black whitespace-nowrap">✨ 淨化錯題 (${wrongCnt})</button>` : ""}
             </div>
+            <div class="space-y-1.5">${weakHtml}</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-sky-50/70 border-2 border-sky-200 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-xs sm:text-sm font-black text-sky-900">📈 學習習慣與偏科診斷</div>
+              <button id="btn-copy-study-report" class="sanrio-btn px-2.5 py-1 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-[11px] font-black whitespace-nowrap">📋 複製學習週報</button>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-center">
+              <div class="p-1.5 rounded-xl bg-white border border-sky-100"><div class="text-[10px] text-stone-500 font-bold">累計答對</div><div class="text-xs font-black text-emerald-700">${state.totalCorrect || 0} 題</div></div>
+              <div class="p-1.5 rounded-xl bg-white border border-sky-100"><div class="text-[10px] text-stone-500 font-bold">近7天打卡</div><div class="text-xs font-black text-sky-700">${recent7Days} / 7 天</div></div>
+              <div class="p-1.5 rounded-xl bg-white border border-sky-100"><div class="text-[10px] text-stone-500 font-bold">最高連擊</div><div class="text-xs font-black text-amber-600">${state.maxCombo || 0} 連</div></div>
+              <div class="p-1.5 rounded-xl bg-white border border-sky-100"><div class="text-[10px] text-stone-500 font-bold">目前連勝</div><div class="text-xs font-black text-rose-600">${state.winStreak || 0} 場</div></div>
+            </div>
+            <div class="space-y-1">
+              <div class="text-[11px] font-black text-stone-600">五科作答比重：</div>
+              ${shareBarHtml}
+            </div>
+            <div class="p-2 rounded-xl bg-white border border-pink-200 text-xs font-bold text-stone-700 leading-relaxed">${coachLine}</div>
+            <div id="study-report-msg" class="text-xs font-black text-emerald-700 text-center min-h-[14px]"></div>
           </div>
 
           <div class="p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-200 space-y-2.5">
@@ -7015,6 +7170,50 @@
       `);
 
       bindBookHubBar();
+
+      document.querySelectorAll(".btn-radar-drill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const sid = btn.getAttribute("data-drill-stage");
+          closeModal();
+          if (sid) startStage(sid);
+        });
+      });
+      const rPurify = document.getElementById("btn-radar-purify");
+      if (rPurify) rPurify.addEventListener("click", () => { SFX.click(); closeModal(); startPurifyMode(); });
+
+      const copyRepBtn = document.getElementById("btn-copy-study-report");
+      if (copyRepBtn) {
+        copyRepBtn.addEventListener("click", () => {
+          SFX.click();
+          const gradeLbl = getGradeMeta(CLOUD_GRADE).label;
+          const subjLines = rates.map(r => `・${r.subj}：正確率 ${r.tot > 0 ? r.acc + "%" : "未作答"}｜精通 ${r.starsSum}/${r.maxStars}★（作答 ${r.tot} 題）`).join("\n");
+          const weakLine = weakTags.length ? weakTags.map(([t, c]) => `${t}(錯${c}次)`).join("、") : "無明顯弱點";
+          const reportTxt = [
+            `🌟 三麗鷗學科 RPG 學習戰報（${getTodayStr()}）`,
+            `📚 年級：${gradeLbl}｜勇者：${getLevelInfo()}（戰力 ${cpRank.code}）`,
+            `🔥 累計答對：${state.totalCorrect || 0} 題｜近 7 天打卡：${recent7Days}/7 天｜連勝：${state.winStreak || 0} 場`,
+            `📊 五科表現：`,
+            subjLines,
+            `🎯 建議優先複習：${weakLine}`
+          ].join("\n");
+          const msgEl = document.getElementById("study-report-msg");
+          const done = () => { if (msgEl) msgEl.textContent = "✅ 已複製學習週報！可直接貼到 LINE 或記事本保存。"; };
+          try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(reportTxt).then(done).catch(() => {
+                const ta = document.getElementById("txt-save-code");
+                if (ta) { ta.value = reportTxt; ta.select(); document.execCommand("copy"); }
+                done();
+              });
+            } else {
+              const ta = document.getElementById("txt-save-code");
+              if (ta) { ta.value = reportTxt; ta.select(); document.execCommand("copy"); }
+              done();
+            }
+          } catch (e) { done(); }
+        });
+      }
 
       document.getElementById("btn-export-save").addEventListener("click", () => {
         SFX.click();
@@ -10744,6 +10943,81 @@
       return pool[Math.floor(Math.random() * pool.length)] || MINI_PETS[0];
     }
 
+    const PET_RENAME_COST = 100;
+    function sanitizePetName(raw) {
+      return String(raw || "").replace(/[<>"'&]/g, "").trim().slice(0, 12);
+    }
+    function getMiniPetDisplayName(pet) {
+      if (!pet) return "小跟班";
+      const custom = (state.miniPetNames && state.miniPetNames[pet.id]) ? String(state.miniPetNames[pet.id]).trim() : "";
+      return custom || pet.name;
+    }
+    function openRenameMiniPetModal(petId, returnTo = "egg") {
+      const pet = MINI_PETS.find(p => p.id === petId);
+      if (!pet || !(state.ownedMiniPets && state.ownedMiniPets[petId] > 0)) return;
+      if (!state.miniPetNames || typeof state.miniPetNames !== "object") state.miniPetNames = {};
+      if (!state.miniPetRenameCount || typeof state.miniPetRenameCount !== "object") state.miniPetRenameCount = {};
+      const usedCount = state.miniPetRenameCount[petId] || 0;
+      const isFree = usedCount === 0;
+      const cost = isFree ? 0 : PET_RENAME_COST;
+      const curName = getMiniPetDisplayName(pet);
+
+      showModal("✏️ 幫小跟班取名字", `
+        <div class="text-center space-y-3 py-1">
+          <div class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-amber-50 to-pink-50 border-2 border-pink-200 flex items-center justify-center shadow-sm">
+            <img referrerpolicy="no-referrer" src="${pet.img}" alt="${curName}" class="w-20 h-20 object-contain sprite-cutout" />
+          </div>
+          <div>
+            <div class="text-sm font-black text-stone-800">${pet.icon} 目前名字：${curName}</div>
+            <div class="text-[11px] font-bold mt-1 ${isFree ? "text-emerald-700" : "text-amber-700"}">
+              ${isFree ? "🎁 第一次幫牠命名完全免費喔！" : `⭐ 再次改名需要 ${cost} ⭐（目前 ⭐ ${(state.stars || 0).toLocaleString()}）`}
+            </div>
+          </div>
+          <div class="space-y-1.5 text-left">
+            <input id="inp-pet-nickname" type="text" maxlength="12" value="${curName}" placeholder="輸入可愛名字（最多 12 字，如：麻糬、小星）" class="w-full px-3.5 py-2.5 rounded-2xl border-2 border-pink-300 bg-white text-sm font-black text-stone-800 focus:outline-none focus:border-pink-500" />
+            <div id="pet-rename-msg" class="hidden text-center text-xs font-black text-rose-600"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button id="btn-pet-rename-cancel" class="sanrio-btn py-2.5 rounded-2xl bg-stone-200 hover:bg-stone-300 text-stone-700 font-black text-sm">取消返回</button>
+            <button id="btn-pet-rename-save" class="sanrio-btn py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-400 text-white font-black text-sm">${isFree ? "✨ 免費命名" : `⭐ ${cost} 確定改名`}</button>
+          </div>
+        </div>
+      `);
+
+      const goBack = () => {
+        if (returnTo === "cottage") openShopAndCottageModal();
+        else openPetEggModal();
+      };
+      document.getElementById("btn-pet-rename-cancel").addEventListener("click", () => { SFX.click(); goBack(); });
+      document.getElementById("btn-pet-rename-save").addEventListener("click", () => {
+        const inp = document.getElementById("inp-pet-nickname");
+        const msg = document.getElementById("pet-rename-msg");
+        const clean = sanitizePetName(inp ? inp.value : "");
+        if (!clean) {
+          SFX.hit();
+          if (msg) { msg.classList.remove("hidden"); msg.textContent = "⚠️ 請先輸入一個可愛的名字喔！"; }
+          return;
+        }
+        if (clean === curName && usedCount > 0) {
+          SFX.click();
+          goBack();
+          return;
+        }
+        if (!isFree && (state.stars || 0) < cost) {
+          SFX.hit();
+          if (msg) { msg.classList.remove("hidden"); msg.textContent = `⚠️ 星星不足！改名需要 ${cost} ⭐（目前 ⭐ ${state.stars || 0}）。`; }
+          return;
+        }
+        if (!isFree) state.stars -= cost;
+        state.miniPetNames[petId] = clean;
+        state.miniPetRenameCount[petId] = usedCount + 1;
+        saveState();
+        renderHUD();
+        SFX.win();
+        goBack();
+      });
+    }
+
     function openPetEggModal() {
       if (!state.ownedMiniPets || typeof state.ownedMiniPets !== "object") state.ownedMiniPets = {};
       if (!Array.isArray(state.activeMiniPets)) state.activeMiniPets = [];
@@ -10798,23 +11072,30 @@
         const lv = state.ownedMiniPets[p.id] || 0;
         const owned = lv > 0;
         const isActive = state.activeMiniPets.includes(p.id);
+        const dispName = getMiniPetDisplayName(p);
+        const hasCustom = dispName !== p.name;
+        const isFreeRename = !((state.miniPetRenameCount && state.miniPetRenameCount[p.id]) > 0);
         return `
           <div class="p-2.5 rounded-2xl border-2 ${owned ? (isActive ? "border-pink-400 bg-pink-50/70" : "border-amber-200 bg-white") : "border-stone-200 bg-stone-100 opacity-70"} flex items-center gap-2.5">
             <div class="w-14 h-14 rounded-xl bg-amber-50/70 border border-pink-100 flex items-center justify-center shrink-0 overflow-hidden">
               ${owned
-                ? `<img referrerpolicy="no-referrer" src="${p.img}" alt="${p.name}" class="w-12 h-12 object-contain sprite-cutout" />`
+                ? `<img referrerpolicy="no-referrer" src="${p.img}" alt="${dispName}" class="w-12 h-12 object-contain sprite-cutout" />`
                 : `<span class="text-2xl">❔</span>`}
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-xs sm:text-sm font-black text-stone-800">${owned ? `${p.icon} ${p.name}` : "神秘小跟班"}</span>
+                <span class="text-xs sm:text-sm font-black text-stone-800">${owned ? `${p.icon} ${dispName}` : "神秘小跟班"}</span>
+                ${owned && hasCustom ? `<span class="text-[10px] font-bold text-stone-400">(${p.name})</span>` : ""}
                 <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full border ${rarityBadge[p.rarity]}">${p.rarity}</span>
                 ${owned ? `<span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">Lv.${lv}</span>` : ""}
               </div>
               <div class="text-[11px] font-bold text-stone-600 mt-0.5 leading-snug">${owned ? p.desc : "購買寵物蛋並答題即可孵化解鎖！"}</div>
             </div>
             ${owned ? `
-              <button data-toggle-minipet="${p.id}" class="toggle-minipet-btn sanrio-btn px-2.5 py-1.5 rounded-xl text-[11px] font-black shrink-0 whitespace-nowrap ${isActive ? "bg-pink-500 text-white" : "bg-stone-100 hover:bg-pink-100 text-stone-700 border border-stone-300"}">${isActive ? "🏠 陪伴中" : "放進小屋"}</button>
+              <div class="flex flex-col gap-1 shrink-0">
+                <button data-toggle-minipet="${p.id}" class="toggle-minipet-btn sanrio-btn px-2.5 py-1 rounded-xl text-[11px] font-black whitespace-nowrap ${isActive ? "bg-pink-500 text-white" : "bg-stone-100 hover:bg-pink-100 text-stone-700 border border-stone-300"}">${isActive ? "🏠 陪伴中" : "放進小屋"}</button>
+                <button data-rename-minipet="${p.id}" class="rename-minipet-btn sanrio-btn px-2 py-1 rounded-xl text-[10px] font-black whitespace-nowrap ${isFreeRename ? "bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300" : "bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300"}">${isFreeRename ? "✏️ 免費命名" : `✏️ 改名 ${PET_RENAME_COST}⭐`}</button>
+              </div>
             ` : ""}
           </div>
         `;
@@ -10881,21 +11162,31 @@
               <div class="w-32 h-32 mx-auto rounded-3xl bg-gradient-to-br from-amber-50 via-pink-50 to-purple-50 border-2 border-amber-300 flex items-center justify-center shadow">
                 <img referrerpolicy="no-referrer" src="${pet.img}" alt="${pet.name}" class="w-28 h-28 object-contain sprite-cutout" />
               </div>
-              <div class="text-lg font-black text-pink-700">${pet.icon} ${pet.name}（${pet.rarity}）</div>
+              <div class="text-lg font-black text-pink-700">${pet.icon} ${getMiniPetDisplayName(pet)}（${pet.rarity}）</div>
               <div class="text-xs sm:text-sm font-black ${prevLv > 0 ? "text-amber-700" : "text-emerald-700"}">
                 ${prevLv > 0 ? `✨ 閃耀升級！成長為 Lv.${newLv} 星光小跟班！` : "🌟 新夥伴加入！已自動幫你放進冒險小屋一起散步！"}
               </div>
               <p class="text-xs font-bold text-stone-600">${pet.desc}</p>
+              ${prevLv === 0 ? `<button id="hatch-rename-now" class="sanrio-btn w-full py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-sm">✏️ 幫新夥伴取個名字（首次免費！）</button>` : ""}
               <div class="grid grid-cols-2 gap-2 pt-1">
                 <button id="hatch-go-cottage" class="sanrio-btn py-2.5 rounded-2xl bg-pink-500 text-white font-black text-sm">🏠 去小屋看牠</button>
                 <button id="hatch-go-egg" class="sanrio-btn py-2.5 rounded-2xl bg-indigo-500 text-white font-black text-sm">🥚 回孵育所</button>
               </div>
             </div>
           `);
+          const rnNow = document.getElementById("hatch-rename-now");
+          if (rnNow) rnNow.addEventListener("click", () => { SFX.click(); openRenameMiniPetModal(pet.id, "cottage"); });
           document.getElementById("hatch-go-cottage").addEventListener("click", () => { SFX.click(); openShopAndCottageModal(); });
           document.getElementById("hatch-go-egg").addEventListener("click", () => { SFX.click(); openPetEggModal(); });
         });
       }
+
+      document.querySelectorAll(".rename-minipet-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          openRenameMiniPetModal(btn.getAttribute("data-rename-minipet"), "egg");
+        });
+      });
 
       document.querySelectorAll(".toggle-minipet-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -11156,7 +11447,7 @@
       const msgs = [
         { who: "🍮 布丁狗", text: `主人現在已經 Lv.${state.level || 1}、累積答對 ${state.totalCorrect || 0} 題囉！一起吃焦糖布丁慶祝吧～` },
         { who: "🐾 帕恰狗", text: `今天也在「${getGradeMeta(CLOUD_GRADE).label}」努力學習！我最佩服你的毅力了！` },
-        ...petNotes.map(p => ({ who: `${p.icon} ${p.name}`, text: p.quote }))
+        ...petNotes.map(p => ({ who: `${p.icon} ${getMiniPetDisplayName(p)}`, text: p.quote }))
       ];
       showModal("🪧 雙星小屋留言小黑板", `
         <div class="space-y-2.5">
