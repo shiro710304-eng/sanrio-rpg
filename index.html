@@ -695,8 +695,8 @@
       </div>
     </section>
 
-    <!-- 180-DEGREE FACE-TO-FACE FULLSCREEN SPLIT OVERLAY (100dvh Zero-Scroll) -->
-    <div id="coop-split-overlay" class="hidden fixed inset-0 z-40 bg-gradient-to-b from-sky-50 via-white to-amber-50 flex flex-col justify-between overflow-hidden select-none" style="height:100dvh; touch-action:manipulation;"></div>
+    <!-- 180-DEGREE FACE-TO-FACE FULLSCREEN SPLIT OVERLAY (100dvh Zero-Scroll + iOS Safe Area) -->
+    <div id="coop-split-overlay" class="hidden fixed inset-0 z-40 bg-gradient-to-b from-sky-50 via-white to-amber-50 flex flex-col justify-between overflow-hidden select-none" style="height:100dvh; touch-action:manipulation; padding-top:max(env(safe-area-inset-top, 14px), 14px); padding-bottom:max(env(safe-area-inset-bottom, 20px), 20px);"></div>
 
   </main>
 
@@ -5198,6 +5198,7 @@
       if (splitOv) { splitOv.classList.add("hidden"); splitOv.innerHTML = ""; }
       document.getElementById("view-map").classList.remove("hidden");
       battle = null;
+      setTimeout(() => { if (typeof maybeTriggerPendingEyeRest === "function") maybeTriggerPendingEyeRest(); }, 250);
       setTimeout(() => {
         const mapSec = document.getElementById("world-map-section");
         if (mapSec && typeof window.scrollTo === "function") {
@@ -5209,7 +5210,9 @@
     }
 
     // ====== 6. MODALS ======
-    function showModal(title, html, showStarPill = false) {
+    let modalLockedClose = false;
+    function showModal(title, html, showStarPill = false, opts = {}) {
+      modalLockedClose = !!(opts && opts.lockClose);
       document.getElementById("modal-title").textContent = title;
       const sp = document.getElementById("modal-star-pill");
       if (sp) {
@@ -5220,6 +5223,8 @@
           sp.classList.add("hidden");
         }
       }
+      const closeBtn = document.getElementById("modal-close");
+      if (closeBtn) closeBtn.classList.toggle("hidden", modalLockedClose);
       document.getElementById("modal-body").innerHTML = html;
       document.getElementById("modal-overlay").classList.remove("hidden");
     }
@@ -5261,7 +5266,11 @@
       monopolyRollTimers = [];
     }
 
-    function closeModal() {
+    function closeModal(force = false) {
+      if (modalLockedClose && !force) return;
+      modalLockedClose = false;
+      const closeBtn = document.getElementById("modal-close");
+      if (closeBtn) closeBtn.classList.remove("hidden");
       stopCottageWalk();
       stopTfTimer();
       stopMathTimer();
@@ -7647,15 +7656,17 @@
       document.getElementById("btn-tw-map").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
     }
 
-    // ====== v4.0.0: 2-PLAYER PARTY HUB (5 LOCAL MODES) + FIREBASE RTDB ONLINE MULTIPLAYER (6 MODES) ======
+    // ====== v4.1.0: 2-PLAYER PARTY HUB (5 LOCAL MODES) + FIREBASE RTDB ONLINE MULTIPLAYER (6 MODES + READY ROOM) ======
     const FIREBASE_RTDB_URL = "https://sanrio-rpg-default-rtdb.asia-southeast1.firebasedatabase.app";
     const COOP_DAILY_REWARD_CAP = 5;
     const TF_DOUBLE_NEG_RE = /何者錯誤|何者正確|何者不|哪一個不|以上皆|何者為非|下列何者無|何者敘述錯誤|何者敘述正確|何者不正確|何者不是/;
 
     let coop = null;
     let onlineRoom = null;
+    let _lastOnlineRoomCode = "";
     let _coopHandicapTimer = null;
     let _coopFreezeTimers = { 1: null, 2: null };
+    let _coopCountdownTimers = [];
 
     function escapeHtmlSafe(str) {
       return String(str == null ? "" : str)
@@ -7686,7 +7697,6 @@
       };
     }
 
-    // Deterministic PRNG (mulberry32) for Same-Question Fair Online PK
     function mulberry32(seed) {
       let a = (seed >>> 0) || 123456;
       return function() {
@@ -7747,7 +7757,13 @@
       return state.coopPrefs;
     }
 
+    function clearCoopCountdowns() {
+      _coopCountdownTimers.forEach(t => clearTimeout(t));
+      _coopCountdownTimers = [];
+    }
+
     function cleanupCoopAndOnline() {
+      clearCoopCountdowns();
       if (coop && coop.timerId) { clearInterval(coop.timerId); coop.timerId = null; }
       if (_coopHandicapTimer) { clearTimeout(_coopHandicapTimer); _coopHandicapTimer = null; }
       [1, 2].forEach(p => { if (_coopFreezeTimers[p]) { clearTimeout(_coopFreezeTimers[p]); _coopFreezeTimers[p] = null; } });
@@ -7755,6 +7771,7 @@
         if (onlineRoom.es) { try { onlineRoom.es.close(); } catch (e) {} onlineRoom.es = null; }
         if (onlineRoom.pollId) { clearInterval(onlineRoom.pollId); onlineRoom.pollId = null; }
         if (onlineRoom.timerId) { clearInterval(onlineRoom.timerId); onlineRoom.timerId = null; }
+        if (onlineRoom.cdTimerId) { clearInterval(onlineRoom.cdTimerId); onlineRoom.cdTimerId = null; }
         onlineRoom = null;
       }
       const splitOv = document.getElementById("coop-split-overlay");
@@ -7773,11 +7790,7 @@
         list.push({
           subject: q.subject || "綜合",
           tag: q.tag || "雙人錯題",
-          q: q.q,
-          opts: q.opts,
-          ans: q.ans,
-          hint: q.hint || "",
-          explain: q.explain || ""
+          q: q.q, opts: q.opts, ans: q.ans, hint: q.hint || "", explain: q.explain || ""
         });
       }
     }
@@ -7788,9 +7801,9 @@
       }
       return `
         <details class="text-left rounded-2xl border-2 border-purple-200 bg-purple-50/70 p-2.5">
-          <summary class="cursor-pointer text-xs font-black text-purple-800 flex items-center justify-between">
-            <span>📖 本場答錯題目與解析（${wrongList.length} 題，點此展開複習）</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-200 text-purple-900">展開</span>
+          <summary class="cursor-pointer text-xs font-black text-purple-800 flex items-center justify-between gap-2">
+            <span class="leading-snug">📖 本場答錯題目與解析（${wrongList.length} 題，點此複習）</span>
+            <span class="shrink-0 whitespace-nowrap text-[10px] px-2.5 py-0.5 rounded-full bg-purple-200 text-purple-900">展開</span>
           </summary>
           <div class="mt-2 space-y-2 max-h-44 overflow-y-auto pr-1">
             ${wrongList.map((w, i) => `
@@ -7864,32 +7877,31 @@
 
       const tabHeader = `
         <div class="grid grid-cols-2 gap-2 pb-2 border-b border-teal-100">
-          <button id="tab-coop-local" class="sanrio-btn py-2 px-2 rounded-xl border-2 text-xs sm:text-sm font-black ${activeTab === 'local' ? 'bg-teal-500 text-white border-teal-600 shadow' : 'bg-white text-teal-800 border-teal-200 hover:bg-teal-50'}">📱 同機雙人派對（5玩法）</button>
-          <button id="tab-coop-online" class="sanrio-btn py-2 px-2 rounded-xl border-2 text-xs sm:text-sm font-black ${activeTab === 'online' ? 'bg-indigo-500 text-white border-indigo-600 shadow' : 'bg-white text-indigo-800 border-indigo-200 hover:bg-indigo-50'}">🌐 雙手機連線對戰（6玩法）</button>
+          <button id="tab-coop-local" class="sanrio-btn py-2 px-1.5 rounded-xl border-2 text-xs sm:text-sm font-black whitespace-nowrap ${activeTab === 'local' ? 'bg-teal-500 text-white border-teal-600 shadow' : 'bg-white text-teal-800 border-teal-200 hover:bg-teal-50'}">📱 同機雙人（5玩法）</button>
+          <button id="tab-coop-online" class="sanrio-btn py-2 px-1.5 rounded-xl border-2 text-xs sm:text-sm font-black whitespace-nowrap ${activeTab === 'online' ? 'bg-indigo-500 text-white border-indigo-600 shadow' : 'bg-white text-indigo-800 border-indigo-200 hover:bg-indigo-50'}">🌐 連線對戰（6玩法）</button>
         </div>
-        <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] font-black text-amber-900">
-          <span>🎁 今日雙人滿星獎勵額度（同機＋連線共用）</span>
-          <span class="px-2 py-0.5 rounded-full ${quotaLeft > 0 ? 'bg-amber-400 text-white' : 'bg-stone-300 text-stone-700'}">剩餘 ${quotaLeft} / ${COOP_DAILY_REWARD_CAP} 場</span>
+        <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] font-black text-amber-900">
+          <span class="truncate">🎁 今日雙人滿星額度（同機＋連線共用）</span>
+          <span class="shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full ${quotaLeft > 0 ? 'bg-amber-400 text-white' : 'bg-stone-300 text-stone-700'}">剩 ${quotaLeft} / ${COOP_DAILY_REWARD_CAP} 場</span>
         </div>`;
 
       if (activeTab === "local") {
         showModal("🎮 雙人派對＆親子共玩中心", `
           <div class="space-y-3">
             ${tabHeader}
-            <!-- Shared Settings -->
             <div class="p-3 rounded-2xl bg-teal-50/70 border border-teal-200 space-y-2.5 text-xs">
               <div class="flex flex-wrap items-center gap-1.5">
                 <span class="font-black text-teal-900 mr-1">📚 出題科目：</span>
                 ${subjs.map(s => `<button data-cp-subj="${s}" class="cp-subj-btn px-2.5 py-1 rounded-full border font-black text-[11px] ${prefs.subject === s ? 'bg-teal-500 text-white border-teal-600' : 'bg-white text-teal-800 border-teal-200'}">${s}</button>`).join("")}
               </div>
               <div class="grid grid-cols-2 gap-2">
-                <label class="flex items-center gap-1 bg-white rounded-xl border border-amber-200 px-2 py-1">
+                <label class="flex items-center gap-1 bg-white rounded-xl border border-amber-200 px-2 py-1.5 min-w-0">
                   <span class="shrink-0 font-black text-amber-700">🍮P1</span>
-                  <input id="cp-p1-name" type="text" maxlength="8" value="${escapeHtmlSafe(prefs.p1Name)}" class="w-full text-xs font-bold text-stone-800 outline-none bg-transparent" />
+                  <input id="cp-p1-name" type="text" maxlength="8" value="${escapeHtmlSafe(prefs.p1Name)}" class="w-full min-w-0 text-xs font-bold text-stone-800 outline-none bg-transparent" />
                 </label>
-                <label class="flex items-center gap-1 bg-white rounded-xl border border-sky-200 px-2 py-1">
+                <label class="flex items-center gap-1 bg-white rounded-xl border border-sky-200 px-2 py-1.5 min-w-0">
                   <span class="shrink-0 font-black text-sky-700">🐾P2</span>
-                  <input id="cp-p2-name" type="text" maxlength="8" value="${escapeHtmlSafe(prefs.p2Name)}" class="w-full text-xs font-bold text-stone-800 outline-none bg-transparent" />
+                  <input id="cp-p2-name" type="text" maxlength="8" value="${escapeHtmlSafe(prefs.p2Name)}" class="w-full min-w-0 text-xs font-bold text-stone-800 outline-none bg-transparent" />
                 </label>
               </div>
               <div class="grid grid-cols-2 gap-2">
@@ -7902,35 +7914,34 @@
               </div>
             </div>
 
-            <!-- 5 Local Modes -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <button data-local-mode="tug" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-pink-300 bg-gradient-to-br from-pink-50 to-amber-50 text-left space-y-1">
-                <div class="flex items-center justify-between"><span class="text-xl">🪢</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-pink-500 text-white">超推！180°面對面</span></div>
+                <div class="flex items-center justify-between"><span class="text-xl">🪢</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-pink-500 text-white">超推！3-2-1開拉</span></div>
                 <div class="text-sm font-black text-pink-900">面對面拔河大作戰</div>
-                <p class="text-[11px] text-stone-600 leading-snug">手機平放桌面，一人一邊把大布丁拉過來！2連擊雙倍拉扯、答錯冰凍1.2秒。獎勵 +30⭐（勝+10⭐）</p>
+                <p class="text-[11px] text-stone-600 leading-snug">手機平放桌面，倒數 3-2-1 後把大布丁拉過來！2連擊雙倍拉扯、答錯冰凍1.2秒。獎勵 +30⭐（勝+10⭐）</p>
               </button>
 
               <button data-local-mode="territory" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 text-left space-y-1">
-                <div class="flex items-center justify-between"><span class="text-xl">🏁</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">策略搶地盤</span></div>
+                <div class="flex items-center justify-between"><span class="text-xl">🏁</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">隨機先手搶地</span></div>
                 <div class="text-sm font-black text-emerald-900">3×3 策略奪地戰</div>
-                <p class="text-[11px] text-stone-600 leading-snug">連成一條線就贏！每人 2 張搶地券可搶對手地盤（挑戰英雄題），含 🛡️守護盾格 與 ⚡再來一回合！+40⭐</p>
+                <p class="text-[11px] text-stone-600 leading-snug">連成一條線就贏！每人 2 張搶地券可挑戰英雄題搶地，含 🛡️守護盾格 與 ⚡再來一回合！+40⭐</p>
               </button>
 
               <button data-local-mode="bomb" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-rose-50 text-left space-y-1">
-                <div class="flex items-center justify-between"><span class="text-xl">💣</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-500 text-white">緊張合作</span></div>
+                <div class="flex items-center justify-between"><span class="text-xl">💣</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-500 text-white">3-2-1緊張拆彈</span></div>
                 <div class="text-sm font-black text-orange-900">星光接力傳炸彈</div>
-                <p class="text-[11px] text-stone-600 leading-snug">倒數 12 秒越來越快！答對立刻傳給對方，合力接力 12 次成功拆彈！獎勵 +30⭐ / +45 EXP</p>
+                <p class="text-[11px] text-stone-600 leading-snug">隨機先手＋倒數 12 秒越來越快！答對立刻傳給對方，合力接力 12 次完美拆彈！獎勵 +30⭐ / +45 EXP</p>
               </button>
 
               <button data-local-mode="boss" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 text-left space-y-1">
                 <div class="flex items-center justify-between"><span class="text-xl">🤝</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-purple-600 text-white">180 HP 強化</span></div>
                 <div class="text-sm font-black text-purple-900">協力打大魔王（強化版）</div>
-                <p class="text-[11px] text-stone-600 leading-snug">輪流攻擊彩虹水晶龍，每累計 4 連擊發動「🌟雙人合體大招」爆擊 40 血！獎勵 +40⭐ / +60 EXP</p>
+                <p class="text-[11px] text-stone-600 leading-snug">隨機先手輪流攻擊，每累計 4 連擊發動「🌟雙人合體大招」爆擊 40 血！獎勵 +40⭐ / +60 EXP</p>
               </button>
 
               <button data-local-mode="vs" class="cp-local-btn sanrio-btn sm:col-span-2 p-3 rounded-2xl border-2 border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 text-left flex items-center justify-between gap-2">
                 <div class="space-y-0.5">
-                  <div class="text-sm font-black text-sky-900">⚡ 60 秒雙人搶答賽（支援 180° 面對面＋親子讓分）</div>
+                  <div class="text-sm font-black text-sky-900">⚡ 60 秒雙人搶答賽（3-2-1倒數＋180°面對面）</div>
                   <p class="text-[11px] text-stone-600">雙邊同時開放搶答，60 秒內比誰答對最多題！獎勵 +30⭐（勝+10⭐）</p>
                 </div>
                 <span class="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl bg-sky-500 text-white">開戰 ➜</span>
@@ -7941,10 +7952,7 @@
 
         document.getElementById("tab-coop-online").addEventListener("click", () => { SFX.click(); openCoopLauncher("online"); });
         document.querySelectorAll(".cp-subj-btn").forEach(b => b.addEventListener("click", () => {
-          SFX.click();
-          prefs.subject = b.dataset.cpSubj;
-          saveState();
-          openCoopLauncher("local");
+          SFX.click(); prefs.subject = b.dataset.cpSubj; saveState(); openCoopLauncher("local");
         }));
         const p1In = document.getElementById("cp-p1-name");
         const p2In = document.getElementById("cp-p2-name");
@@ -7961,13 +7969,13 @@
           if (p1In) prefs.p1Name = p1In.value.trim() || "布丁狗";
           if (p2In) prefs.p2Name = p2In.value.trim() || "帕恰狗";
           saveState();
-          closeModal();
+          closeModal(true);
           startCoopGame(b.dataset.localMode);
         }));
         return;
       }
 
-      // TAB 2: ONLINE MULTIPLAYER LOBBY (Firebase RTDB)
+      // TAB 2: ONLINE MULTIPLAYER LOBBY (Mobile-Safe Stacked Join Box)
       const onlineModes = [
         { id: "territory", icon: "🏁", name: "3×3 策略奪地戰", desc: "搶地盤＋英雄題搶地券" },
         { id: "tug",       icon: "🪢", name: "星光拔河賽", desc: "即時互拉大布丁！" },
@@ -7984,25 +7992,23 @@
           ${tabHeader}
           <div class="p-3 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2 text-xs">
             <div class="grid grid-cols-2 gap-2">
-              <label class="flex items-center gap-1.5 bg-white rounded-xl border border-indigo-200 px-2.5 py-1.5">
+              <label class="flex items-center gap-1.5 bg-white rounded-xl border border-indigo-200 px-2.5 py-1.5 min-w-0">
                 <span class="shrink-0 font-black text-indigo-700">🏷️ 暱稱</span>
-                <input id="ol-nick" type="text" maxlength="8" value="${escapeHtmlSafe(defaultNick)}" class="w-full text-xs font-black text-stone-800 outline-none bg-transparent" />
+                <input id="ol-nick" type="text" maxlength="8" value="${escapeHtmlSafe(defaultNick)}" class="w-full min-w-0 text-xs font-black text-stone-800 outline-none bg-transparent" />
               </label>
-              <label class="flex items-center gap-1.5 bg-white rounded-xl border border-indigo-200 px-2.5 py-1.5">
+              <label class="flex items-center gap-1.5 bg-white rounded-xl border border-indigo-200 px-2.5 py-1.5 min-w-0">
                 <span class="shrink-0 font-black text-indigo-700">🔒 密碼</span>
-                <input id="ol-pwd" type="text" maxlength="4" placeholder="選填4碼" class="w-full text-xs font-black text-stone-800 outline-none bg-transparent" />
+                <input id="ol-pwd" type="text" maxlength="4" placeholder="選填4碼" class="w-full min-w-0 text-xs font-black text-stone-800 outline-none bg-transparent" />
               </label>
             </div>
             <div id="ol-status-msg" class="text-[11px] font-black text-rose-600 min-h-[16px]"></div>
           </div>
 
-          <!-- JOIN EXISTING ROOM -->
-          <div class="p-3 rounded-2xl bg-emerald-50/80 border-2 border-emerald-300 space-y-2">
+          <!-- JOIN EXISTING ROOM (Stacked full-width, zero mobile overflow!) -->
+          <div class="p-3 rounded-2xl bg-emerald-50/85 border-2 border-emerald-300 space-y-2.5">
             <div class="text-xs font-black text-emerald-900">🚪 加入朋友的房間（輸入 4 碼房號）</div>
-            <div class="flex gap-2">
-              <input id="ol-join-code" type="tel" maxlength="4" value="${escapeHtmlSafe(prefillRoomCode)}" placeholder="例如 4829" class="flex-1 px-3 py-2 rounded-xl bg-white border-2 border-emerald-300 text-center text-base font-black tracking-widest text-emerald-900 outline-none" />
-              <button id="btn-ol-join" class="sanrio-btn px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm shrink-0">加入房間 ➜</button>
-            </div>
+            <input id="ol-join-code" type="tel" inputmode="numeric" maxlength="4" value="${escapeHtmlSafe(prefillRoomCode)}" placeholder="輸入 4 碼房號（如 5405）" class="w-full min-w-0 box-border px-3 py-2.5 rounded-xl bg-white border-2 border-emerald-300 text-center text-lg sm:text-xl font-black tracking-[0.25em] text-emerald-900 outline-none" />
+            <button id="btn-ol-join" class="sanrio-btn w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm shadow">🚪 立即加入房間 ➜</button>
           </div>
 
           <!-- CREATE NEW ROOM -->
@@ -8049,19 +8055,70 @@
         state.coopOnlineNick = nick; saveState();
         createOnlineRoom(selOnlineMode, prefs.subject, sameQ, nick, pwd);
       });
-      document.getElementById("btn-ol-join").addEventListener("click", () => {
+      const doJoin = () => {
         SFX.click();
         const code = (document.getElementById("ol-join-code")?.value || "").replace(/\D/g, "").slice(0, 4);
         const nick = (document.getElementById("ol-nick")?.value || "").trim() || defaultNick;
         const pwd = (document.getElementById("ol-pwd")?.value || "").trim();
         state.coopOnlineNick = nick; saveState();
         joinOnlineRoom(code, nick, pwd);
-      });
+      };
+      document.getElementById("btn-ol-join").addEventListener("click", doJoin);
+      const joinIn = document.getElementById("ol-join-code");
+      if (joinIn) joinIn.addEventListener("keydown", (e) => { if (e.key === "Enter") doJoin(); });
     }
 
     // =========================================================================
-    // PART A: LOCAL SAME-DEVICE 5-MODE PARTY ENGINE
+    // PART A: LOCAL SAME-DEVICE 5-MODE PARTY ENGINE (Random First Turn + 3-2-1)
     // =========================================================================
+    function runLocalCoopCountdown(isSplit, subtitle, onGo) {
+      clearCoopCountdowns();
+      const steps = ["3", "2", "1", "GO!"];
+      const renderStep = (txt) => {
+        const isGo = txt === "GO!";
+        if (isGo) SFX.win(); else SFX.click();
+        if (isSplit) {
+          const ov = document.getElementById("coop-split-overlay");
+          if (!ov) return;
+          const half = (rot) => `
+            <div class="flex-1 flex flex-col items-center justify-center p-4 text-center ${rot ? 'bg-sky-50/95' : 'bg-amber-50/95'}" style="${rot ? 'transform:rotate(180deg);' : ''}">
+              <div class="text-xs font-black ${rot ? 'text-sky-700' : 'text-amber-800'} mb-1">📱 手機平放桌面，雙手準備！</div>
+              <div class="text-6xl font-black ${isGo ? 'text-emerald-500 scale-110' : 'text-pink-500'} transition-transform">${txt}</div>
+              ${subtitle ? `<div class="text-xs font-bold text-stone-600 mt-1">${escapeHtmlSafe(subtitle)}</div>` : ""}
+            </div>`;
+          ov.innerHTML = half(true) + `<div class="shrink-0 h-2 bg-gradient-to-r from-amber-300 via-pink-400 to-sky-300"></div>` + half(false);
+        } else {
+          const dyn = document.getElementById("coop-dynamic-arena");
+          const std = document.getElementById("coop-standard-body");
+          if (std) std.classList.add("hidden");
+          if (dyn) {
+            dyn.classList.remove("hidden");
+            dyn.innerHTML = `
+              <div class="py-10 px-4 rounded-2xl bg-white border-2 border-pink-200 text-center space-y-2">
+                <div class="text-xs font-black text-pink-600">🎯 準備開戰（題目倒數結束後亮牌！）</div>
+                <div class="text-6xl font-black ${isGo ? 'text-emerald-500' : 'text-pink-500'}">${txt}</div>
+                ${subtitle ? `<div class="text-xs font-black text-amber-800">${escapeHtmlSafe(subtitle)}</div>` : ""}
+              </div>`;
+          }
+        }
+      };
+
+      steps.forEach((txt, i) => {
+        const id = setTimeout(() => {
+          if (!coop) return;
+          renderStep(txt);
+          if (i === steps.length - 1) {
+            const id2 = setTimeout(() => {
+              if (!coop) return;
+              if (typeof onGo === "function") onGo();
+            }, 420);
+            _coopCountdownTimers.push(id2);
+          }
+        }, i * 850);
+        _coopCountdownTimers.push(id);
+      });
+    }
+
     function startCoopGame(subMode) {
       cleanupCoopAndOnline();
       const prefs = getCoopPrefs();
@@ -8069,17 +8126,22 @@
       const pool = buildCoopPool(prefs.subject, { shortOnly });
       const heroPool = buildCoopPool(prefs.subject, { tier: "hero" });
 
-      // Random bonus tiles for 3x3 territory: 1 shield tile + 1 extra-turn tile
       const bonusIdxs = shuffle([0,1,2,3,4,5,6,7,8]).slice(0, 2);
       const bonusTiles = {};
       bonusTiles[bonusIdxs[0]] = "shield";
       bonusTiles[bonusIdxs[1]] = "extra";
 
+      // Random first turn for all turn-based modes
+      const firstTurn = Math.random() < 0.5 ? 1 : 2;
+      const p1Name = prefs.p1Name || "布丁狗";
+      const p2Name = prefs.p2Name || "帕恰狗";
+      const firstName = firstTurn === 1 ? `🍮 ${p1Name}` : `🐾 ${p2Name}`;
+
       coop = {
         subMode,
         subj: prefs.subject,
-        p1Name: prefs.p1Name || "布丁狗",
-        p2Name: prefs.p2Name || "帕恰狗",
+        p1Name,
+        p2Name,
         handicap: !!prefs.handicap,
         faceToFace: !!prefs.faceToFace,
         pool,
@@ -8093,15 +8155,16 @@
         teamCombo: 0,
         bossHp: 180,
         bossMaxHp: 180,
-        turn: 1,
+        turn: firstTurn,
+        firstTurnBanner: `🎲 隨機抽籤：由 ${firstName} 先攻！`,
         timeLeft: subMode === "vs" ? 60 : (subMode === "bomb" ? 12 : 0),
         bombMaxTime: 12,
         bombPasses: 0,
         bombGoal: 12,
-        ropePos: 0, // -4 = P1 win, +4 = P2 win
+        ropePos: 0,
         frozen: { 1: false, 2: false },
         handicapLockP2: false,
-        board: Array(9).fill(0), // 0 empty, 1 P1, 2 P2
+        board: Array(9).fill(0),
         locks: Array(9).fill(false),
         bonusTiles,
         stealsLeft: { 1: 2, 2: 2 },
@@ -8120,7 +8183,6 @@
       document.getElementById("view-coop").classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: "instant" });
 
-      // Update player name badges
       const p1N = document.getElementById("coop-p1-name");
       const p2N = document.getElementById("coop-p2-name");
       const p1Z = document.getElementById("coop-p1-zone-label");
@@ -8140,58 +8202,74 @@
       document.getElementById("coop-title").textContent = titles[subMode] || "雙人派對";
       document.getElementById("coop-mode-badge").textContent = `🎮 同機雙人｜${coop.subj}`;
 
-      // 180° Face-to-Face Fullscreen Split Mode for Tug-of-War & 60s Quiz
+      // 180° Face-to-Face Fullscreen Split Mode with 3-2-1 Covered Countdown
       if ((subMode === "tug" || subMode === "vs") && coop.faceToFace) {
         document.getElementById("coop-classic-card").classList.add("hidden");
         document.getElementById("coop-split-overlay").classList.remove("hidden");
-        if (subMode === "vs") {
-          coop.timerId = setInterval(() => {
-            if (!coop) return;
-            coop.timeLeft -= 1;
-            const tEl = document.getElementById("split-center-timer");
-            if (tEl) tEl.textContent = `⏱️ ${coop.timeLeft}s`;
-            if (coop.timeLeft <= 0) finishCoopGame("timeup");
-          }, 1000);
-        }
-        renderFaceToFaceSplit();
+        runLocalCoopCountdown(true, subMode === "tug" ? "🪢 把大布丁拉向自己！" : "⚡ 60 秒搶答對決！", () => {
+          if (!coop) return;
+          if (subMode === "vs") {
+            coop.timerId = setInterval(() => {
+              if (!coop) return;
+              coop.timeLeft -= 1;
+              const tEl = document.getElementById("split-center-timer");
+              if (tEl) tEl.textContent = `⏱️ ${coop.timeLeft}s`;
+              if (coop.timeLeft <= 0) finishCoopGame("timeup");
+            }, 1000);
+          }
+          renderFaceToFaceSplit();
+        });
         return;
       }
 
-      // Side-by-Side / Board modes inside coop-classic-card
       document.getElementById("coop-classic-card").classList.remove("hidden");
       if (subMode === "territory") {
         document.getElementById("coop-standard-body").classList.add("hidden");
         document.getElementById("coop-dynamic-arena").classList.remove("hidden");
         document.getElementById("coop-timer-box").textContent = "🏁 策略搶地";
-        renderTerritoryLocal();
+        renderTerritoryLocal(coop.firstTurnBanner);
         return;
       }
       if (subMode === "bomb") {
-        document.getElementById("coop-standard-body").classList.add("hidden");
-        document.getElementById("coop-dynamic-arena").classList.remove("hidden");
-        startBombLocalTimer();
-        renderBombLocal();
+        document.getElementById("coop-timer-box").textContent = "💣 準備拆彈...";
+        runLocalCoopCountdown(false, `🎲 隨機抽籤：炸彈先交給 ${firstName}！`, () => {
+          if (!coop) return;
+          startBombLocalTimer();
+          renderBombLocal(coop.firstTurnBanner);
+        });
         return;
       }
       if (subMode === "tug") {
-        document.getElementById("coop-standard-body").classList.remove("hidden");
-        document.getElementById("coop-dynamic-arena").classList.remove("hidden");
-        document.getElementById("coop-timer-box").textContent = "🪢 並肩拔河";
-        renderCoopState();
+        document.getElementById("coop-timer-box").textContent = "🪢 準備拔河...";
+        runLocalCoopCountdown(false, "🪢 倒數完畢立刻開拉！", () => {
+          if (!coop) return;
+          document.getElementById("coop-standard-body").classList.remove("hidden");
+          document.getElementById("coop-dynamic-arena").classList.remove("hidden");
+          document.getElementById("coop-timer-box").textContent = "🪢 並肩拔河";
+          renderCoopState();
+        });
         return;
       }
       if (subMode === "vs") {
-        document.getElementById("coop-timer-box").textContent = "⏱️ 剩餘 60 秒";
-        coop.timerId = setInterval(() => {
+        document.getElementById("coop-timer-box").textContent = "⏱️ 準備搶答...";
+        runLocalCoopCountdown(false, "⚡ 60 秒搶答大戰！", () => {
           if (!coop) return;
-          coop.timeLeft -= 1;
-          document.getElementById("coop-timer-box").textContent = `⏱️ 剩餘 ${coop.timeLeft} 秒`;
-          if (coop.timeLeft <= 0) finishCoopGame("timeup");
-        }, 1000);
-      } else {
-        document.getElementById("coop-timer-box").textContent = "🤝 4連擊放合體技";
+          document.getElementById("coop-dynamic-arena").classList.add("hidden");
+          document.getElementById("coop-standard-body").classList.remove("hidden");
+          document.getElementById("coop-timer-box").textContent = "⏱️ 剩餘 60 秒";
+          coop.timerId = setInterval(() => {
+            if (!coop) return;
+            coop.timeLeft -= 1;
+            document.getElementById("coop-timer-box").textContent = `⏱️ 剩餘 ${coop.timeLeft} 秒`;
+            if (coop.timeLeft <= 0) finishCoopGame("timeup");
+          }, 1000);
+          renderCoopState();
+        });
+        return;
       }
-      renderCoopState();
+      // Co-op Boss (turn-based, random first turn)
+      document.getElementById("coop-timer-box").textContent = "🤝 4連擊放合體技";
+      renderCoopState(coop.firstTurnBanner);
     }
 
     function applyHandicapLockIfNeeded(onUnlock) {
@@ -8208,7 +8286,7 @@
       }, 1500);
     }
 
-    // --- 180° Face-to-Face Fullscreen Split Screen (Tug-of-War & 60s Quiz) ---
+    // --- 180° Face-to-Face Fullscreen Split Screen (Safe-Area & Thumb-Friendly Spacing) ---
     function renderFaceToFaceSplit(feedbackMsg = "") {
       const ov = document.getElementById("coop-split-overlay");
       if (!ov || !coop) return;
@@ -8226,27 +8304,27 @@
         if (hBadge) hBadge.textContent = isTug ? `🔥${coop.p2Streak}` : `${coop.p2}分`;
       });
 
-      const pct = Math.max(6, Math.min(94, 50 + (coop.ropePos * 10.5))); // -4 => ~8% (P1), +4 => ~92% (P2)
+      const pct = Math.max(6, Math.min(94, 50 + (coop.ropePos * 10.5)));
       const renderPlayerHalf = (player) => {
         const isP2 = player === 2;
         const name = isP2 ? coop.p2Name : coop.p1Name;
         const frozen = !!coop.frozen[player];
         const hLock = isP2 && coop.handicapLockP2;
         const disabled = frozen || hLock || coop.locked;
-        const accentBg = isP2 ? "bg-sky-50/90 border-sky-200" : "bg-amber-50/90 border-amber-200";
+        const accentBg = isP2 ? "bg-sky-50/90" : "bg-amber-50/90";
         const btnClr = isP2 ? "bg-white border-sky-300 active:bg-sky-100 text-sky-950" : "bg-white border-amber-300 active:bg-amber-100 text-amber-950";
         const statusText = frozen ? "❄️ 冰凍中..." : (hLock ? "🐣 讓分中..." : (isTug ? `🔥連擊 ${isP2 ? coop.p2Streak : coop.p1Streak}` : `✅ ${isP2 ? coop.p2 : coop.p1} 分`));
         return `
-          <div class="flex-1 flex flex-col justify-between p-2.5 ${accentBg} overflow-hidden" style="${isP2 ? 'transform:rotate(180deg);' : ''}">
+          <div class="flex-1 flex flex-col justify-evenly gap-1.5 px-3 py-2 ${accentBg} overflow-hidden" style="${isP2 ? 'transform:rotate(180deg);' : ''}">
             <div class="flex items-center justify-between gap-2 text-xs font-black">
               <span class="${isP2 ? 'text-sky-800' : 'text-amber-900'}">${isP2 ? '🐾' : '🍮'} ${escapeHtmlSafe(name)}</span>
               <span id="${isP2 ? 'split-p2-handicap' : 'split-p1-status'}" class="px-2 py-0.5 rounded-full bg-white border text-[11px] ${frozen ? 'text-rose-600 border-rose-300' : 'text-stone-700 border-stone-200'}">${statusText}</span>
             </div>
-            <div class="my-1 px-2.5 py-2 rounded-xl bg-white border border-pink-200 text-center">
+            <div class="px-2.5 py-2 rounded-xl bg-white border border-pink-200 text-center">
               <div class="text-[10px] font-bold text-pink-600">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '搶答')}</div>
               <div class="text-sm font-black text-stone-800 leading-snug line-clamp-3">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
             </div>
-            <div class="grid grid-cols-2 gap-1.5">
+            <div class="grid grid-cols-2 gap-1.5 pb-1">
               ${q.shuffledOpts.map((opt, i) => `
                 <button data-sp="${player}" data-si="${i}" ${disabled ? "disabled" : ""} class="${isP2 ? 'split-p2-opt' : 'split-p1-opt'} sanrio-btn py-2.5 px-2 rounded-xl border-2 text-left text-xs font-black leading-tight ${btnClr} ${disabled ? 'opacity-45' : ''}">
                   <span class="opacity-70 mr-1">${labels[i]}.</span>${escapeHtmlSafe(opt)}
@@ -8260,7 +8338,7 @@
         <div class="shrink-0 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 border-y-2 border-pink-300 px-3 py-1.5 space-y-1">
           <div class="flex items-center justify-between text-[11px] font-black">
             <span class="text-amber-800">🍮 ${escapeHtmlSafe(coop.p1Name)} (${Math.max(0, -coop.ropePos)}/4)</span>
-            <span class="text-pink-700 truncate max-w-[160px]">${feedbackMsg || '🪢 把大布丁拉向自己！'}</span>
+            <span class="text-pink-700 truncate max-w-[155px]">${feedbackMsg || '🪢 把大布丁拉向自己！'}</span>
             <div class="flex items-center gap-1.5">
               <span class="text-sky-800">(${Math.max(0, coop.ropePos)}/4) ${escapeHtmlSafe(coop.p2Name)} 🐾</span>
               <button id="btn-split-exit" class="px-2 py-0.5 rounded-full bg-white border border-rose-300 text-rose-600 text-[10px] font-black">✕</button>
@@ -8294,8 +8372,7 @@
       });
     }
 
-    // --- Side-by-Side / Boss / Tug (Non-180°) Renderer ---
-    function renderCoopState() {
+    function renderCoopState(bannerMsg = "") {
       if (!coop) return;
       const q = coop.pool[coop.idx % coop.pool.length];
       document.getElementById("coop-p1-score").textContent = `${coop.p1} 分`;
@@ -8325,7 +8402,7 @@
 
       document.getElementById("coop-q-tag").textContent = `${q.subject || "綜合"}｜${q.tag || "挑戰"}`;
       document.getElementById("coop-q-text").textContent = cleanMiniPrompt(q.q);
-      document.getElementById("coop-feedback").textContent = "";
+      document.getElementById("coop-feedback").textContent = bannerMsg || "";
 
       applyHandicapLockIfNeeded(() => {
         document.querySelectorAll("#coop-p2-opts button").forEach(b => {
@@ -8392,24 +8469,15 @@
           msg = `🎉 ${pName} 搶答成功！${q.explain || ""}`;
         }
 
-        if (isSplit) {
-          renderFaceToFaceSplit(msg);
-        } else {
-          const fb = document.getElementById("coop-feedback");
-          if (fb) fb.textContent = msg;
-        }
+        if (isSplit) renderFaceToFaceSplit(msg);
+        else { const fb = document.getElementById("coop-feedback"); if (fb) fb.textContent = msg; }
 
         setTimeout(() => {
           if (!coop) return;
           coop.locked = false;
-          if (coop.subMode === "boss" && coop.bossHp <= 0) {
-            finishCoopGame("boss_clear");
-          } else if (coop.subMode === "tug" && Math.abs(coop.ropePos) >= 4) {
-            finishCoopGame(coop.ropePos <= -4 ? "p1" : "p2");
-          } else {
-            coop.idx += 1;
-            if (isSplit) renderFaceToFaceSplit(); else renderCoopState();
-          }
+          if (coop.subMode === "boss" && coop.bossHp <= 0) finishCoopGame("boss_clear");
+          else if (coop.subMode === "tug" && Math.abs(coop.ropePos) >= 4) finishCoopGame(coop.ropePos <= -4 ? "p1" : "p2");
+          else { coop.idx += 1; if (isSplit) renderFaceToFaceSplit(); else renderCoopState(); }
         }, isSplit ? 480 : 680);
       } else {
         SFX.hit();
@@ -8417,7 +8485,6 @@
         if (player === 1) coop.p1Streak = 0; else coop.p2Streak = 0;
 
         if (coop.subMode === "tug" || coop.subMode === "vs") {
-          // 1.2s wrong-answer freeze for this player only
           coop.frozen[player] = true;
           if (isSplit) renderFaceToFaceSplit(`❄️ ${pName} 答錯冰凍 1.2 秒！`);
           else {
@@ -8443,7 +8510,6 @@
       }
     }
 
-    // --- Local Mode 2: 3x3 Tactical Territory Steal ---
     function checkTerritoryWinner(board) {
       const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
       for (const [a,b,c] of lines) {
@@ -8452,7 +8518,7 @@
       if (board.every(x => x !== 0)) {
         const c1 = board.filter(x => x === 1).length;
         const c2 = board.filter(x => x === 2).length;
-        return c1 > c2 ? 1 : (c2 > c1 ? 2 : 3); // 3 = draw
+        return c1 > c2 ? 1 : (c2 > c1 ? 2 : 3);
       }
       return 0;
     }
@@ -8485,9 +8551,7 @@
             <div class="text-sm sm:text-base font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
             <div class="grid grid-cols-2 gap-2">
               ${q.shuffledOpts.map((opt, i) => `
-                <button data-terr-ans="${i}" class="sanrio-btn p-2.5 rounded-xl bg-white border-2 border-pink-200 hover:bg-pink-50 text-left text-xs sm:text-sm font-black">
-                  ${labels[i]}. ${escapeHtmlSafe(opt)}
-                </button>
+                <button data-terr-ans="${i}" class="sanrio-btn p-2.5 rounded-xl bg-white border-2 border-pink-200 hover:bg-pink-50 text-left text-xs sm:text-sm font-black">${labels[i]}. ${escapeHtmlSafe(opt)}</button>
               `).join("")}
             </div>
           </div>`;
@@ -8528,11 +8592,7 @@
           const isSteal = coop.board[tidx] !== 0;
           coop.activeTile = tidx;
           coop.activeTileIsSteal = isSteal;
-          if (isSteal) {
-            coop.activeQ = coop.heroPool[coop.heroIdx++ % coop.heroPool.length];
-          } else {
-            coop.activeQ = coop.pool[coop.idx++ % coop.pool.length];
-          }
+          coop.activeQ = isSteal ? coop.heroPool[coop.heroIdx++ % coop.heroPool.length] : coop.pool[coop.idx++ % coop.pool.length];
           renderTerritoryLocal();
         });
       });
@@ -8557,30 +8617,19 @@
             SFX.attack();
             if (cur === 1) coop.p1 += 1; else coop.p2 += 1;
             coop.board[tidx] = cur;
-            if (isSteal || coop.bonusTiles[tidx] === "shield") {
-              coop.locks[tidx] = true;
-            }
+            if (isSteal || coop.bonusTiles[tidx] === "shield") coop.locks[tidx] = true;
             if (coop.bonusTiles[tidx] === "extra" && !isSteal) {
               keepTurn = true;
               delete coop.bonusTiles[tidx];
               feedback = `⚡ ${curNm} 觸發「再來一回合」！連續出擊！`;
-            } else if (isSteal) {
-              SFX.win();
-              feedback = `⚔️ ${curNm} 搶地成功並永久上鎖 🔒！`;
-            } else if (coop.bonusTiles[tidx] === "shield") {
-              feedback = `🛡️ ${curNm} 佔領守護盾格，直接上鎖 🔒！`;
-            } else {
-              feedback = `🎉 ${curNm} 成功佔領地盤！`;
-            }
+            } else if (isSteal) { SFX.win(); feedback = `⚔️ ${curNm} 搶地成功並永久上鎖 🔒！`; }
+            else if (coop.bonusTiles[tidx] === "shield") feedback = `🛡️ ${curNm} 佔領守護盾格，直接上鎖 🔒！`;
+            else feedback = `🎉 ${curNm} 成功佔領地盤！`;
           } else {
             SFX.hit();
             recordCoopWrong(coop.wrongList, q);
-            if (isSteal) {
-              coop.locks[tidx] = true;
-              feedback = `🛡️ ${curNm} 搶地失敗（正解：${q.opts[q.ans]}），該格成功防守並上鎖 🔒！`;
-            } else {
-              feedback = `❌ ${curNm} 答錯了（正解：${q.opts[q.ans]}），換對手進攻！`;
-            }
+            if (isSteal) { coop.locks[tidx] = true; feedback = `🛡️ ${curNm} 搶地失敗（正解：${q.opts[q.ans]}），該格成功防守並上鎖 🔒！`; }
+            else feedback = `❌ ${curNm} 答錯了（正解：${q.opts[q.ans]}），換對手進攻！`;
           }
 
           const winCode = checkTerritoryWinner(coop.board);
@@ -8594,7 +8643,6 @@
       });
     }
 
-    // --- Local Mode 3: Starlight Bomb Relay ---
     function startBombLocalTimer() {
       if (coop.timerId) clearInterval(coop.timerId);
       coop.timerId = setInterval(() => {
@@ -8616,7 +8664,6 @@
       const dyn = document.getElementById("coop-dynamic-arena");
       if (!dyn) return;
       const q = coop.pool[coop.idx % coop.pool.length];
-      const curName = coop.turn === 1 ? coop.p1Name : coop.p2Name;
       const labels = ["A", "B", "C", "D"];
 
       document.getElementById("coop-p1-score").textContent = `${coop.p1} 次傳遞`;
@@ -8638,9 +8685,7 @@
           ${msg ? `<div class="text-xs font-black text-rose-600">${escapeHtmlSafe(msg)}</div>` : ""}
           <div class="grid grid-cols-2 gap-2 pt-1">
             ${q.shuffledOpts.map((opt, i) => `
-              <button data-bomb-ans="${i}" class="sanrio-btn p-3 rounded-xl bg-amber-50/70 hover:bg-amber-100 border-2 border-amber-300 text-left text-xs sm:text-sm font-black text-stone-800">
-                ${labels[i]}. ${escapeHtmlSafe(opt)}
-              </button>
+              <button data-bomb-ans="${i}" class="sanrio-btn p-3 rounded-xl bg-amber-50/70 hover:bg-amber-100 border-2 border-amber-300 text-left text-xs sm:text-sm font-black text-stone-800">${labels[i]}. ${escapeHtmlSafe(opt)}</button>
             `).join("")}
           </div>
         </div>`;
@@ -8653,10 +8698,7 @@
             SFX.attack();
             if (coop.turn === 1) coop.p1 += 1; else coop.p2 += 1;
             coop.bombPasses += 1;
-            if (coop.bombPasses >= coop.bombGoal) {
-              finishCoopGame("bomb_clear");
-              return;
-            }
+            if (coop.bombPasses >= coop.bombGoal) { finishCoopGame("bomb_clear"); return; }
             coop.turn = coop.turn === 1 ? 2 : 1;
             coop.bombMaxTime = Math.max(8, 12 - Math.floor(coop.bombPasses / 3));
             coop.timeLeft = coop.bombMaxTime;
@@ -8687,10 +8729,8 @@
       let winBonus = 0;
       let headline = "🎊 雙人派對完成！";
 
-      if (st.subMode === "boss") {
-        winBonus = 10;
-        headline = "🏆 雙人協力擊敗 180 HP 彩虹水晶龍！";
-      } else if (st.subMode === "bomb") {
+      if (st.subMode === "boss") { winBonus = 10; headline = "🏆 雙人協力擊敗 180 HP 彩虹水晶龍！"; }
+      else if (st.subMode === "bomb") {
         if (outcome === "bomb_clear") { winBonus = 10; headline = `🎉 成功接力 ${st.bombGoal} 次，完美拆彈！`; }
         else headline = `💥 炸彈引爆了！合力撐過 ${st.bombPasses} 次接力！`;
       } else if (st.subMode === "territory") {
@@ -8698,8 +8738,8 @@
         else if (outcome === "p2") { winBonus = 10; headline = `👑 🐾 ${escapeHtmlSafe(st.p2Name)} 奪地大獲全勝！`; }
         else headline = "🤝 勢均力敵！平手各得雙倍默契！";
       } else if (st.subMode === "tug") {
-        if (outcome === "p1") { winBonus = 10; headline = `🪢 🍮 ${escapeHtmlSafe(st.p1Name)} 拔河大獲全勝！`; }
-        else { winBonus = 10; headline = `🪢 🐾 ${escapeHtmlSafe(st.p2Name)} 拔河大獲全勝！`; }
+        winBonus = 10;
+        headline = outcome === "p1" ? `🪢 🍮 ${escapeHtmlSafe(st.p1Name)} 拔河大獲全勝！` : `🪢 🐾 ${escapeHtmlSafe(st.p2Name)} 拔河大獲全勝！`;
       } else {
         if (st.p1 > st.p2) { winBonus = 10; headline = `⚡ 🍮 ${escapeHtmlSafe(st.p1Name)} 搶答稱王！`; }
         else if (st.p2 > st.p1) { winBonus = 10; headline = `⚡ 🐾 ${escapeHtmlSafe(st.p2Name)} 搶答稱王！`; }
@@ -8724,19 +8764,35 @@
           </div>
           ${coopExp.levelsGained > 0 ? `<div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900">🎉 勇者升級至 Lv.${coopExp.newLevel}！賀禮 +${coopExp.giftStars} ⭐</div>` : ""}
           ${buildWrongReviewHtml(st.wrongList)}
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <button id="btn-coop-again" class="sanrio-btn py-2.5 rounded-2xl bg-pink-500 text-white font-black text-sm">🔄 再玩一場</button>
-            <button id="btn-coop-done" class="sanrio-btn py-2.5 rounded-2xl bg-teal-500 text-white font-black text-sm">返回冒險地圖</button>
+          <!-- Top 1 Big + Bottom 2 Side-by-Side -->
+          <div class="space-y-2 pt-1">
+            <button id="btn-coop-again" class="sanrio-btn w-full py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-black text-sm shadow">🔄 再玩一場（同玩法）</button>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btn-coop-hub" class="sanrio-btn py-2.5 px-2 rounded-2xl bg-teal-500 hover:bg-teal-600 text-white font-black text-xs sm:text-sm">🎮 雙人派對中心</button>
+              <button id="btn-coop-done" class="sanrio-btn py-2.5 px-2 rounded-2xl bg-stone-100 hover:bg-stone-200 border-2 border-stone-300 text-stone-700 font-black text-xs sm:text-sm">🗺️ 返回冒險地圖</button>
+            </div>
           </div>
         </div>
-      `);
+      `, false, { lockClose: true });
+
       bindSaveWrongsBtn(st.wrongList);
-      document.getElementById("btn-coop-again").addEventListener("click", () => { SFX.click(); closeModal(); startCoopGame(st.subMode); });
-      document.getElementById("btn-coop-done").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
+      document.getElementById("btn-coop-again").addEventListener("click", () => {
+        SFX.click(); closeModal(true);
+        if (typeof maybeTriggerPendingEyeRest === "function" && maybeTriggerPendingEyeRest()) return;
+        startCoopGame(st.subMode);
+      });
+      document.getElementById("btn-coop-hub").addEventListener("click", () => {
+        SFX.click(); closeModal(true); backToMap();
+        if (typeof maybeTriggerPendingEyeRest === "function" && maybeTriggerPendingEyeRest()) return;
+        openCoopLauncher("local");
+      });
+      document.getElementById("btn-coop-done").addEventListener("click", () => {
+        SFX.click(); closeModal(true); backToMap();
+      });
     }
 
     // =========================================================================
-    // PART B: FIREBASE RTDB ZERO-SDK ONLINE MULTIPLAYER ENGINE (6 MODES)
+    // PART B: FIREBASE RTDB ZERO-SDK ONLINE MULTIPLAYER ENGINE (READY ROOM + 6 MODES)
     // =========================================================================
     async function fbReq(method, path, body = null) {
       const url = `${FIREBASE_RTDB_URL}/${path}.json`;
@@ -8781,6 +8837,7 @@
         const bonusTiles = {};
         bonusTiles[bonusIdxs[0]] = "shield";
         bonusTiles[bonusIdxs[1]] = "extra";
+        const firstTurn = Math.random() < 0.5 ? "host" : "guest";
 
         const roomData = {
           code,
@@ -8790,12 +8847,11 @@
           sameQ: !!sameQ,
           seed,
           grade: CLOUD_GRADE,
-          status: "waiting", // waiting | playing | finished
+          status: "waiting", // waiting | readying | countdown | playing | finished
           createdAt: Date.now(),
-          host: { name: nick, hero: state.hero || "purin", score: 0, ready: true },
+          host: { name: nick, hero: state.hero || "purin", score: 0, ready: false },
           guest: null,
-          // Shared game state fields
-          turn: "host",
+          turn: firstTurn,
           ropePos: 0,
           bossHp: 200,
           bossMaxHp: 200,
@@ -8810,11 +8866,14 @@
           bombPasses: 0,
           bombGoal: 12,
           fuseEndAt: 0,
+          countdownAt: 0,
           startAt: 0,
+          restNotice: "",
           lastMsg: "等待好友加入房間..."
         };
         await fbReq("PUT", `rooms/${code}`, roomData);
-        enterOnlineWaitingRoom(code, "host", roomData);
+        _lastOnlineRoomCode = code;
+        enterOnlineReadyRoom(code, "host", roomData);
       } catch (err) {
         setOnlineStatusMsg("❌ 建立房間失敗，請確認網路連線或 Firebase 規則設定。");
       }
@@ -8837,24 +8896,21 @@
           return;
         }
         if (data.status !== "waiting") {
-          setOnlineStatusMsg("⚠️ 這個房間已經開戰或結束囉！");
+          setOnlineStatusMsg("⚠️ 這個房間已經有人加入或開戰囉！");
           return;
         }
         if (data.pwd && data.pwd !== (pwd || "")) {
           setOnlineStatusMsg("🔒 房間密碼不正確，請輸入房主設定的密碼！");
           return;
         }
-        const now = Date.now();
         const patch = {
-          guest: { name: nick, hero: state.hero || "pochacco", score: 0, ready: true },
-          status: "playing",
-          startAt: now,
-          fuseEndAt: now + 12000,
-          lastMsg: `🎉 ${nick} 加入房間！對戰開始！`
+          guest: { name: nick, hero: state.hero || "pochacco", score: 0, ready: false },
+          status: "readying",
+          lastMsg: `🎉 ${nick} 已進房！請雙方按下「我準備好了」！`
         };
         await fbReq("PATCH", `rooms/${code}`, patch);
-        const merged = { ...data, ...patch };
-        startOnlineMatch(code, "guest", merged);
+        _lastOnlineRoomCode = code;
+        enterOnlineReadyRoom(code, "guest", { ...data, ...patch });
       } catch (err) {
         setOnlineStatusMsg("❌ 加入房間失敗，請檢查網路狀態。");
       }
@@ -8871,7 +8927,6 @@
         onData(snap);
       };
 
-      // Native EventSource SSE (Zero SDK)
       if (typeof EventSource !== "undefined") {
         try {
           const es = new EventSource(`${FIREBASE_RTDB_URL}/rooms/${code}.json`);
@@ -8889,60 +8944,192 @@
         } catch (err) {}
       }
 
-      // Gentle 2.2s fallback polling for iOS Safari reliability
       onlineRoom.pollId = setInterval(() => {
         if (!onlineRoom) return;
         fbReq("GET", `rooms/${code}`).then(applySnap).catch(() => {});
-      }, 2200);
+      }, 2000);
     }
 
-    function enterOnlineWaitingRoom(code, role, data) {
+    // --- READY ROOM (Waiting + Both Confirm Ready + 3-2-1 Sync Countdown) ---
+    function enterOnlineReadyRoom(code, role, data) {
       cleanupCoopAndOnline();
-      onlineRoom = { code, role, data, es: null, pollId: null, timerId: null, started: false, finished: false, wrongList: [] };
-      const inviteUrl = `${location.origin}${location.pathname}?room=${code}`;
+      onlineRoom = { code, role, data, es: null, pollId: null, timerId: null, cdTimerId: null, started: false, finished: false, wrongList: [] };
+
       const modeNames = {
         territory: "🏁 3×3 策略奪地戰", tug: "🪢 星光拔河賽", tf_pk: "⚡ 是非快打 60秒PK",
         math_pk: "🧮 數學心算 60秒PK", boss: "🤝 協力打超級魔王", bomb: "💣 接力傳炸彈"
       };
-      showModal("⏳ 等待好友加入房間...", `
-        <div class="text-center space-y-3 py-1">
-          <div class="text-xs font-black text-indigo-700">${modeNames[data.mode] || data.mode}｜${escapeHtmlSafe(data.subject)}｜${data.sameQ ? '🎯 同題公平 PK' : '📚 跨年級各自出題'}</div>
-          <div class="p-4 rounded-2xl bg-indigo-50 border-2 border-indigo-300 space-y-1">
-            <div class="text-xs font-bold text-indigo-700">房間號碼（告訴對方這 4 碼）</div>
-            <div class="text-4xl font-black tracking-[0.25em] text-indigo-900">${code}</div>
-            ${data.pwd ? `<div class="text-xs font-black text-rose-600">🔒 房間密碼：${escapeHtmlSafe(data.pwd)}</div>` : `<div class="text-[11px] text-stone-500">無密碼（輸入房號即可進房）</div>`}
-          </div>
-          <button id="btn-ol-copy-link" class="sanrio-btn w-full py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm shadow">
-            📋 複製 LINE 邀請連結（點了自動帶入房號！）
-          </button>
-          <div id="ol-copy-fb" class="text-xs font-black text-emerald-700 min-h-[16px]"></div>
-          <div class="text-xs font-bold text-stone-500 animate-pulse">📡 正在等待另一支手機加入，加入後自動開戰...</div>
-          <button id="btn-ol-cancel" class="sanrio-btn px-5 py-2 rounded-xl bg-stone-200 text-stone-700 text-xs font-black">取消房間</button>
-        </div>
-      `);
-      document.getElementById("btn-ol-copy-link").addEventListener("click", () => {
-        SFX.click();
-        const shareTxt = `🎮 來跟我連線玩三麗鷗冒險 RPG（${modeNames[data.mode] || ''}）！\n🔑 房號：${code}${data.pwd ? '｜密碼：' + data.pwd : ''}\n👉 點此直接進房：${inviteUrl}`;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(shareTxt).catch(() => {});
-        }
-        const fb = document.getElementById("ol-copy-fb");
-        if (fb) fb.textContent = "✅ 已複製邀請訊息！貼到 LINE 給朋友吧～";
-      });
-      document.getElementById("btn-ol-cancel").addEventListener("click", () => {
-        SFX.click();
-        fbReq("DELETE", `rooms/${code}`).catch(() => {});
-        cleanupCoopAndOnline();
-        closeModal();
-      });
 
+      const renderReadyUI = (d) => {
+        if (!onlineRoom || onlineRoom.started) return;
+        const inviteUrl = `${location.origin}${location.pathname}?room=${code}`;
+        const host = d.host || { name: "房主", hero: "purin", ready: false };
+        const guest = d.guest || null;
+        const me = role === "host" ? host : guest;
+        const myReady = !!(me && me.ready);
+        const bothIn = !!guest;
+        const isCountdown = d.status === "countdown";
+
+        const renderCard = (playerObj, isHostCard) => {
+          if (!playerObj) {
+            return `
+              <div class="p-3 rounded-2xl border-2 border-dashed border-stone-300 bg-stone-50 text-center space-y-1.5 flex flex-col justify-center min-h-[122px]">
+                <div class="text-2xl animate-pulse">⏳</div>
+                <div class="text-xs font-black text-stone-500">等待好友加入...</div>
+              </div>`;
+          }
+          const imgSrc = playerObj.hero === "pochacco" ? "./assets/pochacco.webp" : "./assets/purin.webp";
+          const isMe = (isHostCard && role === "host") || (!isHostCard && role === "guest");
+          return `
+            <div class="p-3 rounded-2xl border-2 ${playerObj.ready ? 'border-emerald-400 bg-emerald-50/80' : 'border-indigo-200 bg-white'} text-center space-y-1">
+              <img src="${imgSrc}" class="w-12 h-12 mx-auto object-contain sprite-cutout" alt="hero" />
+              <div class="text-xs font-black text-stone-800 truncate">${escapeHtmlSafe(playerObj.name)}${isMe ? ' (你)' : ''}</div>
+              <div class="inline-block px-2 py-0.5 rounded-full text-[10px] font-black ${playerObj.ready ? 'bg-emerald-500 text-white' : 'bg-amber-100 text-amber-800'}">
+                ${playerObj.ready ? '✅ 已準備就緒' : '⏳ 準備中...'}
+              </div>
+            </div>`;
+        };
+
+        showModal(isCountdown ? "🚀 雙方準備完畢！倒數開戰" : `🌐 連線準備室｜房號 ${code}`, `
+          <div class="text-center space-y-3 py-1">
+            <div class="text-xs font-black text-indigo-700">${modeNames[d.mode] || d.mode}｜${escapeHtmlSafe(d.subject)}｜${d.sameQ ? '🎯 同題公平 PK' : '📚 跨年級各自出題'}</div>
+
+            ${!bothIn ? `
+              <div class="p-3.5 rounded-2xl bg-indigo-50 border-2 border-indigo-300 space-y-1">
+                <div class="text-[11px] font-bold text-indigo-700">告訴朋友這 4 碼房號</div>
+                <div class="text-4xl font-black tracking-[0.25em] text-indigo-900">${code}</div>
+                ${d.pwd ? `<div class="text-xs font-black text-rose-600">🔒 房間密碼：${escapeHtmlSafe(d.pwd)}</div>` : `<div class="text-[11px] text-stone-500">無密碼（輸入房號即可進房）</div>`}
+                <button id="btn-ol-copy-link" class="sanrio-btn mt-1.5 w-full py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs shadow">📋 複製 LINE 邀請連結</button>
+                <div id="ol-copy-fb" class="text-[11px] font-black text-emerald-700 min-h-[14px]"></div>
+              </div>` : ""}
+
+            <div class="grid grid-cols-2 gap-2.5">
+              ${renderCard(host, true)}
+              ${renderCard(guest, false)}
+            </div>
+
+            ${isCountdown ? `
+              <div class="p-4 rounded-2xl bg-gradient-to-r from-pink-50 to-amber-50 border-2 border-pink-300 space-y-1">
+                <div class="text-xs font-black text-pink-700">🎉 雙方都準備好了！同步倒數...</div>
+                <div id="ol-cd-num" class="text-5xl font-black text-pink-600">3</div>
+              </div>` : `
+              <div class="space-y-2">
+                <button id="btn-ol-ready-toggle" ${!bothIn ? "disabled" : ""} class="sanrio-btn w-full py-3 rounded-2xl font-black text-sm shadow ${!bothIn ? 'bg-stone-200 text-stone-500' : (myReady ? 'bg-amber-400 hover:bg-amber-500 text-amber-950' : 'bg-emerald-500 hover:bg-emerald-600 text-white')}">
+                  ${!bothIn ? '⏳ 等待好友進房後即可按準備...' : (myReady ? '✅ 已準備好！（點此取消準備）' : '✋ 我準備好了！')}
+                </button>
+                <div class="grid grid-cols-2 gap-2">
+                  <button id="btn-ol-swap-hero" class="sanrio-btn py-2 rounded-xl bg-white border-2 border-pink-200 text-pink-700 text-xs font-black">🔄 換角色（布丁/帕恰）</button>
+                  <button id="btn-ol-leave" class="sanrio-btn py-2 rounded-xl bg-stone-100 border-2 border-stone-200 text-stone-600 text-xs font-black">🚪 離開房間</button>
+                </div>
+              </div>`}
+          </div>
+        `, false, { lockClose: true });
+
+        const copyBtn = document.getElementById("btn-ol-copy-link");
+        if (copyBtn) copyBtn.addEventListener("click", () => {
+          SFX.click();
+          const shareTxt = `🎮 來跟我連線玩三麗鷗冒險 RPG（${modeNames[d.mode] || ''}）！\n🔑 房號：${code}${d.pwd ? '｜密碼：' + d.pwd : ''}\n👉 點此直接進房：${inviteUrl}`;
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(shareTxt).catch(() => {});
+          const fb = document.getElementById("ol-copy-fb");
+          if (fb) fb.textContent = "✅ 已複製邀請訊息！貼到 LINE 給朋友吧～";
+        });
+
+        const rdyBtn = document.getElementById("btn-ol-ready-toggle");
+        if (rdyBtn && bothIn) rdyBtn.addEventListener("click", async () => {
+          SFX.click();
+          const curObj = onlineRoom.data[role] || {};
+          const nextReady = !curObj.ready;
+          const updatedMe = { ...curObj, ready: nextReady };
+          const opp = role === "host" ? onlineRoom.data.guest : onlineRoom.data.host;
+          const bothReadyNow = nextReady && opp && opp.ready;
+          const patch = { [role]: updatedMe };
+          if (bothReadyNow) {
+            patch.status = "countdown";
+            patch.countdownAt = Date.now() + 3200;
+          }
+          onlineRoom.data = { ...onlineRoom.data, ...patch };
+          await fbReq("PATCH", `rooms/${code}`, patch).catch(() => {});
+          if (bothReadyNow) beginOnlineCountdown(onlineRoom.data);
+          else renderReadyUI(onlineRoom.data);
+        });
+
+        const swapBtn = document.getElementById("btn-ol-swap-hero");
+        if (swapBtn) swapBtn.addEventListener("click", async () => {
+          SFX.click();
+          const curObj = onlineRoom.data[role] || {};
+          const nextHero = curObj.hero === "pochacco" ? "purin" : "pochacco";
+          const patch = { [role]: { ...curObj, hero: nextHero } };
+          onlineRoom.data = { ...onlineRoom.data, ...patch };
+          await fbReq("PATCH", `rooms/${code}`, patch).catch(() => {});
+          renderReadyUI(onlineRoom.data);
+        });
+
+        const leaveBtn = document.getElementById("btn-ol-leave");
+        if (leaveBtn) leaveBtn.addEventListener("click", () => {
+          SFX.click();
+          if (role === "host") fbReq("DELETE", `rooms/${code}`).catch(() => {});
+          else fbReq("PATCH", `rooms/${code}`, { guest: null, status: "waiting", lastMsg: "好友已離開房間" }).catch(() => {});
+          cleanupCoopAndOnline();
+          closeModal(true);
+          openCoopLauncher("online");
+        });
+      };
+
+      const beginOnlineCountdown = (snap) => {
+        if (!onlineRoom || onlineRoom.cdTimerId || onlineRoom.started) return;
+        renderReadyUI(snap);
+        let lastShown = "";
+        onlineRoom.cdTimerId = setInterval(() => {
+          if (!onlineRoom || onlineRoom.started) return;
+          const remMs = (snap.countdownAt || (Date.now() + 3000)) - Date.now();
+          const sec = Math.ceil(remMs / 1000);
+          const lbl = sec > 0 ? String(Math.min(3, sec)) : "GO!";
+          const numEl = document.getElementById("ol-cd-num");
+          if (numEl) numEl.textContent = lbl;
+          if (lbl !== lastShown) {
+            lastShown = lbl;
+            if (lbl === "GO!") SFX.win(); else SFX.click();
+          }
+          if (remMs <= -250) {
+            clearInterval(onlineRoom.cdTimerId);
+            onlineRoom.cdTimerId = null;
+            onlineRoom.started = true;
+            const now = Date.now();
+            const firstNm = snap.turn === "host" ? (snap.host && snap.host.name) : (snap.guest && snap.guest.name);
+            const startPatch = {
+              status: "playing",
+              startAt: now,
+              fuseEndAt: now + 12000,
+              lastMsg: `🎲 隨機先手：由 ${firstNm || '房主'} 先攻！`
+            };
+            if (role === "host") fbReq("PATCH", `rooms/${code}`, startPatch).catch(() => {});
+            closeModal(true);
+            startOnlineMatch(code, role, { ...snap, ...startPatch });
+          }
+        }, 180);
+      };
+
+      renderReadyUI(data);
       subscribeOnlineRoom(code, (snap) => {
         if (!onlineRoom || onlineRoom.started) return;
-        if (snap && snap.status === "playing" && snap.guest) {
-          onlineRoom.started = true;
-          closeModal();
-          startOnlineMatch(code, "host", snap);
+        if (!snap) {
+          cleanupCoopAndOnline();
+          closeModal(true);
+          openCoopLauncher("online");
+          setOnlineStatusMsg("⚠️ 房主已關閉房間。");
+          return;
         }
+        if (snap.status === "playing") {
+          onlineRoom.started = true;
+          closeModal(true);
+          startOnlineMatch(code, role, snap);
+          return;
+        }
+        if (snap.status === "countdown") {
+          beginOnlineCountdown(snap);
+          return;
+        }
+        renderReadyUI(snap);
       });
     }
 
@@ -8961,27 +9148,12 @@
       const mathPool = Array.from({ length: 80 }, () => genSeededMathProblem(mathRng, mathGradeNum));
 
       onlineRoom = {
-        code,
-        role,
-        data,
-        pool,
-        heroPool,
-        mathPool,
-        localIdx: 0,
-        localCombo: 0,
-        localScore: 0,
-        localWrong: 0,
-        mathInput: "",
-        tfTimeBonus: 0,
-        activeTile: null,
-        activeTileIsSteal: false,
-        activeQ: null,
-        locked: false,
-        finished: false,
-        wrongList: [],
-        es: null,
-        pollId: null,
-        timerId: null
+        code, role, data, pool, heroPool, mathPool,
+        localIdx: 0, localCombo: 0, localScore: 0, localWrong: 0,
+        mathInput: "", tfTimeBonus: 0,
+        activeTile: null, activeTileIsSteal: false, activeQ: null,
+        locked: false, finished: false, wrongList: [],
+        es: null, pollId: null, timerId: null, cdTimerId: null
       };
 
       const hdr = document.getElementById("main-header");
@@ -8995,17 +9167,13 @@
       window.scrollTo({ top: 0, behavior: "instant" });
 
       const modeTitles = {
-        territory: "🌐 連線 3×3 策略奪地戰",
-        tug: "🌐 連線星光拔河賽",
-        tf_pk: "🌐 連線是非快打 60秒PK",
-        math_pk: "🌐 連線數學心算 60秒PK",
-        boss: "🌐 連線協力打超級魔王",
-        bomb: "🌐 連線接力傳炸彈"
+        territory: "🌐 連線 3×3 策略奪地戰", tug: "🌐 連線星光拔河賽",
+        tf_pk: "🌐 連線是非快打 60秒PK", math_pk: "🌐 連線數學心算 60秒PK",
+        boss: "🌐 連線協力打超級魔王", bomb: "🌐 連線接力傳炸彈"
       };
       document.getElementById("coop-mode-badge").textContent = `🌐 房號 ${code}｜${data.sameQ ? '同題PK' : '跨年級'}`;
       document.getElementById("coop-title").textContent = modeTitles[data.mode] || "🌐 連線對戰";
 
-      // Start countdown ticker for timed modes (tf_pk, math_pk, bomb)
       if (data.mode === "tf_pk" || data.mode === "math_pk") {
         onlineRoom.timerId = setInterval(() => {
           if (!onlineRoom || onlineRoom.finished) return;
@@ -9036,11 +9204,7 @@
         if (!onlineRoom || onlineRoom.finished || !snap) return;
         onlineRoom.data = snap;
         updateOnlineScoreBanner(snap);
-        if (snap.status === "finished") {
-          finishOnlineMatch("remote_finish");
-          return;
-        }
-        // Re-render synced board/rope/boss/bomb views without wiping local typing in math_pk/tf_pk
+        if (snap.status === "finished") { finishOnlineMatch("remote_finish"); return; }
         if (snap.mode === "territory" || snap.mode === "tug" || snap.mode === "boss" || snap.mode === "bomb") {
           renderOnlineArena();
         }
@@ -9088,7 +9252,6 @@
       const isMyTurn = d.turn === myRole;
       const labels = ["A", "B", "C", "D"];
 
-      // --- ONLINE MODE 1: 3x3 TERRITORY ---
       if (d.mode === "territory") {
         const board = Array.isArray(d.board) ? d.board : [0,0,0,0,0,0,0,0,0];
         const locks = Array.isArray(d.locks) ? d.locks : Array(9).fill(false);
@@ -9160,8 +9323,7 @@
             const nextLocks = (d.locks || Array(9).fill(false)).slice();
             const nextBonus = { ...(d.bonusTiles || {}) };
             const myNum = myRole === "host" ? 1 : 2;
-            const nextTurnDefault = myRole === "host" ? "guest" : "host";
-            let nextTurn = nextTurnDefault;
+            let nextTurn = myRole === "host" ? "guest" : "host";
             let msg = "";
             let myScore = ((d[myRole] && d[myRole].score) || 0);
             let stealsHost = d.stealsHost ?? 2;
@@ -9189,16 +9351,11 @@
 
             const winCode = checkTerritoryWinner(nextBoard);
             const patch = {
-              board: nextBoard,
-              locks: nextLocks,
-              bonusTiles: nextBonus,
-              stealsHost,
-              stealsGuest,
-              turn: nextTurn,
+              board: nextBoard, locks: nextLocks, bonusTiles: nextBonus,
+              stealsHost, stealsGuest, turn: nextTurn,
               qIdx: (d.qIdx || 0) + (isSteal ? 0 : 1),
               heroIdx: (d.heroIdx || 0) + (isSteal ? 1 : 0),
-              lastMsg: msg,
-              status: winCode ? "finished" : "playing",
+              lastMsg: msg, status: winCode ? "finished" : "playing",
               [myRole]: { ...d[myRole], score: myScore }
             };
             onlineRoom.data = { ...d, ...patch };
@@ -9210,7 +9367,6 @@
         return;
       }
 
-      // --- ONLINE MODE 2: TUG OF WAR ---
       if (d.mode === "tug") {
         const q = onlineRoom.pool[onlineRoom.localIdx % onlineRoom.pool.length];
         const pct = Math.max(6, Math.min(94, 50 + (d.ropePos || 0) * 10.5));
@@ -9247,8 +9403,7 @@
               const nextPos = Math.max(-4, Math.min(4, (onlineRoom.data.ropePos || 0) + (myRole === "host" ? -pull : pull)));
               const finished = Math.abs(nextPos) >= 4;
               const patch = {
-                ropePos: nextPos,
-                status: finished ? "finished" : "playing",
+                ropePos: nextPos, status: finished ? "finished" : "playing",
                 lastMsg: `🪢 ${onlineRoom.data[myRole].name} 拉動 ${pull} 格！`,
                 [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore }
               };
@@ -9267,7 +9422,6 @@
         return;
       }
 
-      // --- ONLINE MODE 3: 60s TRUE/FALSE PK ---
       if (d.mode === "tf_pk") {
         const q = onlineRoom.pool[onlineRoom.localIdx % onlineRoom.pool.length];
         const rng = mulberry32((d.seed || 123) + onlineRoom.localIdx * 31);
@@ -9307,8 +9461,7 @@
             let extra = "";
             if (onlineRoom.localCombo % 5 === 0) { onlineRoom.tfTimeBonus += 3; extra = " 🔥FEVER +3秒！"; SFX.win(); }
             if (fb) { fb.className = "text-center text-xs font-black text-emerald-600"; fb.textContent = `🎉 答對！${extra}`; }
-            const patch = { [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore } };
-            fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
+            fbReq("PATCH", `rooms/${onlineRoom.code}`, { [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore } }).catch(() => {});
           } else {
             SFX.hit();
             onlineRoom.localWrong += 1;
@@ -9324,7 +9477,6 @@
         return;
       }
 
-      // --- ONLINE MODE 4: 60s MENTAL MATH PK ---
       if (d.mode === "math_pk") {
         const prob = onlineRoom.mathPool[onlineRoom.localIdx % onlineRoom.mathPool.length];
         dyn.innerHTML = `
@@ -9347,10 +9499,8 @@
             if (!onlineRoom || onlineRoom.locked || onlineRoom.finished) return;
             const k = btn.dataset.olK;
             if (k === "del") {
-              SFX.click();
-              onlineRoom.mathInput = onlineRoom.mathInput.slice(0, -1);
-              const vEl = document.getElementById("ol-math-val");
-              if (vEl) vEl.textContent = onlineRoom.mathInput || "?";
+              SFX.click(); onlineRoom.mathInput = onlineRoom.mathInput.slice(0, -1);
+              const vEl = document.getElementById("ol-math-val"); if (vEl) vEl.textContent = onlineRoom.mathInput || "?";
               return;
             }
             if (k === "ok") {
@@ -9359,33 +9509,26 @@
               const ok = Number(onlineRoom.mathInput) === prob.ans;
               const fb = document.getElementById("ol-math-fb");
               if (ok) {
-                SFX.attack();
-                onlineRoom.localScore += 1;
-                onlineRoom.localCombo += 1;
+                SFX.attack(); onlineRoom.localScore += 1; onlineRoom.localCombo += 1;
                 if (fb) { fb.className = "text-xs font-black text-emerald-600"; fb.textContent = "✅ 答對！"; }
                 fbReq("PATCH", `rooms/${onlineRoom.code}`, { [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore } }).catch(() => {});
               } else {
-                SFX.hit();
-                onlineRoom.localCombo = 0;
+                SFX.hit(); onlineRoom.localCombo = 0;
                 if (fb) { fb.className = "text-xs font-black text-rose-600"; fb.textContent = `❌ 正解是 ${prob.ans}`; }
               }
-              onlineRoom.mathInput = "";
-              onlineRoom.localIdx += 1;
+              onlineRoom.mathInput = ""; onlineRoom.localIdx += 1;
               setTimeout(() => { if (onlineRoom && !onlineRoom.finished) { onlineRoom.locked = false; renderOnlineArena(); } }, ok ? 260 : 650);
               return;
             }
             if (onlineRoom.mathInput.length < 5) {
-              SFX.click();
-              onlineRoom.mathInput += k;
-              const vEl = document.getElementById("ol-math-val");
-              if (vEl) vEl.textContent = onlineRoom.mathInput;
+              SFX.click(); onlineRoom.mathInput += k;
+              const vEl = document.getElementById("ol-math-val"); if (vEl) vEl.textContent = onlineRoom.mathInput;
             }
           });
         });
         return;
       }
 
-      // --- ONLINE MODE 5: CO-OP SUPER BOSS (200 HP) ---
       if (d.mode === "boss") {
         const q = onlineRoom.pool[onlineRoom.localIdx % onlineRoom.pool.length];
         dyn.innerHTML = `
@@ -9409,16 +9552,13 @@
             onlineRoom.locked = true;
             const choice = Number(btn.dataset.olBoss);
             if (choice === q.correctIdx) {
-              SFX.attack();
-              onlineRoom.localScore += 1;
+              SFX.attack(); onlineRoom.localScore += 1;
               const nextCombo = (onlineRoom.data.teamCombo || 0) + 1;
               const isUlt = nextCombo % 4 === 0;
               const dmg = isUlt ? 40 : 20;
               const nextHp = Math.max(0, (onlineRoom.data.bossHp ?? 200) - dmg);
               const patch = {
-                bossHp: nextHp,
-                teamCombo: nextCombo,
-                status: nextHp <= 0 ? "finished" : "playing",
+                bossHp: nextHp, teamCombo: nextCombo, status: nextHp <= 0 ? "finished" : "playing",
                 lastMsg: isUlt ? `🌟 連線合體大招！${onlineRoom.data[myRole].name} 爆擊 -40 HP！` : `⚔️ ${onlineRoom.data[myRole].name} 造成 -20 HP！`,
                 [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore }
               };
@@ -9426,8 +9566,7 @@
               await fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
               if (nextHp <= 0) { finishOnlineMatch("boss_clear"); return; }
             } else {
-              SFX.hit();
-              recordCoopWrong(onlineRoom.wrongList, q);
+              SFX.hit(); recordCoopWrong(onlineRoom.wrongList, q);
             }
             onlineRoom.localIdx += 1;
             setTimeout(() => { if (onlineRoom) { onlineRoom.locked = false; renderOnlineArena(); } }, choice === q.correctIdx ? 300 : 750);
@@ -9436,7 +9575,6 @@
         return;
       }
 
-      // --- ONLINE MODE 6: BOMB RELAY ---
       if (d.mode === "bomb") {
         const q = onlineRoom.pool[(d.qIdx || 0) % onlineRoom.pool.length];
         const rem = Math.max(0, Math.ceil(((d.fuseEndAt || (Date.now() + 12000)) - Date.now()) / 1000));
@@ -9464,16 +9602,13 @@
             onlineRoom.locked = true;
             const choice = Number(btn.dataset.olBomb);
             if (choice === q.correctIdx) {
-              SFX.attack();
-              onlineRoom.localScore += 1;
+              SFX.attack(); onlineRoom.localScore += 1;
               const nextPasses = (d.bombPasses || 0) + 1;
               const cleared = nextPasses >= (d.bombGoal || 12);
               const nextFuseSec = Math.max(8, 12 - Math.floor(nextPasses / 3));
               const patch = {
-                bombPasses: nextPasses,
-                turn: myRole === "host" ? "guest" : "host",
-                qIdx: (d.qIdx || 0) + 1,
-                fuseEndAt: Date.now() + nextFuseSec * 1000,
+                bombPasses: nextPasses, turn: myRole === "host" ? "guest" : "host",
+                qIdx: (d.qIdx || 0) + 1, fuseEndAt: Date.now() + nextFuseSec * 1000,
                 status: cleared ? "finished" : "playing",
                 lastMsg: cleared ? "🎉 連線完美拆彈成功！" : `✨ ${d[myRole].name} 傳遞成功！`,
                 [myRole]: { ...d[myRole], score: onlineRoom.localScore }
@@ -9482,8 +9617,7 @@
               await fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
               if (cleared) { finishOnlineMatch("bomb_clear"); return; }
             } else {
-              SFX.hit();
-              recordCoopWrong(onlineRoom.wrongList, q);
+              SFX.hit(); recordCoopWrong(onlineRoom.wrongList, q);
               await fbReq("PATCH", `rooms/${onlineRoom.code}`, { qIdx: (d.qIdx || 0) + 1, lastMsg: `❌ ${d[myRole].name} 答錯換題！` }).catch(() => {});
             }
             setTimeout(() => { if (onlineRoom) { onlineRoom.locked = false; renderOnlineArena(); } }, 350);
@@ -9495,6 +9629,7 @@
     function finishOnlineMatch(reason = "") {
       if (!onlineRoom || onlineRoom.finished) return;
       onlineRoom.finished = true;
+      const roomCode = onlineRoom.code;
       const snap = onlineRoom.data || {};
       const myRole = onlineRoom.role;
       const wrongs = onlineRoom.wrongList || [];
@@ -9505,21 +9640,16 @@
       const myScore = myRole === "host" ? hScore : gScore;
       const oppScore = myRole === "host" ? gScore : hScore;
 
+      _lastOnlineRoomCode = roomCode;
       cleanupCoopAndOnline();
       SFX.win();
 
       let isWin = false;
       let headline = "🌐 連線對戰完成！";
-      if (snap.mode === "boss") {
-        isWin = (snap.bossHp || 0) <= 0;
-        headline = isWin ? "🏆 連線協力擊敗超級魔王！" : "⚔️ 協力作戰結束！";
-      } else if (snap.mode === "bomb") {
-        isWin = (snap.bombPasses || 0) >= (snap.bombGoal || 12);
-        headline = isWin ? "🎉 連線接力拆彈大成功！" : `💥 炸彈引爆！合力接力 ${snap.bombPasses || 0} 次`;
-      } else if (snap.mode === "tug") {
-        isWin = (myRole === "host" && (snap.ropePos || 0) < 0) || (myRole === "guest" && (snap.ropePos || 0) > 0);
-        headline = isWin ? "🪢 恭喜你拔河獲勝！" : "🪢 對方略勝一籌，再來一局！";
-      } else {
+      if (snap.mode === "boss") { isWin = (snap.bossHp || 0) <= 0; headline = isWin ? "🏆 連線協力擊敗超級魔王！" : "⚔️ 協力作戰結束！"; }
+      else if (snap.mode === "bomb") { isWin = (snap.bombPasses || 0) >= (snap.bombGoal || 12); headline = isWin ? "🎉 連線接力拆彈大成功！" : `💥 炸彈引爆！合力接力 ${snap.bombPasses || 0} 次`; }
+      else if (snap.mode === "tug") { isWin = (myRole === "host" && (snap.ropePos || 0) < 0) || (myRole === "guest" && (snap.ropePos || 0) > 0); headline = isWin ? "🪢 恭喜你拔河獲勝！" : "🪢 對方略勝一籌，再來一局！"; }
+      else {
         if (myScore > oppScore) { isWin = true; headline = "👑 恭喜你獲得連線勝利！"; }
         else if (myScore < oppScore) headline = "🌟 精彩對決！再挑戰一場！";
         else headline = "🤝 旗鼓相當，平手！";
@@ -9540,21 +9670,49 @@
         <div class="text-center space-y-3 py-1">
           <div class="text-xl sm:text-2xl font-black text-indigo-600">${headline}</div>
           <p class="text-xs sm:text-sm font-bold text-stone-700">🍮 ${escapeHtmlSafe(hName)}：${hScore} 分 ｜ 🐾 ${escapeHtmlSafe(gName)}：${gScore} 分</p>
+          <div id="ol-rest-notice-banner" class="${snap.restNotice ? '' : 'hidden'} p-2 rounded-xl bg-emerald-50 border border-emerald-300 text-xs font-black text-emerald-800">${escapeHtmlSafe(snap.restNotice || '')}</div>
           <div class="inline-block px-4 py-2 rounded-2xl bg-amber-100 border-2 border-amber-300 text-xs sm:text-sm font-black text-amber-900">
             獲得 +${rew.stars} ⭐ ｜ +${baseExp} EXP ｜ +5 默契
             ${!rew.wasFullQuota ? '<div class="text-[10px] text-stone-600 mt-0.5">（今日 5 場滿星額度已用完，發放 20% 練習星）</div>' : `<div class="text-[10px] text-amber-700 mt-0.5">今日剩餘滿星雙人額度：${rew.leftAfter} / ${COOP_DAILY_REWARD_CAP} 場</div>`}
           </div>
           ${coopExp.levelsGained > 0 ? `<div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900">🎉 勇者升級至 Lv.${coopExp.newLevel}！賀禮 +${coopExp.giftStars} ⭐</div>` : ""}
           ${buildWrongReviewHtml(wrongs)}
-          <div class="grid grid-cols-2 gap-2 pt-1">
-            <button id="btn-ol-lobby" class="sanrio-btn py-2.5 rounded-2xl bg-indigo-500 text-white font-black text-sm">🌐 回連線大廳</button>
-            <button id="btn-ol-map" class="sanrio-btn py-2.5 rounded-2xl bg-teal-500 text-white font-black text-sm">返回冒險地圖</button>
+          <!-- Top 1 Big + Bottom 2 Side-by-Side -->
+          <div class="space-y-2 pt-1">
+            <button id="btn-ol-lobby" class="sanrio-btn w-full py-2.5 rounded-2xl bg-indigo-500 hover:bg-indigo-600 text-white font-black text-sm shadow">🌐 回連線對戰大廳</button>
+            <div class="grid grid-cols-2 gap-2">
+              <button id="btn-ol-party" class="sanrio-btn py-2.5 px-2 rounded-2xl bg-teal-500 hover:bg-teal-600 text-white font-black text-xs sm:text-sm">🎮 同機雙人中心</button>
+              <button id="btn-ol-map" class="sanrio-btn py-2.5 px-2 rounded-2xl bg-stone-100 hover:bg-stone-200 border-2 border-stone-300 text-stone-700 font-black text-xs sm:text-sm">🗺️ 返回冒險地圖</button>
+            </div>
           </div>
         </div>
-      `);
+      `, false, { lockClose: true });
+
       bindSaveWrongsBtn(wrongs);
-      document.getElementById("btn-ol-lobby").addEventListener("click", () => { SFX.click(); openCoopLauncher("online"); });
-      document.getElementById("btn-ol-map").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
+      // One gentle check for opponent's eye-rest notice 1.5s after finish
+      if (roomCode) {
+        setTimeout(() => {
+          fbReq("GET", `rooms/${roomCode}/restNotice`).then(msg => {
+            const el = document.getElementById("ol-rest-notice-banner");
+            if (el && msg) { el.textContent = msg; el.classList.remove("hidden"); }
+          }).catch(() => {});
+        }, 1500);
+      }
+
+      document.getElementById("btn-ol-lobby").addEventListener("click", () => {
+        SFX.click(); closeModal(true); backToMap();
+        if (typeof maybeTriggerPendingEyeRest === "function" && maybeTriggerPendingEyeRest(roomCode)) return;
+        openCoopLauncher("online");
+      });
+      document.getElementById("btn-ol-party").addEventListener("click", () => {
+        SFX.click(); closeModal(true); backToMap();
+        if (typeof maybeTriggerPendingEyeRest === "function" && maybeTriggerPendingEyeRest(roomCode)) return;
+        openCoopLauncher("local");
+      });
+      document.getElementById("btn-ol-map").addEventListener("click", () => {
+        SFX.click(); closeModal(true); backToMap();
+        if (typeof maybeTriggerPendingEyeRest === "function") maybeTriggerPendingEyeRest(roomCode);
+      });
     }
 
 
@@ -10216,9 +10374,9 @@
               <button id="btn-tf-hub" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-stone-200 text-stone-700 font-black text-sm">返回挑戰中心</button>
             </div>
           </div>
-        `);
-        document.getElementById("btn-tf-again").addEventListener("click", () => { SFX.click(); startTfGame(st.subj); });
-        document.getElementById("btn-tf-hub").addEventListener("click", () => { SFX.click(); openSpecialHubModal(); });
+        `, false, { lockClose: true });
+        document.getElementById("btn-tf-again").addEventListener("click", () => { SFX.click(); closeModal(true); if (maybeTriggerPendingEyeRest()) return; startTfGame(st.subj); });
+        document.getElementById("btn-tf-hub").addEventListener("click", () => { SFX.click(); closeModal(true); if (maybeTriggerPendingEyeRest()) return; openSpecialHubModal(); });
       };
 
       document.getElementById("btn-tf-true").addEventListener("click", () => answerTf(true));
@@ -10499,7 +10657,7 @@
               <button id="btn-math-hub" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-stone-200 text-stone-700 font-black text-sm">返回挑戰中心</button>
             </div>
           </div>
-        `);
+        `, false, { lockClose: true });
         document.getElementById("btn-math-again").addEventListener("click", () => { SFX.click(); startMathKeypadGame(st.level); });
         document.getElementById("btn-math-hub").addEventListener("click", () => { SFX.click(); openSpecialHubModal(); });
       };
@@ -10803,7 +10961,7 @@
                 <button id="btn-sp-hub" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-stone-200 text-stone-700 font-black text-sm">返回挑戰中心</button>
               </div>
             </div>
-          `);
+          `, false, { lockClose: true });
           document.getElementById("btn-sp-again").addEventListener("click", () => { SFX.click(); startSpellingGame(mode, theme); });
           document.getElementById("btn-sp-hub").addEventListener("click", () => { SFX.click(); openSpecialHubModal(); });
           return;
@@ -11363,7 +11521,7 @@
                     <button id="btn-match-hub" class="sanrio-btn px-4 py-2.5 rounded-2xl bg-stone-200 text-stone-700 font-black text-sm">返回挑戰中心</button>
                   </div>
                 </div>
-              `);
+              `, false, { lockClose: true });
               document.getElementById("btn-match-again").addEventListener("click", () => { SFX.click(); startMatchGame(subj); });
               document.getElementById("btn-match-hub").addEventListener("click", () => { SFX.click(); openSpecialHubModal(); });
               return;
@@ -12506,10 +12664,34 @@
                 }).join("")}
               </select>
             </div>
-            <label class="flex items-center justify-between gap-2 text-xs font-bold text-stone-700 pt-1 border-t border-sky-200/70">
-              <span>👀 20 分鐘溫和護眼休息提醒</span>
-              <input id="chk-eye-rest" type="checkbox" ${eyeOn ? "checked" : ""} ${isParentLocked() ? "disabled" : ""} class="w-4 h-4 accent-pink-500" />
-            </label>
+            <div class="pt-1.5 border-t border-sky-200/70 space-y-2">
+              <label class="flex items-center justify-between gap-2 text-xs font-bold text-stone-700">
+                <span>👀 護眼休息提醒（不打斷對局，結算後跳出）</span>
+                <input id="chk-eye-rest" type="checkbox" ${eyeOn ? "checked" : ""} ${isParentLocked() ? "disabled" : ""} class="w-4 h-4 accent-pink-500" />
+              </label>
+              <div class="grid grid-cols-2 gap-2 text-[11px] ${eyeOn ? '' : 'opacity-50'}">
+                <div class="bg-white rounded-xl border border-sky-200 p-2 space-y-1">
+                  <div class="font-black text-sky-900">⏱️ 提醒間隔（分）</div>
+                  <div class="flex items-center gap-1">
+                    <input id="inp-eye-interval" type="number" min="5" max="60" value="${state.eyeRestIntervalMin || 20}" ${isParentLocked() ? "disabled" : ""} class="w-14 px-1.5 py-0.5 rounded-lg border border-sky-300 text-center font-black text-sky-900" />
+                    <span class="text-stone-500 font-bold">分鐘</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    ${[15,20,25,30].map(m => `<button type="button" data-eye-min="${m}" ${isParentLocked() ? "disabled" : ""} class="eye-min-pill px-1.5 py-0.5 rounded-md text-[10px] font-black border ${(state.eyeRestIntervalMin||20)===m ? 'bg-sky-500 text-white border-sky-600' : 'bg-sky-50 text-sky-800 border-sky-200'}">${m}分</button>`).join("")}
+                  </div>
+                </div>
+                <div class="bg-white rounded-xl border border-emerald-200 p-2 space-y-1">
+                  <div class="font-black text-emerald-900">🔒 強制休息（秒）</div>
+                  <div class="flex items-center gap-1">
+                    <input id="inp-eye-lock" type="number" min="0" max="600" value="${state.eyeRestLockSec !== undefined ? state.eyeRestLockSec : 60}" ${isParentLocked() ? "disabled" : ""} class="w-14 px-1.5 py-0.5 rounded-lg border border-emerald-300 text-center font-black text-emerald-900" />
+                    <span class="text-stone-500 font-bold">秒</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1">
+                    ${[[0,'不鎖'],[30,'30秒'],[60,'1分'],[180,'3分'],[300,'5分']].map(([s,lbl]) => `<button type="button" data-eye-sec="${s}" ${isParentLocked() ? "disabled" : ""} class="eye-sec-pill px-1.5 py-0.5 rounded-md text-[10px] font-black border ${(state.eyeRestLockSec !== undefined ? state.eyeRestLockSec : 60)===s ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-800 border-emerald-200'}">${lbl}</button>`).join("")}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="flex items-center justify-between gap-2 pt-1 border-t border-sky-200/70">
               <span class="text-[11px] font-bold text-sky-800">${state.parentPin ? (parentUnlockedSession ? "🔓 家長權限已暫時解鎖" : "🔒 家長密碼鎖保護中") : "🛡️ 建議設定 4 碼家長鎖"}</span>
               ${state.parentPin
@@ -12545,8 +12727,46 @@
         chkEye.addEventListener("change", () => {
           state.eyeRestEnabled = chkEye.checked;
           saveState();
+          openGradeSwitcherModal();
         });
       }
+      const inpEyeMin = document.getElementById("inp-eye-interval");
+      if (inpEyeMin) {
+        inpEyeMin.addEventListener("change", () => {
+          const v = Math.max(5, Math.min(60, Math.round(Number(inpEyeMin.value) || 20)));
+          state.eyeRestIntervalMin = v;
+          eyeActiveElapsedSec = 0;
+          eyeRestPending = false;
+          saveState();
+          openGradeSwitcherModal();
+        });
+      }
+      document.querySelectorAll(".eye-min-pill").forEach(b => b.addEventListener("click", () => {
+        if (b.disabled) return;
+        SFX.click();
+        state.eyeRestIntervalMin = Number(b.dataset.eyeMin) || 20;
+        eyeActiveElapsedSec = 0;
+        eyeRestPending = false;
+        saveState();
+        openGradeSwitcherModal();
+      }));
+      const inpEyeLock = document.getElementById("inp-eye-lock");
+      if (inpEyeLock) {
+        inpEyeLock.addEventListener("change", () => {
+          const v = Math.max(0, Math.min(600, Math.round(Number(inpEyeLock.value) || 0)));
+          state.eyeRestLockSec = v;
+          saveState();
+          openGradeSwitcherModal();
+        });
+      }
+      document.querySelectorAll(".eye-sec-pill").forEach(b => b.addEventListener("click", () => {
+        if (b.disabled) return;
+        SFX.click();
+        state.eyeRestLockSec = Number(b.dataset.eyeSec);
+        saveState();
+        openGradeSwitcherModal();
+      }));
+
       const btnPSetup = document.getElementById("btn-parent-setup");
       if (btnPSetup) btnPSetup.addEventListener("click", () => { SFX.click(); openParentPinPrompt(() => openGradeSwitcherModal(), "setup"); });
       const btnPUnlock = document.getElementById("btn-parent-unlock");
@@ -12555,21 +12775,119 @@
       if (btnPLock) btnPLock.addEventListener("click", () => { SFX.click(); parentUnlockedSession = false; openGradeSwitcherModal(); });
     }
 
-    // Gentle 20-minute eye-rest reminder
-    setInterval(() => {
-      if (state && state.eyeRestEnabled !== false && document.getElementById("modal-overlay").classList.contains("hidden")) {
-        showModal("👀 布丁狗護眼小提醒", `
-          <div class="text-center space-y-3 py-2">
-            <div class="text-5xl">🍮🌿👀</div>
-            <div class="text-base font-black text-emerald-800">已經認真冒險 20 分鐘囉！</div>
-            <p class="text-xs text-stone-600">起來喝口水、看看遠方的綠色植物休息 1 分鐘，眼睛更有精神喔～</p>
-            <button id="btn-eye-ok" class="sanrio-btn px-6 py-2.5 rounded-2xl bg-emerald-500 text-white font-black text-sm">好，我休息一下！</button>
-          </div>
-        `);
-        const ok = document.getElementById("btn-eye-ok");
-        if (ok) ok.addEventListener("click", () => { SFX.click(); closeModal(); });
+    // ====== v4.1.0 SMART EYE-CARE ENGINE (Custom Interval + Forced Lock Countdown + Chime + Never Interrupts Gameplay) ======
+    let eyeActiveElapsedSec = 0;
+    let eyeRestPending = false;
+    let _eyeRestModalOpen = false;
+    let _eyeRestLockTimer = null;
+
+    function isPlayerBusyInGameplay() {
+      const battleVis = document.getElementById("view-battle") && !document.getElementById("view-battle").classList.contains("hidden");
+      const coopVis = document.getElementById("view-coop") && !document.getElementById("view-coop").classList.contains("hidden");
+      const splitVis = document.getElementById("coop-split-overlay") && !document.getElementById("coop-split-overlay").classList.contains("hidden");
+      const modalVis = document.getElementById("modal-overlay") && !document.getElementById("modal-overlay").classList.contains("hidden");
+      return !!(battleVis || coopVis || splitVis || modalVis || battle || coop || onlineRoom || tfState || (typeof mathState !== "undefined" && mathState));
+    }
+
+    function formatMMSS(sec) {
+      const s = Math.max(0, Math.ceil(sec));
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return `${String(m).padStart(2, "0")}:${String(r).padStart(2, "0")}`;
+    }
+
+    function triggerEyeRestModal(notifyRoomCode = "") {
+      if (_eyeRestModalOpen) return true;
+      _eyeRestModalOpen = true;
+      eyeRestPending = false;
+      const intervalMin = (state && state.eyeRestIntervalMin) || 20;
+      const lockSec = (state && state.eyeRestLockSec !== undefined) ? Math.max(0, Number(state.eyeRestLockSec)) : 60;
+      let rem = lockSec;
+
+      // Notify online partner if coming right out of an online room
+      const roomToNotify = notifyRoomCode || _lastOnlineRoomCode;
+      if (roomToNotify && lockSec > 0 && typeof fbReq === "function") {
+        const nick = (state && state.coopOnlineNick) || "布丁狗";
+        fbReq("PATCH", `rooms/${roomToNotify}`, {
+          restNotice: `🌿 ${nick} 正在護眼休息中（${lockSec} 秒），休息完再一起玩喔！`
+        }).catch(() => {});
+        _lastOnlineRoomCode = "";
       }
-    }, 20 * 60 * 1000);
+
+      showModal("👀 布丁狗護眼休息時間", `
+        <div class="text-center space-y-3 py-2">
+          <div class="text-5xl">🍮🌿👀</div>
+          <div class="text-base sm:text-lg font-black text-emerald-800">已經認真冒險 ${intervalMin} 分鐘囉！</div>
+          <p class="text-xs sm:text-sm text-stone-600">起來喝口水、看看遠方的綠色植物，讓眼睛徹底放鬆一下～</p>
+          ${lockSec > 0 ? `
+            <div class="p-3.5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 space-y-1">
+              <div class="text-[11px] font-bold text-emerald-700">🌿 護眼休息倒數（時間到會響提示音喔！）</div>
+              <div id="eye-lock-countdown" class="text-4xl font-black text-emerald-700 tracking-wider">${formatMMSS(rem)}</div>
+            </div>` : ""}
+          <button id="btn-eye-ok" ${rem > 0 ? "disabled" : ""} class="sanrio-btn w-full py-3 rounded-2xl font-black text-sm ${rem > 0 ? 'bg-stone-300 text-stone-500 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow'}">
+            ${rem > 0 ? `⏳ 休息倒數中（${formatMMSS(rem)}）` : "✨ 休息完畢，繼續冒險！"}
+          </button>
+        </div>
+      `, false, { lockClose: rem > 0 });
+
+      const btn = document.getElementById("btn-eye-ok");
+      const cdEl = document.getElementById("eye-lock-countdown");
+      if (_eyeRestLockTimer) { clearInterval(_eyeRestLockTimer); _eyeRestLockTimer = null; }
+
+      if (rem > 0) {
+        _eyeRestLockTimer = setInterval(() => {
+          rem -= 1;
+          if (cdEl) cdEl.textContent = formatMMSS(rem);
+          if (rem <= 0) {
+            clearInterval(_eyeRestLockTimer);
+            _eyeRestLockTimer = null;
+            modalLockedClose = false;
+            SFX.win();
+            setTimeout(() => { try { SFX.win(); } catch (e) {} }, 380);
+            if (cdEl) cdEl.textContent = "00:00 ✨";
+            if (btn) {
+              btn.disabled = false;
+              btn.className = "sanrio-btn w-full py-3 rounded-2xl font-black text-sm bg-emerald-500 hover:bg-emerald-600 text-white shadow";
+              btn.textContent = "✨ 休息完畢，繼續冒險！";
+            }
+          } else if (btn) {
+            btn.textContent = `⏳ 休息倒數中（${formatMMSS(rem)}）`;
+          }
+        }, 1000);
+      }
+
+      if (btn) {
+        btn.addEventListener("click", () => {
+          if (rem > 0) return;
+          SFX.click();
+          if (_eyeRestLockTimer) { clearInterval(_eyeRestLockTimer); _eyeRestLockTimer = null; }
+          _eyeRestModalOpen = false;
+          eyeActiveElapsedSec = 0;
+          eyeRestPending = false;
+          closeModal(true);
+        });
+      }
+      return true;
+    }
+
+    function maybeTriggerPendingEyeRest(notifyRoomCode = "") {
+      if (!state || state.eyeRestEnabled === false) return false;
+      if (!eyeRestPending || _eyeRestModalOpen) return false;
+      return triggerEyeRestModal(notifyRoomCode);
+    }
+
+    setInterval(() => {
+      if (!state || state.eyeRestEnabled === false || _eyeRestModalOpen) return;
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      eyeActiveElapsedSec += 1;
+      const limitSec = Math.max(5, Math.min(60, Number(state.eyeRestIntervalMin) || 20)) * 60;
+      if (eyeActiveElapsedSec >= limitSec) {
+        eyeRestPending = true;
+        if (!isPlayerBusyInGameplay()) {
+          triggerEyeRestModal();
+        }
+      }
+    }, 1000);
 
     document.addEventListener("DOMContentLoaded", function () {
       loadCachedCloudQuestions();
@@ -12739,9 +13057,9 @@
         e.currentTarget.textContent = soundMuted ? "🔇" : "🔊";
         if (!soundMuted) SFX.click();
       });
-      document.getElementById("modal-close").addEventListener("click", closeModal);
+      document.getElementById("modal-close").addEventListener("click", () => closeModal(false));
       document.getElementById("modal-overlay").addEventListener("click", (e) => {
-        if (e.target.id === "modal-overlay") closeModal();
+        if (e.target.id === "modal-overlay" && !modalLockedClose) closeModal(false);
       });
       document.getElementById("btn-cloud-login").addEventListener("click", () => { SFX.click(); openCloudModal(); });
       const hpBtn = document.getElementById("btn-open-honor-pass"); if (hpBtn) hpBtn.addEventListener("click", () => { SFX.click(); openHonorPassModal(); });
@@ -12752,6 +13070,7 @@
         const sp = new URLSearchParams(location.search || "");
         const autoRoom = (sp.get("room") || "").replace(/\D/g, "").slice(0, 4);
         if (autoRoom.length === 4) {
+          try { history.replaceState(null, "", location.pathname + location.hash); } catch (e2) {}
           setTimeout(() => {
             if (typeof openCoopLauncher === "function") openCoopLauncher("online", autoRoom);
           }, 550);
@@ -14810,7 +15129,7 @@
     }
 
     // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
-    const APP_VERSION = "v4.0.0";
+    const APP_VERSION = "v4.1.0";
     // 背景預載本地核心戰鬥圖檔，徹底消除首次切怪延遲
     try {
       ["./assets/purin.webp","./assets/pochacco.webp","./assets/slime.webp","./assets/robot.webp","./assets/owl.webp","./assets/nature.webp","./assets/english.webp","./assets/dragon.webp","./assets/purify_spirit.webp","./assets/tower_guard.webp","./assets/tower_phoenix.webp","./assets/pet_hood_dog.webp","./assets/pet_mint_hamster.webp","./assets/pet_berry_cat.webp","./assets/pet_cloud_duck.webp","./assets/pet_star_unicorn.webp","./assets/pet_chinchilla.webp"].forEach(u => {
