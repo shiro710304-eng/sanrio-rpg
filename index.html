@@ -2335,7 +2335,8 @@
       { id: "pre_9",  text: "🍰 焦糖香氣",   price: 900 },
       { id: "pre_10", text: "🔥 連擊不停的", price: 1000 },
       { id: "pre_11", text: "🌈 彩虹閃耀",   price: 1200 },
-      { id: "pre_12", text: "👑 傳說級",     price: 1200 }
+      { id: "pre_12", text: "👑 傳說級",     price: 1200 },
+      { id: "pre_tower50", text: "🗼 登頂星塔的", price: 0, towerOnly: true }
     ];
 
     const TITLE_SUFFIXES = [
@@ -4646,21 +4647,45 @@
           isPurify: battle.mode === "purify"
         });
         if (battle.mode === "tower") {
-          const clearedF = battle.towerFloor || 1;
-          if (clearedF % 5 === 0) {
-            battle.towerBossStars = (battle.towerBossStars || 0) + 30;
-            battle.towerBossExp = (battle.towerBossExp || 0) + 50;
-            battle.shields = (battle.shields || 1) + 1;
-            battle._towerJustBeatBoss = clearedF;
-          } else {
-            battle._towerJustBeatBoss = 0;
+          const curF = battle.towerFloor || 1;
+          const isBossF = (curF % 5 === 0);
+          if (battle.towerZoneMod && battle.towerZoneMod.id === "weakDrill") {
+            battle.towerBonusExp = (battle.towerBonusExp || 0) + 5;
+          }
+          if (battle.towerZoneMod && battle.towerZoneMod.id === "comboFever" && battle.combo >= 3) {
+            battle.towerBonusStars = (battle.towerBonusStars || 0) + 3;
           }
           if (battle.towerEggAura) {
             battle.towerEggTick = (battle.towerEggTick || 0) + 1;
             if (battle.towerEggTick % 2 === 0 && typeof addPetEggProgress === "function") addPetEggProgress(1);
           }
-          battle.towerFloor = clearedF + 1;
-          battle.monsterHp = 0;
+
+          let floorClearedNow = true;
+          if (isBossF) {
+            const extraBossDmg = Math.round(dmg * ((battle.towerBossDmgMult || 1) - 1));
+            if (extraBossDmg > 0) battle.monsterHp = Math.max(0, battle.monsterHp - extraBossDmg);
+            battle.towerBossQCount = (battle.towerBossQCount || 0) + 1;
+            if (battle.monsterHp > 0 && battle.towerBossQCount < (battle.towerBossQCap || 2)) {
+              floorClearedNow = false;
+            } else {
+              battle.monsterHp = 0;
+            }
+          } else {
+            battle.monsterHp = 0;
+          }
+
+          if (floorClearedNow) {
+            const clearedF = curF;
+            battle._towerBossContinue = false;
+            if (isBossF) {
+              const bStars = (battle.towerZoneMod && battle.towerZoneMod.id === "bossBounty") ? 60 : 30;
+              battle.towerBossStars = (battle.towerBossStars || 0) + bStars;
+              battle.towerBossExp = (battle.towerBossExp || 0) + 50;
+              battle._towerJustBeatBoss = clearedF;
+            } else {
+              battle._towerJustBeatBoss = 0;
+            }
+            battle.towerFloor = clearedF + 1;
           if (battle.towerSubj === "ALL") {
             if (clearedF > (state.bestTowerFloor || 0)) {
               state.bestTowerFloor = clearedF;
@@ -4674,6 +4699,10 @@
               const bdg = document.getElementById("battle-stage-badge");
               if (bdg) bdg.textContent = `🗼 ${battle.towerSubj}衝刺塔｜🆕 破紀錄中（第 ${clearedF} 層）！`;
             }
+          }
+          } else {
+            battle._towerBossContinue = true;
+            battle._towerJustBeatBoss = 0;
           }
         }
         if (isUlt && typeof confetti === "function") {
@@ -4743,10 +4772,14 @@
         fbText.innerHTML = `<div class="font-black text-emerald-700">🎉 答對了！${eggBadge}</div>${phaseBadge}${battle._lastPetAssistHtml || ""}<div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
       } else {
         SFX.hit();
-        const usedBarrier = (battle.mode === "stage" && (battle.firstWrongLeft || 0) > 0);
+        const usedStageBarrier = (battle.mode === "stage" && (battle.firstWrongLeft || 0) > 0);
+        const usedTowerBarrier = (battle.mode === "tower" && (battle.towerZoneBarrierLeft || 0) > 0);
+        const usedBarrier = usedStageBarrier || usedTowerBarrier;
         const isHeroHard = (battle.mode === "stage" && battle.stage && battle.stage.tier === "hero");
-        if (usedBarrier) {
+        if (usedStageBarrier) {
           battle.firstWrongLeft -= 1;
+        } else if (usedTowerBarrier) {
+          battle.towerZoneBarrierLeft -= 1;
         } else {
           battle.combo = 0;
           battle.wrongCount = (battle.wrongCount || 0) + 1;
@@ -4756,7 +4789,8 @@
           if (isHeroHard) {
             battle.shields = Math.max(0, battle.shields - 2);
           } else if (battle.mode === "tower") {
-            battle.shields = Math.max(0, battle.shields - 1);
+            const towerDmgSh = (battle.towerFloor || 1) >= 26 ? 2 : 1;
+            battle.shields = Math.max(0, battle.shields - towerDmgSh);
           } else {
             battle.shields = Math.max(1, battle.shields - 1);
           }
@@ -4813,7 +4847,7 @@
       const isTowerBless = (battle.mode === "tower" && !battle.lastWrong && (battle._towerJustBeatBoss || 0) > 0);
       const isLast = battle.qIndex >= battle.questions.length - 1 || battle.monsterHp <= 0;
       const finalNextLabel = battle.mode === "tower"
-        ? (isTowerDefeat ? "查看爬塔結算 🗼" : (isTowerSummit ? "領取 50 層登頂榮耀 👑" : (isTowerEyeDone ? "🌿 護眼結算領獎" : (isTowerBless ? "👑 領取塔王祝福 ➜" : (battle.lastWrong ? `重戰第 ${battle.towerFloor || 1} 層 ➜` : `前進第 ${battle.towerFloor || 1} 層 ➜`)))))
+        ? (isTowerDefeat ? "查看爬塔結算 🗼" : (isTowerSummit ? "領取 50 層登頂榮耀 👑" : (isTowerEyeDone ? "🌿 護眼結算領獎" : (isTowerBless ? "👑 領取塔王祝福 ➜" : (battle._towerBossContinue ? `⚔️ 追擊小鳳凰王（剩 ${battle.monsterHp} HP）➜` : (battle.lastWrong ? `重戰第 ${battle.towerFloor || 1} 層 ➜` : `前進第 ${battle.towerFloor || 1} 層 ➜`))))))
         : (isHeroDefeat ? "查看挑戰結果 💔" : (isLast ? "查看冒險結算 🏆" : "下一題 ➜"));
       if (battleExplainLockTimer) { clearInterval(battleExplainLockTimer); battleExplainLockTimer = null; }
       if (!isCorrect && (battle.mode === "stage" || battle.mode === "dungeon")) {
@@ -7231,6 +7265,23 @@
 
     const TOWER_DAILY_TICKETS = 2;
     const TOWER_MAX_FLOOR = 50;
+    const TOWER_ZONE_MODS = [
+      { id: "comboFever", icon: "🔥", name: "連擊狂熱區", desc: "3 連擊以上每層額外 +3 ⭐" },
+      { id: "weakDrill",  icon: "📚", name: "弱科特訓區", desc: "優先考弱點，每題額外 +5 EXP" },
+      { id: "shieldZone", icon: "🛡️", name: "星光庇護區", desc: "本 10 層享 1 次首錯免傷" },
+      { id: "bossBounty", icon: "⚡", name: "塔王賞金區", desc: "塔王血量+20%，賞金翻倍 +60⭐" }
+    ];
+
+    function getTowerFloorHp(floor, zoneMod) {
+      if (floor % 5 !== 0) return 20;
+      const base = floor >= 50 ? 320 : (floor <= 20 ? 120 : 200);
+      return (zoneMod && zoneMod.id === "bossBounty") ? Math.round(base * 1.2) : base;
+    }
+
+    function rollTowerZoneMod(floor) {
+      if (floor <= 10) return null;
+      return TOWER_ZONE_MODS[Math.floor(Math.random() * TOWER_ZONE_MODS.length)];
+    }
     const TOWER_EYECARE_MS = 15 * 60 * 1000;
     const TOWER_MILESTONES = [
       { floor: 5, stars: 100, icon: "🥉" },
@@ -7338,7 +7389,7 @@
       const firstQ = pickTowerQuestionForFloor(1, subjFilter, usedSet);
       const tb = getTreasureBonuses(subjFilter === "ALL" ? "" : subjFilter);
       const cb = getCollectionBonuses();
-      const initSh = 5 + cb.startShieldBonus;
+      const initSh = 4 + cb.startShieldBonus;
       battle = {
         mode: "tower",
         towerFloor: 1,
@@ -7347,10 +7398,18 @@
         towerStartTs: Date.now(),
         towerUsedSet: usedSet,
         towerStarMultPct: 0,
+        towerBossDmgMult: 1,
         towerEggAura: false,
         towerEggTick: 0,
         towerBossStars: 0,
         towerBossExp: 0,
+        towerBonusStars: 0,
+        towerBonusExp: 0,
+        towerZoneMod: null,
+        towerZoneIdx: 0,
+        towerZoneBarrierLeft: 0,
+        towerBossQCount: 0,
+        towerBossQCap: 1,
         towerBlessings: [],
         stage: {
           id: "TOWER",
@@ -7362,16 +7421,16 @@
         },
         questions: [firstQ],
         qIndex: 0,
-        monsterMaxHp: 100,
-        monsterHp: 100,
+        monsterMaxHp: 20,
+        monsterHp: 20,
         baseMaxShields: initSh,
         shields: initSh,
         wrongCount: 0,
         combo: 0,
         answered: false,
         usedFiftyThisQ: false,
-        fiftyLeft: tb.fiftyUses,
-        healLeft: tb.healUses + cb.healBonus,
+        fiftyLeft: Math.min(2, tb.fiftyUses),
+        healLeft: Math.min(2, tb.healUses + cb.healBonus),
         hintLeft: 1 + cb.hintBonus,
         usedHintThisQ: false
       };
@@ -7381,20 +7440,35 @@
       document.getElementById("battle-stage-badge").textContent = `🗼 ${subjFilter === "ALL" ? "五科綜合塔" : subjFilter + "衝刺塔"}｜${rewarded ? "🎫有獎場" : "📚練功場"}｜最高 ${initBest} 層`;
     }
 
-    function advanceTowerToNextFloor() {
+    function advanceTowerToNextFloor(keepBossHp = false) {
       const nextF = battle.towerFloor;
       const isBossF = (nextF % 5 === 0);
+      const zoneIdx = Math.floor((nextF - 1) / 10);
+      if (zoneIdx !== (battle.towerZoneIdx || 0)) {
+        battle.towerZoneIdx = zoneIdx;
+        battle.towerZoneMod = rollTowerZoneMod(nextF);
+        battle.towerZoneBarrierLeft = (battle.towerZoneMod && battle.towerZoneMod.id === "shieldZone") ? 1 : 0;
+      }
       const nextQ = pickTowerQuestionForFloor(nextF, battle.towerSubj, battle.towerUsedSet);
       battle.questions.push(nextQ);
       battle.qIndex = battle.questions.length - 1;
-      battle.monsterMaxHp = 100;
-      battle.monsterHp = 100;
+      if (!keepBossHp) {
+        const hp = getTowerFloorHp(nextF, battle.towerZoneMod);
+        battle.monsterMaxHp = hp;
+        battle.monsterHp = hp;
+        battle.towerBossQCount = 0;
+        battle.towerBossQCap = isBossF ? (nextF >= 50 ? 3 : 2) : 1;
+      }
       battle.stage.isBoss = isBossF;
-      battle.stage.monsterName = isBossF ? "👑 星穹小鳳凰王" : "星塵齒輪小守衛";
+      battle.stage.monsterName = isBossF ? (nextF >= 50 ? "👑 終極星穹大鳳凰王" : "👑 星穹小鳳凰王") : "星塵齒輪小守衛";
       battle.stage.monsterImg = isBossF ? ASSETS.tower_phoenix : ASSETS.tower_guard;
       battle.stage.name = `星光無限塔｜第 ${nextF} 層${isBossF ? "（👑塔王）" : ""}`;
       document.getElementById("battle-stage-title").textContent = battle.stage.name;
       document.getElementById("battle-monster-name").textContent = battle.stage.monsterName;
+      const zTag = battle.towerZoneMod ? `｜${battle.towerZoneMod.icon}${battle.towerZoneMod.name}` : "";
+      const hTag = nextF >= 26 ? "｜⚠️高塔-2盾" : "";
+      const bdg = document.getElementById("battle-stage-badge");
+      if (bdg) bdg.textContent = `🗼 ${battle.towerSubj === "ALL" ? "五科綜合" : battle.towerSubj}${zTag}${hTag}`;
       setBattleMonsterImage(battle.stage.monsterImg);
       renderBattleStatus();
       renderCurrentQuestion();
@@ -7403,17 +7477,22 @@
     function openTowerBlessingModal(clearedFloor) {
       const canCashOut = (clearedFloor % 10 === 0) && clearedFloor < TOWER_MAX_FLOOR;
       const pool = [
-        { id: "heal2", icon: "💖", title: "愛心補給", desc: "立刻回復 +2 顆護盾（可暫時突破上限）" },
+        { id: "heal2", icon: "💖", title: "愛心補給", desc: "立刻回復 +2 顆護盾（高層保命神器）" },
         { id: "fifty2", icon: "✂️", title: "智慧剪刀", desc: "本輪「刪去 2 錯選項」次數 +2" },
         { id: "star30", icon: "⭐", title: "星光加倍", desc: "本輪爬塔結算星星額外 +30%（可疊加）" },
         { id: "hint2", icon: "💡", title: "精靈明燈", desc: "本輪免費提示次數 +2" },
-        { id: "eggAura", icon: "🥚", title: "孵蛋光環", desc: "本輪每答對 2 題額外 +1 寵物蛋進度" }
+        { id: "eggAura", icon: "🥚", title: "孵蛋光環", desc: "本輪每答對 2 題額外 +1 寵物蛋進度" },
+        { id: "bossSlayer", icon: "⚔️", title: "鳳凰剋星", desc: "本輪對小鳳凰王傷害 +40%，輕鬆秒殺塔王！" }
       ];
+      if ((battle.shields || 0) >= 2) {
+        pool.push({ id: "gamble", icon: "🎲", title: "布丁狗豪賭", desc: "主動消耗 1 顆護盾，換取本輪星星 +60% ＋ 刪錯 +1！" });
+      }
       const picks = shuffle(pool).slice(0, 3);
+      const bossStarReward = (battle.towerZoneMod && battle.towerZoneMod.id === "bossBounty") ? 60 : 30;
       showModal(`👑 第 ${clearedFloor} 層塔王擊破！選擇星光祝福`, `
         <div class="text-center space-y-3">
           <div class="p-2.5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-xs font-black text-amber-900">
-            🎉 成功擊敗星穹小鳳凰王！獲得塔王賞金 +30 ⭐、+50 EXP、護盾 +1！
+            🎉 成功擊敗星穹小鳳凰王！獲得塔王賞金 +${bossStarReward} ⭐、+50 EXP！（目前護盾 ${battle.shields} 顆）
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             ${picks.map(c => `
@@ -7442,6 +7521,12 @@
           else if (bid === "star30") battle.towerStarMultPct = (battle.towerStarMultPct || 0) + 30;
           else if (bid === "hint2") battle.hintLeft = (battle.hintLeft || 0) + 2;
           else if (bid === "eggAura") battle.towerEggAura = true;
+          else if (bid === "bossSlayer") battle.towerBossDmgMult = (battle.towerBossDmgMult || 1) + 0.4;
+          else if (bid === "gamble") {
+            battle.shields = Math.max(1, (battle.shields || 1) - 1);
+            battle.towerStarMultPct = (battle.towerStarMultPct || 0) + 60;
+            battle.fiftyLeft = (battle.fiftyLeft || 0) + 1;
+          }
           if (picked) battle.towerBlessings.push(`${picked.icon}${picked.title}`);
           closeModal();
           advanceTowerToNextFloor();
@@ -7489,13 +7574,23 @@
       let expAdded = 0;
       let ticketConsumed = false;
       const tdNow = ensureTowerDaily();
+      let summitTitleUnlocked = false;
+      if (floorsCleared >= TOWER_MAX_FLOOR && isAllMode) {
+        if (!Array.isArray(state.ownedTitlePre)) state.ownedTitlePre = ["pre_1", "pre_2"];
+        if (!state.ownedTitlePre.includes("pre_tower50")) {
+          state.ownedTitlePre.push("pre_tower50");
+          summitTitleUnlocked = true;
+        }
+      }
+
       if (battle.towerRewarded && floorsCleared >= 1 && (tdNow.runs || 0) < TOWER_DAILY_TICKETS) {
         tdNow.runs = (tdNow.runs || 0) + 1;
         ticketConsumed = true;
-        const rawRunStars = Math.round(floorsCleared * 6 * (1 + (battle.towerStarMultPct || 0) / 100)) + (battle.towerBossStars || 0);
-        const cappedRunStars = Math.min(250, rawRunStars);
+        const baseRun = Math.round(floorsCleared * 6 * (1 + (battle.towerStarMultPct || 0) / 100)) + (battle.towerBossStars || 0) + (battle.towerBonusStars || 0);
+        const riskAdjusted = reason === "defeat" ? Math.round(baseRun * 0.8) : (reason === "cashout" ? baseRun + 20 : baseRun);
+        const cappedRunStars = Math.min(250, riskAdjusted);
         earnedStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(cappedRunStars) : cappedRunStars;
-        const totalExp = floorsCleared * 10 + (battle.towerBossExp || 0);
+        const totalExp = floorsCleared * 10 + (battle.towerBossExp || 0) + (battle.towerBonusExp || 0);
         const expRes = grantExp(totalExp);
         expAdded = expRes.added;
       }
@@ -7514,8 +7609,8 @@
       const subMsgMap = {
         summit: "太神啦！你征服了整座星光無限塔第 50 層終極鳳凰王！",
         eyecare: "你已經連續專心爬塔滿 15 分鐘囉！布丁狗請你先看遠方休息 3 分鐘，所有戰利品全數帶走！",
-        cashout: "聰明的撤退策略！把本輪滿滿的星星與經驗值安心收進口袋！",
-        defeat: "護盾用完了，下次善用塔王祝福卡一定能爬得更高！"
+        cashout: "聰明的見好就收！全額帶走 100% 獎勵再加碼 +20 ⭐ 安全撤退獎！",
+        defeat: "護盾歸零戰敗（溫柔保留 80% 星星與 100% 經驗），下次善用見好就收或選 💖 愛心補給吧！"
       };
 
       showModal(headerMap[reason] || headerMap.defeat, `
@@ -7528,6 +7623,7 @@
             <div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200"><div class="text-stone-500">本輪獲得經驗</div><div class="text-base text-pink-600">+${expAdded} EXP</div></div>
           </div>
           ${!battle.towerRewarded ? `<div class="p-2 rounded-xl bg-stone-100 text-[11px] font-bold text-stone-600">📚 今日 2 張有獎門票已用完，本場為純練功／刷紀錄模式。</div>` : (floorsCleared === 0 ? `<div class="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-700">🎫 本場尚未突破樓層，門票沒有扣除，放心再挑戰一次吧！</div>` : (ticketConsumed ? `<div class="text-[11px] font-bold text-stone-500">🎫 已消耗 1 張今日有獎門票（剩餘 ${Math.max(0, TOWER_DAILY_TICKETS - (tdNow.runs || 0))} / ${TOWER_DAILY_TICKETS} 張）</div>` : ""))}
+          ${summitTitleUnlocked ? `<div class="p-2.5 rounded-2xl bg-gradient-to-r from-amber-100 to-pink-100 border-2 border-amber-400 text-xs font-black text-amber-950">👑 首次登頂 50 層榮耀！免費解鎖限定稱號前綴「🗼 登頂星塔的」！</div>` : ""}
           ${newMilestones.length ? `<div class="p-2.5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-xs font-black text-emerald-800">🎁 領取首次登層大寶箱：${newMilestones.map(m => `${m.icon}${m.floor}層(+${m.stars}⭐)`).join("、")}！</div>` : ""}
           ${battle.towerBlessings.length ? `<div class="text-[11px] font-bold text-purple-700">🃏 本輪祝福：${battle.towerBlessings.join("・")}</div>` : ""}
           <div class="grid grid-cols-2 gap-2 pt-1">
@@ -10707,7 +10803,9 @@
             openTowerBlessingModal(bossF);
             return;
           }
-          advanceTowerToNextFloor();
+          const keepHp = !!battle._towerBossContinue || (battle.lastWrong && ((battle.towerFloor || 1) % 5 === 0) && battle.monsterHp > 0 && battle.monsterHp < battle.monsterMaxHp);
+          battle._towerBossContinue = false;
+          advanceTowerToNextFloor(keepHp);
           return;
         }
         if (battle.mode === "stage" && battle.stage && battle.stage.tier === "hero" && battle.shields <= 0) {
@@ -12575,7 +12673,8 @@
               ${TITLE_PREFIXES.map(p => {
                 const owned = state.ownedTitlePre.includes(p.id);
                 const active = curPre === p.id;
-                return `<button data-pick-pre="${p.id}" class="pick-pre-btn sanrio-btn p-2 rounded-xl border-2 text-xs font-black text-center ${active ? "bg-pink-500 text-white border-pink-600" : (owned ? "bg-white text-stone-800 border-pink-200 hover:bg-pink-50" : "bg-amber-50 text-amber-900 border-amber-300")}">${p.text}${!owned ? `<div class="text-[10px] text-amber-700 mt-0.5">⭐ ${p.price}</div>` : ""}</button>`;
+                const lockSub = p.towerOnly ? "🔒 登頂50層解鎖" : `⭐ ${p.price}`;
+                return `<button data-pick-pre="${p.id}" class="pick-pre-btn sanrio-btn p-2 rounded-xl border-2 text-xs font-black text-center ${active ? "bg-pink-500 text-white border-pink-600" : (owned ? "bg-white text-stone-800 border-pink-200 hover:bg-pink-50" : (p.towerOnly ? "bg-stone-100 text-stone-500 border-stone-300" : "bg-amber-50 text-amber-900 border-amber-300"))}">${p.text}${!owned ? `<div class="text-[10px] ${p.towerOnly ? "text-indigo-700" : "text-amber-700"} mt-0.5">${lockSub}</div>` : ""}</button>`;
               }).join("")}
             </div>
           </div>
@@ -12651,6 +12750,7 @@
           const obj = TITLE_PREFIXES.find(x => x.id === id);
           if (!obj) return;
           if (!state.ownedTitlePre.includes(id)) {
+            if (obj.towerOnly) return showErr("🗼 此為限定榮譽詞條，首次征服「星光無限塔第 50 層」即免費解鎖！");
             if ((state.stars || 0) < obj.price) return showErr(`⚠️ 星星不夠喔！鑄造此詞條需要 ${obj.price} ⭐。`);
             state.stars -= obj.price;
             state.ownedTitlePre.push(id);
@@ -12884,7 +12984,7 @@
     }
 
     // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
-    const APP_VERSION = "v3.8.2";
+    const APP_VERSION = "v3.8.3";
     // 背景預載本地核心戰鬥圖檔，徹底消除首次切怪延遲
     try {
       ["./assets/purin.webp","./assets/pochacco.webp","./assets/slime.webp","./assets/robot.webp","./assets/owl.webp","./assets/nature.webp","./assets/english.webp","./assets/dragon.webp","./assets/purify_spirit.webp","./assets/tower_guard.webp","./assets/tower_phoenix.webp","./assets/pet_hood_dog.webp","./assets/pet_mint_hamster.webp","./assets/pet_berry_cat.webp","./assets/pet_cloud_duck.webp","./assets/pet_star_unicorn.webp","./assets/pet_chinchilla.webp"].forEach(u => {
