@@ -629,15 +629,16 @@
     </section>
 
 
-    <!-- VIEW 3: 2-PLAYER CO-OP / VS ARENA -->
+    <!-- VIEW 3: 2-PLAYER PARTY & ONLINE MULTIPLAYER ARENA (v4.0.0) -->
     <section id="view-coop" class="hidden space-y-3">
-      <div class="sanrio-card p-3 sm:p-5 bg-gradient-to-br from-teal-50 via-white to-pink-50 space-y-4">
+      <!-- Classic / Side-by-Side Card -->
+      <div id="coop-classic-card" class="sanrio-card p-3 sm:p-5 bg-gradient-to-br from-teal-50 via-white to-pink-50 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <button id="btn-coop-back" class="sanrio-btn bg-white border-2 border-teal-200 hover:bg-teal-50 rounded-full px-3 py-1 text-xs sm:text-sm font-bold">
             ← 返回地圖
           </button>
           <div class="text-center">
-            <span id="coop-mode-badge" class="inline-block px-3 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300">🎮 同機雙人同樂</span>
+            <span id="coop-mode-badge" class="inline-block px-3 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-800 border border-teal-300">🎮 同機雙人派對</span>
             <h2 id="coop-title" class="text-base sm:text-xl font-black text-stone-800 mt-0.5">雙人協力打大魔王</h2>
           </div>
           <div id="coop-timer-box" class="text-xs sm:text-sm font-black bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1 rounded-full">
@@ -646,49 +647,56 @@
         </div>
 
         <!-- Shared Boss / Scoreboard -->
-        <div id="coop-stage-banner" class="grid grid-cols-3 items-center gap-2 p-3 rounded-2xl bg-white/80 border-2 border-pink-100">
+        <div id="coop-stage-banner" class="grid grid-cols-3 items-center gap-2 p-3 rounded-2xl bg-white/85 border-2 border-pink-100">
           <div class="text-center">
-            <img referrerpolicy="no-referrer" src="https://drive.google.com/thumbnail?id=1a2FaFXLzmomg609xfdJrzrvOnQ-1WZF4&sz=w800" class="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain sprite-cutout" alt="P1 布丁狗" />
-            <div class="text-xs font-black text-amber-800">P1 布丁狗</div>
+            <img src="./assets/purin.webp" class="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain sprite-cutout" alt="P1 布丁狗" />
+            <div id="coop-p1-name" class="text-xs font-black text-amber-800 truncate">🍮 P1 布丁狗</div>
             <div id="coop-p1-score" class="text-sm sm:text-base font-black text-pink-600">0 分</div>
           </div>
           <div class="text-center space-y-1">
-            <img referrerpolicy="no-referrer" id="coop-boss-img" src="https://drive.google.com/thumbnail?id=1qwEqrhVIVWyCe8FNltlvPiEnosfSYZVq&sz=w800" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto object-contain sprite-cutout" alt="雙人魔王" />
-            <div id="coop-center-label" class="text-xs font-black text-purple-700">Boss HP 100/100</div>
+            <img id="coop-boss-img" src="./assets/dragon.webp" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto object-contain sprite-cutout" alt="雙人魔王" />
+            <div id="coop-center-label" class="text-xs font-black text-purple-700">Boss HP 180/180</div>
             <div class="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden">
               <div id="coop-boss-bar" class="h-full bg-gradient-to-r from-purple-400 to-pink-500 transition-all" style="width:100%"></div>
             </div>
           </div>
           <div class="text-center">
-            <img referrerpolicy="no-referrer" src="https://drive.google.com/thumbnail?id=1ER4FYlw5Z1EMN2SLEZkRN7gkZWSZfNlq&sz=w800" class="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain sprite-cutout" alt="P2 帕恰狗" />
-            <div class="text-xs font-black text-sky-800">P2 帕恰狗</div>
+            <img src="./assets/pochacco.webp" class="w-14 h-14 sm:w-16 sm:h-16 mx-auto object-contain sprite-cutout" alt="P2 帕恰狗" />
+            <div id="coop-p2-name" class="text-xs font-black text-sky-800 truncate">🐾 P2 帕恰狗</div>
             <div id="coop-p2-score" class="text-sm sm:text-base font-black text-sky-600">0 分</div>
           </div>
         </div>
 
-        <!-- Question -->
-        <div class="bg-white rounded-2xl border-2 border-teal-200 p-4 text-center space-y-2">
-          <div class="flex items-center justify-center gap-2">
-            <span id="coop-q-tag" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800">綜合題庫</span>
-            <button id="btn-coop-speak" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 rounded-full px-2.5 py-0.5 text-xs font-bold">🔊 唸題目</button>
-          </div>
-          <h3 id="coop-q-text" class="text-base sm:text-xl font-black text-stone-800">題目載入中...</h3>
-          <div id="coop-feedback" class="text-sm sm:text-base font-bold text-emerald-700 min-h-[24px]"></div>
-        </div>
+        <!-- Dynamic Custom Arena Container (Territory 3x3 / Tug Side-by-Side / Bomb / Online) -->
+        <div id="coop-dynamic-arena" class="hidden space-y-3"></div>
 
-        <!-- Split P1 (Left) & P2 (Right) Controls -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div class="p-3 rounded-2xl border-2 border-amber-300 bg-amber-50/70 space-y-2">
-            <div class="text-xs font-black text-amber-900 flex justify-between"><span>🍮 P1 布丁狗作答區</span><span id="coop-p1-turn"></span></div>
-            <div id="coop-p1-opts" class="grid grid-cols-2 gap-2"></div>
+        <!-- Standard Question & Split Controls -->
+        <div id="coop-standard-body" class="space-y-3">
+          <div class="bg-white rounded-2xl border-2 border-teal-200 p-3.5 sm:p-4 text-center space-y-2">
+            <div class="flex items-center justify-center gap-2">
+              <span id="coop-q-tag" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800">綜合題庫</span>
+              <button id="btn-coop-speak" class="sanrio-btn bg-sky-100 hover:bg-sky-200 border border-sky-300 text-sky-800 rounded-full px-2.5 py-0.5 text-xs font-bold">🔊 唸題目</button>
+            </div>
+            <h3 id="coop-q-text" class="text-base sm:text-xl font-black text-stone-800">題目載入中...</h3>
+            <div id="coop-feedback" class="text-sm sm:text-base font-bold text-emerald-700 min-h-[24px]"></div>
           </div>
-          <div class="p-3 rounded-2xl border-2 border-sky-300 bg-sky-50/70 space-y-2">
-            <div class="text-xs font-black text-sky-900 flex justify-between"><span>🐾 P2 帕恰狗作答區</span><span id="coop-p2-turn"></span></div>
-            <div id="coop-p2-opts" class="grid grid-cols-2 gap-2"></div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 rounded-2xl border-2 border-amber-300 bg-amber-50/70 space-y-2">
+              <div class="text-xs font-black text-amber-900 flex justify-between"><span id="coop-p1-zone-label">🍮 P1 布丁狗作答區</span><span id="coop-p1-turn"></span></div>
+              <div id="coop-p1-opts" class="grid grid-cols-2 gap-2"></div>
+            </div>
+            <div class="p-3 rounded-2xl border-2 border-sky-300 bg-sky-50/70 space-y-2">
+              <div class="text-xs font-black text-sky-900 flex justify-between"><span id="coop-p2-zone-label">🐾 P2 帕恰狗作答區</span><span id="coop-p2-turn"></span></div>
+              <div id="coop-p2-opts" class="grid grid-cols-2 gap-2"></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- 180-DEGREE FACE-TO-FACE FULLSCREEN SPLIT OVERLAY (100dvh Zero-Scroll) -->
+    <div id="coop-split-overlay" class="hidden fixed inset-0 z-40 bg-gradient-to-b from-sky-50 via-white to-amber-50 flex flex-col justify-between overflow-hidden select-none" style="height:100dvh; touch-action:manipulation;"></div>
 
   </main>
 
@@ -5181,10 +5189,13 @@
 
     function backToMap() {
       if (typeof clearBattleReadLock === "function") clearBattleReadLock();
+      if (typeof cleanupCoopAndOnline === "function") cleanupCoopAndOnline();
       const hdr = document.getElementById("main-header");
       if (hdr) hdr.classList.remove("hidden");
       document.getElementById("view-battle").classList.add("hidden");
       document.getElementById("view-coop").classList.add("hidden");
+      const splitOv = document.getElementById("coop-split-overlay");
+      if (splitOv) { splitOv.classList.add("hidden"); splitOv.innerHTML = ""; }
       document.getElementById("view-map").classList.remove("hidden");
       battle = null;
       setTimeout(() => {
@@ -7636,42 +7647,472 @@
       document.getElementById("btn-tw-map").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
     }
 
-    // 2-Player Co-op / VS Engine
+    // ====== v4.0.0: 2-PLAYER PARTY HUB (5 LOCAL MODES) + FIREBASE RTDB ONLINE MULTIPLAYER (6 MODES) ======
+    const FIREBASE_RTDB_URL = "https://sanrio-rpg-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const COOP_DAILY_REWARD_CAP = 5;
+    const TF_DOUBLE_NEG_RE = /何者錯誤|何者正確|何者不|哪一個不|以上皆|何者為非|下列何者無|何者敘述錯誤|何者敘述正確|何者不正確|何者不是/;
+
     let coop = null;
-    function openCoopLauncher() {
-      showModal("🎮 選擇親子／雙人共玩模式", `
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button id="start-coop-boss" class="sanrio-btn p-4 rounded-2xl border-2 border-teal-300 bg-teal-50 text-left space-y-1.5">
-            <div class="text-2xl">🤝</div>
-            <div class="text-base font-black text-teal-900">協力打大魔王</div>
-            <p class="text-xs text-stone-600">P1（左）與 P2（右）輪流作答，合力擊敗 100 HP 彩虹水晶龍！通關獲 +25 ⭐ / +40 EXP。</p>
-          </button>
-          <button id="start-coop-vs" class="sanrio-btn p-4 rounded-2xl border-2 border-pink-300 bg-pink-50 text-left space-y-1.5">
-            <div class="text-2xl">⚡</div>
-            <div class="text-base font-black text-pink-900">60 秒雙人搶答賽</div>
-            <p class="text-xs text-stone-600">左右兩側同時開放搶答，先按對得 1 分！60 秒結束結算勝負，皆獲 +25 ⭐ / +40 EXP。</p>
-          </button>
-        </div>
-      `);
-      document.getElementById("start-coop-boss").addEventListener("click", () => { closeModal(); startCoopGame("boss"); });
-      document.getElementById("start-coop-vs").addEventListener("click", () => { closeModal(); startCoopGame("vs"); });
+    let onlineRoom = null;
+    let _coopHandicapTimer = null;
+    let _coopFreezeTimers = { 1: null, 2: null };
+
+    function escapeHtmlSafe(str) {
+      return String(str == null ? "" : str)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
+    function isDoubleNegativeQuestion(qText) {
+      return TF_DOUBLE_NEG_RE.test(String(qText || ""));
+    }
+
+    function formatTfPromptHtml(rawQ, shownAns) {
+      const cleaned = cleanMiniPrompt(rawQ);
+      const ansChip = `<span class="inline-block px-1.5 py-0.5 mx-0.5 rounded-lg bg-pink-100 border border-pink-300 text-pink-700 font-black">${escapeHtmlSafe(shownAns)}</span>`;
+      const blankRe = /（\s*）|\(\s*\)|_{2,}|＿＿+|【\s*】/;
+      if (blankRe.test(cleaned)) {
+        return {
+          inline: true,
+          qHtml: escapeHtmlSafe(cleaned).replace(/（\s*）|\(\s*\)|_{2,}|＿＿+|【\s*】/, ansChip),
+          speakText: cleaned.replace(blankRe, String(shownAns))
+        };
+      }
+      return {
+        inline: false,
+        qHtml: escapeHtmlSafe(cleaned),
+        ansHtml: escapeHtmlSafe(shownAns),
+        speakText: cleaned + "，答案是 " + shownAns
+      };
+    }
+
+    // Deterministic PRNG (mulberry32) for Same-Question Fair Online PK
+    function mulberry32(seed) {
+      let a = (seed >>> 0) || 123456;
+      return function() {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        let t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function seededShuffle(arr, rng) {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function prepareQuestionSeeded(q, rng) {
+      const idxOrder = seededShuffle(q.opts.map((_, i) => i), rng);
+      return {
+        ...q,
+        shuffledOpts: idxOrder.map(i => q.opts[i]),
+        correctIdx: idxOrder.indexOf(q.ans)
+      };
+    }
+
+    function getCoopDailyQuotaLeft() {
+      const today = new Date().toISOString().slice(0, 10);
+      if (!state.coopDaily || state.coopDaily.date !== today) {
+        state.coopDaily = { date: today, count: 0 };
+      }
+      return Math.max(0, COOP_DAILY_REWARD_CAP - (state.coopDaily.count || 0));
+    }
+
+    function consumeCoopDailyReward(rawStars) {
+      const left = getCoopDailyQuotaLeft();
+      state.coopDaily.count = (state.coopDaily.count || 0) + 1;
+      const reviewAdj = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(rawStars) : rawStars;
+      return {
+        stars: left > 0 ? reviewAdj : Math.max(3, Math.round(reviewAdj * 0.2)),
+        wasFullQuota: left > 0,
+        leftAfter: Math.max(0, left - 1)
+      };
+    }
+
+    function getCoopPrefs() {
+      if (!state.coopPrefs || typeof state.coopPrefs !== "object") {
+        state.coopPrefs = {
+          subject: "全五科",
+          p1Name: "布丁狗",
+          p2Name: "帕恰狗",
+          handicap: false,
+          faceToFace: true
+        };
+      }
+      return state.coopPrefs;
+    }
+
+    function cleanupCoopAndOnline() {
+      if (coop && coop.timerId) { clearInterval(coop.timerId); coop.timerId = null; }
+      if (_coopHandicapTimer) { clearTimeout(_coopHandicapTimer); _coopHandicapTimer = null; }
+      [1, 2].forEach(p => { if (_coopFreezeTimers[p]) { clearTimeout(_coopFreezeTimers[p]); _coopFreezeTimers[p] = null; } });
+      if (onlineRoom) {
+        if (onlineRoom.es) { try { onlineRoom.es.close(); } catch (e) {} onlineRoom.es = null; }
+        if (onlineRoom.pollId) { clearInterval(onlineRoom.pollId); onlineRoom.pollId = null; }
+        if (onlineRoom.timerId) { clearInterval(onlineRoom.timerId); onlineRoom.timerId = null; }
+        onlineRoom = null;
+      }
+      const splitOv = document.getElementById("coop-split-overlay");
+      if (splitOv) { splitOv.classList.add("hidden"); splitOv.innerHTML = ""; }
+      const dyn = document.getElementById("coop-dynamic-arena");
+      if (dyn) { dyn.classList.add("hidden"); dyn.innerHTML = ""; }
+      const std = document.getElementById("coop-standard-body");
+      if (std) std.classList.remove("hidden");
+      const clsCard = document.getElementById("coop-classic-card");
+      if (clsCard) clsCard.classList.remove("hidden");
+    }
+
+    function recordCoopWrong(list, q) {
+      if (!list || !q) return;
+      if (!list.some(x => x.q === q.q)) {
+        list.push({
+          subject: q.subject || "綜合",
+          tag: q.tag || "雙人錯題",
+          q: q.q,
+          opts: q.opts,
+          ans: q.ans,
+          hint: q.hint || "",
+          explain: q.explain || ""
+        });
+      }
+    }
+
+    function buildWrongReviewHtml(wrongList) {
+      if (!wrongList || !wrongList.length) {
+        return `<div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-black text-emerald-700">✨ 本場零錯題！太厲害了！</div>`;
+      }
+      return `
+        <details class="text-left rounded-2xl border-2 border-purple-200 bg-purple-50/70 p-2.5">
+          <summary class="cursor-pointer text-xs font-black text-purple-800 flex items-center justify-between">
+            <span>📖 本場答錯題目與解析（${wrongList.length} 題，點此展開複習）</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-200 text-purple-900">展開</span>
+          </summary>
+          <div class="mt-2 space-y-2 max-h-44 overflow-y-auto pr-1">
+            ${wrongList.map((w, i) => `
+              <div class="p-2 rounded-xl bg-white border border-purple-100 text-xs space-y-1">
+                <div class="font-black text-stone-800">${i + 1}. ${escapeHtmlSafe(cleanMiniPrompt(w.q))}</div>
+                <div class="text-emerald-700 font-black">✅ 正解：${escapeHtmlSafe((w.opts && w.opts[w.ans]) || "")}</div>
+                ${w.explain ? `<div class="text-stone-600 text-[11px]">💡 ${escapeHtmlSafe(w.explain)}</div>` : ""}
+              </div>
+            `).join("")}
+          </div>
+          <button id="btn-coop-save-wrongs" class="sanrio-btn mt-2 w-full py-2 rounded-xl bg-purple-500 hover:bg-purple-600 text-white text-xs font-black">✨ 全部收進我的錯題本（+${wrongList.length} 題）</button>
+        </details>`;
+    }
+
+    function bindSaveWrongsBtn(wrongList) {
+      const btn = document.getElementById("btn-coop-save-wrongs");
+      if (!btn || !wrongList || !wrongList.length) return;
+      btn.addEventListener("click", () => {
+        SFX.win();
+        if (!Array.isArray(state.wrongBank)) state.wrongBank = [];
+        let added = 0;
+        wrongList.forEach(w => {
+          if (!state.wrongBank.some(x => x.q === w.q)) {
+            state.wrongBank.push({
+              subject: w.subject || "綜合",
+              tag: w.tag || "雙人錯題",
+              q: w.q, opts: w.opts, ans: w.ans, hint: w.hint || "", explain: w.explain || ""
+            });
+            added += 1;
+          }
+        });
+        saveState();
+        btn.disabled = true;
+        btn.className = "mt-2 w-full py-2 rounded-xl bg-emerald-500 text-white text-xs font-black";
+        btn.textContent = added > 0 ? `✅ 已收納 ${added} 題到錯題本！` : "✅ 這些題目都已在錯題本中囉！";
+      });
+    }
+
+    function buildCoopPool(subj, opts = {}) {
+      const srcStages = (!subj || subj === "全五科") ? STAGES : STAGES.filter(s => s.subject === subj);
+      const tierFilter = opts.tier || null;
+      const rng = opts.rng || Math.random;
+      let raw = [];
+      srcStages.forEach(s => {
+        if (tierFilter && s.tier !== tierFilter) return;
+        (s.questions || []).forEach(q => raw.push({ ...q, subject: s.subject, tier: s.tier || "normal" }));
+      });
+      if (raw.length < 8) {
+        raw = srcStages.flatMap(s => (s.questions || []).map(q => ({ ...q, subject: s.subject, tier: s.tier || "normal" })));
+      }
+      if (opts.shortOnly) {
+        const shortOnes = raw.filter(q => cleanMiniPrompt(q.q).length <= 45);
+        if (shortOnes.length >= 12) raw = shortOnes;
+      }
+      if (opts.noDoubleNeg) {
+        const cleanOnes = raw.filter(q => !isDoubleNegativeQuestion(q.q));
+        if (cleanOnes.length >= 10) raw = cleanOnes;
+      }
+      const ordered = seededShuffle(raw, rng);
+      return ordered.map(q => prepareQuestionSeeded(q, rng));
+    }
+
+    // ---------- LAUNCHER MODAL (Tab 1: Same-Device 5 Modes | Tab 2: Online Multiplayer 6 Modes) ----------
+    function openCoopLauncher(activeTab = "local", prefillRoomCode = "") {
+      cleanupCoopAndOnline();
+      const prefs = getCoopPrefs();
+      const quotaLeft = getCoopDailyQuotaLeft();
+      const subjs = ["全五科", "國語", "數學", "自然", "社會", "英文"];
+      const myHeroName = state.hero === "pochacco" ? "帕恰狗" : "布丁狗";
+      const defaultNick = (state.coopOnlineNick || prefs.p1Name || myHeroName).slice(0, 8);
+
+      const tabHeader = `
+        <div class="grid grid-cols-2 gap-2 pb-2 border-b border-teal-100">
+          <button id="tab-coop-local" class="sanrio-btn py-2 px-2 rounded-xl border-2 text-xs sm:text-sm font-black ${activeTab === 'local' ? 'bg-teal-500 text-white border-teal-600 shadow' : 'bg-white text-teal-800 border-teal-200 hover:bg-teal-50'}">📱 同機雙人派對（5玩法）</button>
+          <button id="tab-coop-online" class="sanrio-btn py-2 px-2 rounded-xl border-2 text-xs sm:text-sm font-black ${activeTab === 'online' ? 'bg-indigo-500 text-white border-indigo-600 shadow' : 'bg-white text-indigo-800 border-indigo-200 hover:bg-indigo-50'}">🌐 雙手機連線對戰（6玩法）</button>
+        </div>
+        <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] font-black text-amber-900">
+          <span>🎁 今日雙人滿星獎勵額度（同機＋連線共用）</span>
+          <span class="px-2 py-0.5 rounded-full ${quotaLeft > 0 ? 'bg-amber-400 text-white' : 'bg-stone-300 text-stone-700'}">剩餘 ${quotaLeft} / ${COOP_DAILY_REWARD_CAP} 場</span>
+        </div>`;
+
+      if (activeTab === "local") {
+        showModal("🎮 雙人派對＆親子共玩中心", `
+          <div class="space-y-3">
+            ${tabHeader}
+            <!-- Shared Settings -->
+            <div class="p-3 rounded-2xl bg-teal-50/70 border border-teal-200 space-y-2.5 text-xs">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="font-black text-teal-900 mr-1">📚 出題科目：</span>
+                ${subjs.map(s => `<button data-cp-subj="${s}" class="cp-subj-btn px-2.5 py-1 rounded-full border font-black text-[11px] ${prefs.subject === s ? 'bg-teal-500 text-white border-teal-600' : 'bg-white text-teal-800 border-teal-200'}">${s}</button>`).join("")}
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="flex items-center gap-1 bg-white rounded-xl border border-amber-200 px-2 py-1">
+                  <span class="shrink-0 font-black text-amber-700">🍮P1</span>
+                  <input id="cp-p1-name" type="text" maxlength="8" value="${escapeHtmlSafe(prefs.p1Name)}" class="w-full text-xs font-bold text-stone-800 outline-none bg-transparent" />
+                </label>
+                <label class="flex items-center gap-1 bg-white rounded-xl border border-sky-200 px-2 py-1">
+                  <span class="shrink-0 font-black text-sky-700">🐾P2</span>
+                  <input id="cp-p2-name" type="text" maxlength="8" value="${escapeHtmlSafe(prefs.p2Name)}" class="w-full text-xs font-bold text-stone-800 outline-none bg-transparent" />
+                </label>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button id="cp-toggle-handicap" class="sanrio-btn py-1.5 px-2 rounded-xl border-2 text-[11px] font-black ${prefs.handicap ? 'bg-amber-400 text-amber-950 border-amber-500' : 'bg-white text-stone-600 border-stone-200'}">
+                  ${prefs.handicap ? '🐣 親子讓分 ON（P2慢1.5秒）' : '🐣 親子讓分 OFF（公平同時）'}
+                </button>
+                <button id="cp-toggle-face" class="sanrio-btn py-1.5 px-2 rounded-xl border-2 text-[11px] font-black ${prefs.faceToFace ? 'bg-pink-500 text-white border-pink-600' : 'bg-white text-stone-600 border-stone-200'}">
+                  ${prefs.faceToFace ? '🔄 面對面 180° 上下分割' : '👫 並肩左右同向遊玩'}
+                </button>
+              </div>
+            </div>
+
+            <!-- 5 Local Modes -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <button data-local-mode="tug" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-pink-300 bg-gradient-to-br from-pink-50 to-amber-50 text-left space-y-1">
+                <div class="flex items-center justify-between"><span class="text-xl">🪢</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-pink-500 text-white">超推！180°面對面</span></div>
+                <div class="text-sm font-black text-pink-900">面對面拔河大作戰</div>
+                <p class="text-[11px] text-stone-600 leading-snug">手機平放桌面，一人一邊把大布丁拉過來！2連擊雙倍拉扯、答錯冰凍1.2秒。獎勵 +30⭐（勝+10⭐）</p>
+              </button>
+
+              <button data-local-mode="territory" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 text-left space-y-1">
+                <div class="flex items-center justify-between"><span class="text-xl">🏁</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white">策略搶地盤</span></div>
+                <div class="text-sm font-black text-emerald-900">3×3 策略奪地戰</div>
+                <p class="text-[11px] text-stone-600 leading-snug">連成一條線就贏！每人 2 張搶地券可搶對手地盤（挑戰英雄題），含 🛡️守護盾格 與 ⚡再來一回合！+40⭐</p>
+              </button>
+
+              <button data-local-mode="bomb" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-orange-300 bg-gradient-to-br from-orange-50 to-rose-50 text-left space-y-1">
+                <div class="flex items-center justify-between"><span class="text-xl">💣</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-500 text-white">緊張合作</span></div>
+                <div class="text-sm font-black text-orange-900">星光接力傳炸彈</div>
+                <p class="text-[11px] text-stone-600 leading-snug">倒數 12 秒越來越快！答對立刻傳給對方，合力接力 12 次成功拆彈！獎勵 +30⭐ / +45 EXP</p>
+              </button>
+
+              <button data-local-mode="boss" class="cp-local-btn sanrio-btn p-3 rounded-2xl border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 text-left space-y-1">
+                <div class="flex items-center justify-between"><span class="text-xl">🤝</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-purple-600 text-white">180 HP 強化</span></div>
+                <div class="text-sm font-black text-purple-900">協力打大魔王（強化版）</div>
+                <p class="text-[11px] text-stone-600 leading-snug">輪流攻擊彩虹水晶龍，每累計 4 連擊發動「🌟雙人合體大招」爆擊 40 血！獎勵 +40⭐ / +60 EXP</p>
+              </button>
+
+              <button data-local-mode="vs" class="cp-local-btn sanrio-btn sm:col-span-2 p-3 rounded-2xl border-2 border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 text-left flex items-center justify-between gap-2">
+                <div class="space-y-0.5">
+                  <div class="text-sm font-black text-sky-900">⚡ 60 秒雙人搶答賽（支援 180° 面對面＋親子讓分）</div>
+                  <p class="text-[11px] text-stone-600">雙邊同時開放搶答，60 秒內比誰答對最多題！獎勵 +30⭐（勝+10⭐）</p>
+                </div>
+                <span class="shrink-0 text-xs font-black px-3 py-1.5 rounded-xl bg-sky-500 text-white">開戰 ➜</span>
+              </button>
+            </div>
+          </div>
+        `);
+
+        document.getElementById("tab-coop-online").addEventListener("click", () => { SFX.click(); openCoopLauncher("online"); });
+        document.querySelectorAll(".cp-subj-btn").forEach(b => b.addEventListener("click", () => {
+          SFX.click();
+          prefs.subject = b.dataset.cpSubj;
+          saveState();
+          openCoopLauncher("local");
+        }));
+        const p1In = document.getElementById("cp-p1-name");
+        const p2In = document.getElementById("cp-p2-name");
+        if (p1In) p1In.addEventListener("change", () => { prefs.p1Name = p1In.value.trim() || "布丁狗"; saveState(); });
+        if (p2In) p2In.addEventListener("change", () => { prefs.p2Name = p2In.value.trim() || "帕恰狗"; saveState(); });
+        document.getElementById("cp-toggle-handicap").addEventListener("click", () => {
+          SFX.click(); prefs.handicap = !prefs.handicap; saveState(); openCoopLauncher("local");
+        });
+        document.getElementById("cp-toggle-face").addEventListener("click", () => {
+          SFX.click(); prefs.faceToFace = !prefs.faceToFace; saveState(); openCoopLauncher("local");
+        });
+        document.querySelectorAll(".cp-local-btn").forEach(b => b.addEventListener("click", () => {
+          SFX.click();
+          if (p1In) prefs.p1Name = p1In.value.trim() || "布丁狗";
+          if (p2In) prefs.p2Name = p2In.value.trim() || "帕恰狗";
+          saveState();
+          closeModal();
+          startCoopGame(b.dataset.localMode);
+        }));
+        return;
+      }
+
+      // TAB 2: ONLINE MULTIPLAYER LOBBY (Firebase RTDB)
+      const onlineModes = [
+        { id: "territory", icon: "🏁", name: "3×3 策略奪地戰", desc: "搶地盤＋英雄題搶地券" },
+        { id: "tug",       icon: "🪢", name: "星光拔河賽", desc: "即時互拉大布丁！" },
+        { id: "tf_pk",     icon: "⚡", name: "是非快打 60秒PK", desc: "5連擊FEVER比誰快" },
+        { id: "math_pk",   icon: "🧮", name: "數學心算 60秒PK", desc: "大鍵盤即時算術對決" },
+        { id: "boss",      icon: "🤝", name: "協力打超級魔王", desc: "200HP即時連線合擊" },
+        { id: "bomb",      icon: "💣", name: "接力傳炸彈", desc: "跨手機輪流拆彈！" }
+      ];
+      const selOnlineMode = state._lastOnlineMode || "territory";
+      const sameQ = state._lastOnlineSameQ !== false;
+
+      showModal("🌐 雙手機網路連線對戰大廳", `
+        <div class="space-y-3">
+          ${tabHeader}
+          <div class="p-3 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2 text-xs">
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-1.5 bg-white rounded-xl border border-indigo-200 px-2.5 py-1.5">
+                <span class="shrink-0 font-black text-indigo-700">🏷️ 暱稱</span>
+                <input id="ol-nick" type="text" maxlength="8" value="${escapeHtmlSafe(defaultNick)}" class="w-full text-xs font-black text-stone-800 outline-none bg-transparent" />
+              </label>
+              <label class="flex items-center gap-1.5 bg-white rounded-xl border border-indigo-200 px-2.5 py-1.5">
+                <span class="shrink-0 font-black text-indigo-700">🔒 密碼</span>
+                <input id="ol-pwd" type="text" maxlength="4" placeholder="選填4碼" class="w-full text-xs font-black text-stone-800 outline-none bg-transparent" />
+              </label>
+            </div>
+            <div id="ol-status-msg" class="text-[11px] font-black text-rose-600 min-h-[16px]"></div>
+          </div>
+
+          <!-- JOIN EXISTING ROOM -->
+          <div class="p-3 rounded-2xl bg-emerald-50/80 border-2 border-emerald-300 space-y-2">
+            <div class="text-xs font-black text-emerald-900">🚪 加入朋友的房間（輸入 4 碼房號）</div>
+            <div class="flex gap-2">
+              <input id="ol-join-code" type="tel" maxlength="4" value="${escapeHtmlSafe(prefillRoomCode)}" placeholder="例如 4829" class="flex-1 px-3 py-2 rounded-xl bg-white border-2 border-emerald-300 text-center text-base font-black tracking-widest text-emerald-900 outline-none" />
+              <button id="btn-ol-join" class="sanrio-btn px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm shrink-0">加入房間 ➜</button>
+            </div>
+          </div>
+
+          <!-- CREATE NEW ROOM -->
+          <div class="p-3 rounded-2xl bg-white border-2 border-indigo-200 space-y-2.5">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="text-xs font-black text-indigo-900">🏠 自己當房主開新房</span>
+              <button id="btn-ol-sameq" class="sanrio-btn px-2.5 py-1 rounded-full border text-[11px] font-black ${sameQ ? 'bg-indigo-500 text-white border-indigo-600' : 'bg-amber-100 text-amber-900 border-amber-300'}">
+                ${sameQ ? '🎯 同題公平 PK（同份題庫）' : '📚 跨年級各自出題（依各自年級）'}
+              </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-1">
+              ${subjs.map(s => `<button data-ol-subj="${s}" class="ol-subj-btn px-2 py-0.5 rounded-full border font-black text-[11px] ${prefs.subject === s ? 'bg-indigo-500 text-white border-indigo-600' : 'bg-stone-50 text-stone-700 border-stone-200'}">${s}</button>`).join("")}
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              ${onlineModes.map(m => `
+                <button data-ol-mode="${m.id}" class="ol-mode-btn sanrio-btn p-2 rounded-xl border-2 text-left space-y-0.5 ${selOnlineMode === m.id ? 'bg-indigo-100 border-indigo-500 ring-2 ring-indigo-200' : 'bg-stone-50/70 border-stone-200 hover:bg-indigo-50'}">
+                  <div class="text-base leading-none">${m.icon}</div>
+                  <div class="text-xs font-black text-indigo-950 leading-tight">${m.name}</div>
+                  <div class="text-[10px] text-stone-500 leading-tight">${m.desc}</div>
+                </button>
+              `).join("")}
+            </div>
+            <button id="btn-ol-create" class="sanrio-btn w-full py-2.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-black text-sm shadow">
+              ✨ 建立連線房間（取得 4 碼房號＆LINE 邀請連結）
+            </button>
+          </div>
+        </div>
+      `);
+
+      document.getElementById("tab-coop-local").addEventListener("click", () => { SFX.click(); openCoopLauncher("local"); });
+      document.querySelectorAll(".ol-subj-btn").forEach(b => b.addEventListener("click", () => {
+        SFX.click(); prefs.subject = b.dataset.olSubj; saveState(); openCoopLauncher("online", document.getElementById("ol-join-code")?.value || "");
+      }));
+      document.querySelectorAll(".ol-mode-btn").forEach(b => b.addEventListener("click", () => {
+        SFX.click(); state._lastOnlineMode = b.dataset.olMode; openCoopLauncher("online", document.getElementById("ol-join-code")?.value || "");
+      }));
+      document.getElementById("btn-ol-sameq").addEventListener("click", () => {
+        SFX.click(); state._lastOnlineSameQ = !sameQ; openCoopLauncher("online", document.getElementById("ol-join-code")?.value || "");
+      });
+      document.getElementById("btn-ol-create").addEventListener("click", () => {
+        SFX.click();
+        const nick = (document.getElementById("ol-nick")?.value || "").trim() || defaultNick;
+        const pwd = (document.getElementById("ol-pwd")?.value || "").trim();
+        state.coopOnlineNick = nick; saveState();
+        createOnlineRoom(selOnlineMode, prefs.subject, sameQ, nick, pwd);
+      });
+      document.getElementById("btn-ol-join").addEventListener("click", () => {
+        SFX.click();
+        const code = (document.getElementById("ol-join-code")?.value || "").replace(/\D/g, "").slice(0, 4);
+        const nick = (document.getElementById("ol-nick")?.value || "").trim() || defaultNick;
+        const pwd = (document.getElementById("ol-pwd")?.value || "").trim();
+        state.coopOnlineNick = nick; saveState();
+        joinOnlineRoom(code, nick, pwd);
+      });
+    }
+
+    // =========================================================================
+    // PART A: LOCAL SAME-DEVICE 5-MODE PARTY ENGINE
+    // =========================================================================
     function startCoopGame(subMode) {
-      if (coop && coop.timerId) clearInterval(coop.timerId);
-      const pool = shuffle(STAGES.flatMap(s => s.questions)).map(prepareQuestion);
+      cleanupCoopAndOnline();
+      const prefs = getCoopPrefs();
+      const shortOnly = (subMode === "tug" || (subMode === "vs" && prefs.faceToFace));
+      const pool = buildCoopPool(prefs.subject, { shortOnly });
+      const heroPool = buildCoopPool(prefs.subject, { tier: "hero" });
+
+      // Random bonus tiles for 3x3 territory: 1 shield tile + 1 extra-turn tile
+      const bonusIdxs = shuffle([0,1,2,3,4,5,6,7,8]).slice(0, 2);
+      const bonusTiles = {};
+      bonusTiles[bonusIdxs[0]] = "shield";
+      bonusTiles[bonusIdxs[1]] = "extra";
+
       coop = {
         subMode,
+        subj: prefs.subject,
+        p1Name: prefs.p1Name || "布丁狗",
+        p2Name: prefs.p2Name || "帕恰狗",
+        handicap: !!prefs.handicap,
+        faceToFace: !!prefs.faceToFace,
         pool,
+        heroPool,
         idx: 0,
+        heroIdx: 0,
         p1: 0,
         p2: 0,
-        bossHp: 100,
+        p1Streak: 0,
+        p2Streak: 0,
+        teamCombo: 0,
+        bossHp: 180,
+        bossMaxHp: 180,
         turn: 1,
-        timeLeft: 60,
+        timeLeft: subMode === "vs" ? 60 : (subMode === "bomb" ? 12 : 0),
+        bombMaxTime: 12,
+        bombPasses: 0,
+        bombGoal: 12,
+        ropePos: 0, // -4 = P1 win, +4 = P2 win
+        frozen: { 1: false, 2: false },
+        handicapLockP2: false,
+        board: Array(9).fill(0), // 0 empty, 1 P1, 2 P2
+        locks: Array(9).fill(false),
+        bonusTiles,
+        stealsLeft: { 1: 2, 2: 2 },
+        activeTile: null,
+        activeTileIsSteal: false,
+        activeQ: null,
+        wrongList: [],
         locked: false,
         timerId: null
       };
+
       const hdr = document.getElementById("main-header");
       if (hdr) hdr.classList.add("hidden");
       document.getElementById("view-map").classList.add("hidden");
@@ -7679,45 +8120,239 @@
       document.getElementById("view-coop").classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: "instant" });
 
-      document.getElementById("coop-title").textContent = subMode === "boss" ? "🤝 雙人協力打大魔王" : "⚡ 60 秒雙人搶答賽";
+      // Update player name badges
+      const p1N = document.getElementById("coop-p1-name");
+      const p2N = document.getElementById("coop-p2-name");
+      const p1Z = document.getElementById("coop-p1-zone-label");
+      const p2Z = document.getElementById("coop-p2-zone-label");
+      if (p1N) p1N.textContent = `🍮 ${coop.p1Name}`;
+      if (p2N) p2N.textContent = `🐾 ${coop.p2Name}`;
+      if (p1Z) p1Z.textContent = `🍮 ${coop.p1Name} 作答區`;
+      if (p2Z) p2Z.textContent = `🐾 ${coop.p2Name} 作答區`;
+
+      const titles = {
+        tug: "🪢 面對面拔河大作戰",
+        territory: "🏁 3×3 策略奪地戰",
+        bomb: "💣 星光接力傳炸彈",
+        boss: "🤝 協力打大魔王（180 HP）",
+        vs: "⚡ 60 秒雙人搶答賽"
+      };
+      document.getElementById("coop-title").textContent = titles[subMode] || "雙人派對";
+      document.getElementById("coop-mode-badge").textContent = `🎮 同機雙人｜${coop.subj}`;
+
+      // 180° Face-to-Face Fullscreen Split Mode for Tug-of-War & 60s Quiz
+      if ((subMode === "tug" || subMode === "vs") && coop.faceToFace) {
+        document.getElementById("coop-classic-card").classList.add("hidden");
+        document.getElementById("coop-split-overlay").classList.remove("hidden");
+        if (subMode === "vs") {
+          coop.timerId = setInterval(() => {
+            if (!coop) return;
+            coop.timeLeft -= 1;
+            const tEl = document.getElementById("split-center-timer");
+            if (tEl) tEl.textContent = `⏱️ ${coop.timeLeft}s`;
+            if (coop.timeLeft <= 0) finishCoopGame("timeup");
+          }, 1000);
+        }
+        renderFaceToFaceSplit();
+        return;
+      }
+
+      // Side-by-Side / Board modes inside coop-classic-card
+      document.getElementById("coop-classic-card").classList.remove("hidden");
+      if (subMode === "territory") {
+        document.getElementById("coop-standard-body").classList.add("hidden");
+        document.getElementById("coop-dynamic-arena").classList.remove("hidden");
+        document.getElementById("coop-timer-box").textContent = "🏁 策略搶地";
+        renderTerritoryLocal();
+        return;
+      }
+      if (subMode === "bomb") {
+        document.getElementById("coop-standard-body").classList.add("hidden");
+        document.getElementById("coop-dynamic-arena").classList.remove("hidden");
+        startBombLocalTimer();
+        renderBombLocal();
+        return;
+      }
+      if (subMode === "tug") {
+        document.getElementById("coop-standard-body").classList.remove("hidden");
+        document.getElementById("coop-dynamic-arena").classList.remove("hidden");
+        document.getElementById("coop-timer-box").textContent = "🪢 並肩拔河";
+        renderCoopState();
+        return;
+      }
       if (subMode === "vs") {
         document.getElementById("coop-timer-box").textContent = "⏱️ 剩餘 60 秒";
         coop.timerId = setInterval(() => {
+          if (!coop) return;
           coop.timeLeft -= 1;
           document.getElementById("coop-timer-box").textContent = `⏱️ 剩餘 ${coop.timeLeft} 秒`;
-          if (coop.timeLeft <= 0) {
-            clearInterval(coop.timerId);
-            finishCoopGame();
-          }
+          if (coop.timeLeft <= 0) finishCoopGame("timeup");
         }, 1000);
       } else {
-        document.getElementById("coop-timer-box").textContent = "🤝 輪流集氣中";
+        document.getElementById("coop-timer-box").textContent = "🤝 4連擊放合體技";
       }
       renderCoopState();
     }
 
+    function applyHandicapLockIfNeeded(onUnlock) {
+      if (_coopHandicapTimer) { clearTimeout(_coopHandicapTimer); _coopHandicapTimer = null; }
+      if (!coop || !coop.handicap || (coop.subMode !== "tug" && coop.subMode !== "vs")) {
+        if (coop) coop.handicapLockP2 = false;
+        return;
+      }
+      coop.handicapLockP2 = true;
+      _coopHandicapTimer = setTimeout(() => {
+        if (!coop) return;
+        coop.handicapLockP2 = false;
+        if (typeof onUnlock === "function") onUnlock();
+      }, 1500);
+    }
+
+    // --- 180° Face-to-Face Fullscreen Split Screen (Tug-of-War & 60s Quiz) ---
+    function renderFaceToFaceSplit(feedbackMsg = "") {
+      const ov = document.getElementById("coop-split-overlay");
+      if (!ov || !coop) return;
+      const q = coop.pool[coop.idx % coop.pool.length];
+      const labels = ["A", "B", "C", "D"];
+      const isTug = coop.subMode === "tug";
+
+      applyHandicapLockIfNeeded(() => {
+        document.querySelectorAll(".split-p2-opt").forEach(b => {
+          if (!coop || coop.frozen[2]) return;
+          b.disabled = false;
+          b.classList.remove("opacity-45");
+        });
+        const hBadge = document.getElementById("split-p2-handicap");
+        if (hBadge) hBadge.textContent = isTug ? `🔥${coop.p2Streak}` : `${coop.p2}分`;
+      });
+
+      const pct = Math.max(6, Math.min(94, 50 + (coop.ropePos * 10.5))); // -4 => ~8% (P1), +4 => ~92% (P2)
+      const renderPlayerHalf = (player) => {
+        const isP2 = player === 2;
+        const name = isP2 ? coop.p2Name : coop.p1Name;
+        const frozen = !!coop.frozen[player];
+        const hLock = isP2 && coop.handicapLockP2;
+        const disabled = frozen || hLock || coop.locked;
+        const accentBg = isP2 ? "bg-sky-50/90 border-sky-200" : "bg-amber-50/90 border-amber-200";
+        const btnClr = isP2 ? "bg-white border-sky-300 active:bg-sky-100 text-sky-950" : "bg-white border-amber-300 active:bg-amber-100 text-amber-950";
+        const statusText = frozen ? "❄️ 冰凍中..." : (hLock ? "🐣 讓分中..." : (isTug ? `🔥連擊 ${isP2 ? coop.p2Streak : coop.p1Streak}` : `✅ ${isP2 ? coop.p2 : coop.p1} 分`));
+        return `
+          <div class="flex-1 flex flex-col justify-between p-2.5 ${accentBg} overflow-hidden" style="${isP2 ? 'transform:rotate(180deg);' : ''}">
+            <div class="flex items-center justify-between gap-2 text-xs font-black">
+              <span class="${isP2 ? 'text-sky-800' : 'text-amber-900'}">${isP2 ? '🐾' : '🍮'} ${escapeHtmlSafe(name)}</span>
+              <span id="${isP2 ? 'split-p2-handicap' : 'split-p1-status'}" class="px-2 py-0.5 rounded-full bg-white border text-[11px] ${frozen ? 'text-rose-600 border-rose-300' : 'text-stone-700 border-stone-200'}">${statusText}</span>
+            </div>
+            <div class="my-1 px-2.5 py-2 rounded-xl bg-white border border-pink-200 text-center">
+              <div class="text-[10px] font-bold text-pink-600">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '搶答')}</div>
+              <div class="text-sm font-black text-stone-800 leading-snug line-clamp-3">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              ${q.shuffledOpts.map((opt, i) => `
+                <button data-sp="${player}" data-si="${i}" ${disabled ? "disabled" : ""} class="${isP2 ? 'split-p2-opt' : 'split-p1-opt'} sanrio-btn py-2.5 px-2 rounded-xl border-2 text-left text-xs font-black leading-tight ${btnClr} ${disabled ? 'opacity-45' : ''}">
+                  <span class="opacity-70 mr-1">${labels[i]}.</span>${escapeHtmlSafe(opt)}
+                </button>
+              `).join("")}
+            </div>
+          </div>`;
+      };
+
+      const centerBar = isTug ? `
+        <div class="shrink-0 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 border-y-2 border-pink-300 px-3 py-1.5 space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-black">
+            <span class="text-amber-800">🍮 ${escapeHtmlSafe(coop.p1Name)} (${Math.max(0, -coop.ropePos)}/4)</span>
+            <span class="text-pink-700 truncate max-w-[160px]">${feedbackMsg || '🪢 把大布丁拉向自己！'}</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-sky-800">(${Math.max(0, coop.ropePos)}/4) ${escapeHtmlSafe(coop.p2Name)} 🐾</span>
+              <button id="btn-split-exit" class="px-2 py-0.5 rounded-full bg-white border border-rose-300 text-rose-600 text-[10px] font-black">✕</button>
+            </div>
+          </div>
+          <div class="relative h-7 rounded-full bg-white border-2 border-amber-300 overflow-hidden flex items-center">
+            <div class="w-1/2 h-full bg-amber-100/70 border-r-2 border-dashed border-pink-400"></div>
+            <div class="w-1/2 h-full bg-sky-100/70"></div>
+            <div class="absolute inset-y-0 flex items-center transition-all duration-300" style="left:calc(${pct}% - 18px);">
+              <img src="./assets/purin.webp" class="w-9 h-9 object-contain drop-shadow" alt="拔河布丁" />
+            </div>
+          </div>
+        </div>` : `
+        <div class="shrink-0 bg-gradient-to-r from-amber-100 via-pink-100 to-sky-100 border-y-2 border-pink-300 px-3 py-2 flex items-center justify-between text-xs font-black">
+          <span class="text-amber-900">🍮 ${coop.p1} 分</span>
+          <span id="split-center-timer" class="px-3 py-0.5 rounded-full bg-pink-500 text-white">⏱️ ${coop.timeLeft}s</span>
+          <div class="flex items-center gap-2">
+            <span class="text-sky-900">🐾 ${coop.p2} 分</span>
+            <button id="btn-split-exit" class="px-2 py-0.5 rounded-full bg-white border border-rose-300 text-rose-600 text-[10px] font-black">✕</button>
+          </div>
+        </div>`;
+
+      ov.innerHTML = renderPlayerHalf(2) + centerBar + renderPlayerHalf(1);
+
+      const exitBtn = document.getElementById("btn-split-exit");
+      if (exitBtn) exitBtn.addEventListener("click", () => { SFX.click(); backToMap(); });
+      ov.querySelectorAll("button[data-sp]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          handleCoopAnswer(Number(btn.dataset.sp), Number(btn.dataset.si));
+        });
+      });
+    }
+
+    // --- Side-by-Side / Boss / Tug (Non-180°) Renderer ---
     function renderCoopState() {
+      if (!coop) return;
       const q = coop.pool[coop.idx % coop.pool.length];
       document.getElementById("coop-p1-score").textContent = `${coop.p1} 分`;
       document.getElementById("coop-p2-score").textContent = `${coop.p2} 分`;
-      document.getElementById("coop-boss-bar").style.width = coop.bossHp + "%";
-      document.getElementById("coop-center-label").textContent = coop.subMode === "boss" ? `Boss HP ${coop.bossHp}/100` : `第 ${coop.idx + 1} 題`;
-      document.getElementById("coop-q-tag").textContent = q.tag;
-      document.getElementById("coop-q-text").textContent = q.q;
+      if (coop.subMode === "boss") {
+        document.getElementById("coop-boss-bar").style.width = Math.max(0, Math.round((coop.bossHp / coop.bossMaxHp) * 100)) + "%";
+        document.getElementById("coop-center-label").textContent = `Boss HP ${coop.bossHp}/${coop.bossMaxHp}（合擊 ${coop.teamCombo % 4}/4）`;
+      } else if (coop.subMode === "tug") {
+        const pct = Math.max(6, Math.min(94, 50 + coop.ropePos * 10.5));
+        document.getElementById("coop-boss-bar").style.width = pct + "%";
+        document.getElementById("coop-center-label").textContent = `🪢 拔河拉鋸：${coop.ropePos < 0 ? coop.p1Name + "領先 " + (-coop.ropePos) : (coop.ropePos > 0 ? coop.p2Name + "領先 " + coop.ropePos : "勢均力敵")}`;
+        const dyn = document.getElementById("coop-dynamic-arena");
+        if (dyn) {
+          dyn.innerHTML = `
+            <div class="relative h-9 rounded-full bg-white border-2 border-amber-300 overflow-hidden flex items-center">
+              <div class="w-1/2 h-full bg-amber-100/80 border-r-2 border-dashed border-pink-400"></div>
+              <div class="w-1/2 h-full bg-sky-100/80"></div>
+              <div class="absolute inset-y-0 flex items-center transition-all duration-300" style="left:calc(${pct}% - 18px);">
+                <img src="./assets/purin.webp" class="w-9 h-9 object-contain drop-shadow" alt="拔河布丁" />
+              </div>
+            </div>`;
+        }
+      } else {
+        document.getElementById("coop-boss-bar").style.width = Math.max(0, Math.round((coop.timeLeft / 60) * 100)) + "%";
+        document.getElementById("coop-center-label").textContent = `第 ${coop.idx + 1} 題`;
+      }
+
+      document.getElementById("coop-q-tag").textContent = `${q.subject || "綜合"}｜${q.tag || "挑戰"}`;
+      document.getElementById("coop-q-text").textContent = cleanMiniPrompt(q.q);
       document.getElementById("coop-feedback").textContent = "";
 
-      document.getElementById("coop-p1-turn").textContent = coop.subMode === "boss" ? (coop.turn === 1 ? "👉 輪到你！" : "等待中") : "搶答！";
-      document.getElementById("coop-p2-turn").textContent = coop.subMode === "boss" ? (coop.turn === 2 ? "👉 輪到你！" : "等待中") : "搶答！";
+      applyHandicapLockIfNeeded(() => {
+        document.querySelectorAll("#coop-p2-opts button").forEach(b => {
+          if (!coop || coop.frozen[2]) return;
+          b.disabled = false;
+          b.classList.remove("opacity-45");
+        });
+        const t2 = document.getElementById("coop-p2-turn");
+        if (t2) t2.textContent = "搶答！";
+      });
+
+      document.getElementById("coop-p1-turn").textContent = coop.subMode === "boss"
+        ? (coop.turn === 1 ? "👉 輪到你！" : "等待中")
+        : (coop.frozen[1] ? "❄️ 冰凍中..." : "搶答！");
+      document.getElementById("coop-p2-turn").textContent = coop.subMode === "boss"
+        ? (coop.turn === 2 ? "👉 輪到你！" : "等待中")
+        : (coop.frozen[2] ? "❄️ 冰凍中..." : (coop.handicapLockP2 ? "🐣 讓分中..." : "搶答！"));
 
       const labels = ["A", "B", "C", "D"];
       [1, 2].forEach(player => {
         const container = document.getElementById(`coop-p${player}-opts`);
         container.innerHTML = "";
-        const disabledTurn = coop.subMode === "boss" && coop.turn !== player;
+        const disabledTurn = (coop.subMode === "boss" && coop.turn !== player) || coop.frozen[player] || (player === 2 && coop.handicapLockP2);
         q.shuffledOpts.forEach((opt, i) => {
           const btn = document.createElement("button");
           btn.disabled = disabledTurn;
-          btn.className = `sanrio-btn p-2.5 rounded-xl border-2 text-left text-xs sm:text-sm font-bold ${disabledTurn ? "bg-stone-100 border-stone-200 opacity-50" : "bg-white border-pink-200 hover:bg-pink-50"}`;
+          btn.className = `sanrio-btn p-2.5 rounded-xl border-2 text-left text-xs sm:text-sm font-bold ${disabledTurn ? "bg-stone-100 border-stone-200 opacity-45" : "bg-white border-pink-200 hover:bg-pink-50"}`;
           btn.textContent = `${labels[i]}. ${opt}`;
           btn.addEventListener("click", () => handleCoopAnswer(player, i));
           container.appendChild(btn);
@@ -7726,57 +8361,1200 @@
     }
 
     function handleCoopAnswer(player, idx) {
-      if (coop.locked) return;
+      if (!coop || coop.locked || coop.frozen[player]) return;
+      if (player === 2 && coop.handicapLockP2) return;
       const q = coop.pool[coop.idx % coop.pool.length];
+      const pName = player === 1 ? coop.p1Name : coop.p2Name;
+      const isSplit = (coop.subMode === "tug" || coop.subMode === "vs") && coop.faceToFace;
+
       if (idx === q.correctIdx) {
         coop.locked = true;
         SFX.attack();
-        if (player === 1) coop.p1 += 1; else coop.p2 += 1;
-        if (coop.subMode === "boss") {
-          coop.bossHp = Math.max(0, coop.bossHp - 20);
+        if (player === 1) { coop.p1 += 1; coop.p1Streak += 1; coop.p2Streak = 0; }
+        else { coop.p2 += 1; coop.p2Streak += 1; coop.p1Streak = 0; }
+
+        let msg = `🎉 ${pName} 答對！`;
+        if (coop.subMode === "tug") {
+          const streak = player === 1 ? coop.p1Streak : coop.p2Streak;
+          const pull = streak >= 2 ? 2 : 1;
+          coop.ropePos += (player === 1 ? -pull : pull);
+          coop.ropePos = Math.max(-4, Math.min(4, coop.ropePos));
+          msg = streak >= 2 ? `🔥 ${pName} ${streak}連擊雙倍拉扯！` : `🪢 ${pName} 拉近一步！`;
+        } else if (coop.subMode === "boss") {
+          coop.teamCombo += 1;
+          const isUlt = coop.teamCombo % 4 === 0;
+          const dmg = isUlt ? 40 : 20;
+          coop.bossHp = Math.max(0, coop.bossHp - dmg);
           coop.turn = coop.turn === 1 ? 2 : 1;
+          msg = isUlt ? `🌟 雙人合體大招！爆擊 -40 HP！` : `⚔️ ${pName} 造成 -20 HP！${q.explain || ""}`;
+          if (isUlt) SFX.win();
+        } else {
+          msg = `🎉 ${pName} 搶答成功！${q.explain || ""}`;
         }
-        document.getElementById("coop-feedback").textContent = `🎉 P${player} 答對了！${q.explain}`;
+
+        if (isSplit) {
+          renderFaceToFaceSplit(msg);
+        } else {
+          const fb = document.getElementById("coop-feedback");
+          if (fb) fb.textContent = msg;
+        }
+
         setTimeout(() => {
+          if (!coop) return;
           coop.locked = false;
           if (coop.subMode === "boss" && coop.bossHp <= 0) {
-            finishCoopGame();
+            finishCoopGame("boss_clear");
+          } else if (coop.subMode === "tug" && Math.abs(coop.ropePos) >= 4) {
+            finishCoopGame(coop.ropePos <= -4 ? "p1" : "p2");
           } else {
             coop.idx += 1;
-            renderCoopState();
+            if (isSplit) renderFaceToFaceSplit(); else renderCoopState();
           }
-        }, 700);
+        }, isSplit ? 480 : 680);
       } else {
         SFX.hit();
-        document.getElementById("coop-feedback").textContent = `❌ P${player} 答錯囉，換人或再試一次！`;
-        if (coop.subMode === "boss") {
-          coop.turn = coop.turn === 1 ? 2 : 1;
-          setTimeout(() => renderCoopState(), 500);
+        recordCoopWrong(coop.wrongList, q);
+        if (player === 1) coop.p1Streak = 0; else coop.p2Streak = 0;
+
+        if (coop.subMode === "tug" || coop.subMode === "vs") {
+          // 1.2s wrong-answer freeze for this player only
+          coop.frozen[player] = true;
+          if (isSplit) renderFaceToFaceSplit(`❄️ ${pName} 答錯冰凍 1.2 秒！`);
+          else {
+            const fb = document.getElementById("coop-feedback");
+            if (fb) fb.textContent = `❄️ ${pName} 答錯冰凍 1.2 秒！`;
+            renderCoopState();
+          }
+          if (_coopFreezeTimers[player]) clearTimeout(_coopFreezeTimers[player]);
+          _coopFreezeTimers[player] = setTimeout(() => {
+            if (!coop) return;
+            coop.frozen[player] = false;
+            if (isSplit) renderFaceToFaceSplit(); else renderCoopState();
+          }, 1200);
+        } else {
+          coop.teamCombo = 0;
+          const fb = document.getElementById("coop-feedback");
+          if (fb) fb.textContent = `❌ ${pName} 答錯囉！正確答案是「${q.opts[q.ans]}」`;
+          if (coop.subMode === "boss") {
+            coop.turn = coop.turn === 1 ? 2 : 1;
+            setTimeout(() => { if (coop) renderCoopState(); }, 650);
+          }
         }
       }
     }
 
-    function finishCoopGame() {
-      if (coop && coop.timerId) clearInterval(coop.timerId);
+    // --- Local Mode 2: 3x3 Tactical Territory Steal ---
+    function checkTerritoryWinner(board) {
+      const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      for (const [a,b,c] of lines) {
+        if (board[a] && board[a] === board[b] && board[b] === board[c]) return board[a];
+      }
+      if (board.every(x => x !== 0)) {
+        const c1 = board.filter(x => x === 1).length;
+        const c2 = board.filter(x => x === 2).length;
+        return c1 > c2 ? 1 : (c2 > c1 ? 2 : 3); // 3 = draw
+      }
+      return 0;
+    }
+
+    function renderTerritoryLocal(msg = "") {
+      if (!coop) return;
+      const dyn = document.getElementById("coop-dynamic-arena");
+      if (!dyn) return;
+      const p1Cnt = coop.board.filter(x => x === 1).length;
+      const p2Cnt = coop.board.filter(x => x === 2).length;
+      document.getElementById("coop-p1-score").textContent = `${p1Cnt} 格｜🎟️×${coop.stealsLeft[1]}`;
+      document.getElementById("coop-p2-score").textContent = `${p2Cnt} 格｜🎟️×${coop.stealsLeft[2]}`;
+      document.getElementById("coop-center-label").textContent = `輪到 ${coop.turn === 1 ? '🍮 ' + coop.p1Name : '🐾 ' + coop.p2Name}`;
+      document.getElementById("coop-boss-bar").style.width = `${Math.round(((p1Cnt + p2Cnt) / 9) * 100)}%`;
+
+      const curName = coop.turn === 1 ? coop.p1Name : coop.p2Name;
+      const labels = ["A", "B", "C", "D"];
+
+      let qBoxHtml = "";
+      if (coop.activeTile !== null && coop.activeQ) {
+        const q = coop.activeQ;
+        qBoxHtml = `
+          <div class="p-3.5 rounded-2xl bg-white border-2 ${coop.activeTileIsSteal ? 'border-rose-400 bg-rose-50/40' : 'border-emerald-300'} space-y-2.5">
+            <div class="flex items-center justify-between text-xs font-black">
+              <span class="px-2 py-0.5 rounded-full ${coop.activeTileIsSteal ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'}">
+                ${coop.activeTileIsSteal ? '⚔️ 搶地英雄題！答對奪下並上鎖' : '🏁 佔領空地挑戰'}
+              </span>
+              <span class="text-stone-500">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '')}</span>
+            </div>
+            <div class="text-sm sm:text-base font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+            <div class="grid grid-cols-2 gap-2">
+              ${q.shuffledOpts.map((opt, i) => `
+                <button data-terr-ans="${i}" class="sanrio-btn p-2.5 rounded-xl bg-white border-2 border-pink-200 hover:bg-pink-50 text-left text-xs sm:text-sm font-black">
+                  ${labels[i]}. ${escapeHtmlSafe(opt)}
+                </button>
+              `).join("")}
+            </div>
+          </div>`;
+      }
+
+      dyn.innerHTML = `
+        <div class="text-center text-xs sm:text-sm font-black ${coop.turn === 1 ? 'text-amber-800 bg-amber-100 border-amber-300' : 'text-sky-800 bg-sky-100 border-sky-300'} border-2 rounded-2xl py-2 px-3">
+          ${msg || `👉 輪到 ${escapeHtmlSafe(curName)}！點空地佔領，或點對手未上鎖格子搶地（剩 ${coop.stealsLeft[coop.turn]} 張搶地券）`}
+        </div>
+        <div class="grid grid-cols-3 gap-2.5 max-w-xs mx-auto">
+          ${coop.board.map((owner, idx) => {
+            const locked = coop.locks[idx];
+            const bonus = coop.bonusTiles[idx];
+            const isSel = coop.activeTile === idx;
+            const canTapEmpty = owner === 0 && coop.activeTile === null;
+            const canTapSteal = owner !== 0 && owner !== coop.turn && !locked && coop.stealsLeft[coop.turn] > 0 && coop.activeTile === null;
+            const cls = owner === 1
+              ? "bg-amber-100 border-amber-400 text-amber-900"
+              : (owner === 2 ? "bg-sky-100 border-sky-400 text-sky-900" : "bg-white border-stone-300 text-stone-600 hover:bg-emerald-50");
+            const badge = owner === 1 ? "🍮" : (owner === 2 ? "🐾" : (bonus === "shield" ? "🛡️" : (bonus === "extra" ? "⚡" : `${idx + 1}`)));
+            const subTxt = owner === 0
+              ? (bonus === "shield" ? "守護盾格" : (bonus === "extra" ? "再來一回" : "空地"))
+              : (locked ? "🔒 已鎖定" : (canTapSteal ? "⚔️ 可搶地" : (owner === 1 ? coop.p1Name : coop.p2Name)));
+            return `
+              <button data-terr-tile="${idx}" ${(!canTapEmpty && !canTapSteal) ? "disabled" : ""} class="sanrio-btn h-20 rounded-2xl border-2 flex flex-col items-center justify-center gap-0.5 transition-all ${cls} ${isSel ? 'ring-4 ring-pink-400 scale-105' : ''} ${(!canTapEmpty && !canTapSteal && !isSel) ? 'opacity-80' : ''}">
+                <span class="text-2xl leading-none">${badge}</span>
+                <span class="text-[10px] font-black truncate max-w-[78px]">${escapeHtmlSafe(subTxt)}</span>
+              </button>`;
+          }).join("")}
+        </div>
+        ${qBoxHtml}`;
+
+      dyn.querySelectorAll("button[data-terr-tile]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (!coop || coop.activeTile !== null) return;
+          SFX.click();
+          const tidx = Number(btn.dataset.terrTile);
+          const isSteal = coop.board[tidx] !== 0;
+          coop.activeTile = tidx;
+          coop.activeTileIsSteal = isSteal;
+          if (isSteal) {
+            coop.activeQ = coop.heroPool[coop.heroIdx++ % coop.heroPool.length];
+          } else {
+            coop.activeQ = coop.pool[coop.idx++ % coop.pool.length];
+          }
+          renderTerritoryLocal();
+        });
+      });
+
+      dyn.querySelectorAll("button[data-terr-ans]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (!coop || coop.activeTile === null || !coop.activeQ) return;
+          const choice = Number(btn.dataset.terrAns);
+          const q = coop.activeQ;
+          const tidx = coop.activeTile;
+          const isSteal = coop.activeTileIsSteal;
+          const cur = coop.turn;
+          const curNm = cur === 1 ? coop.p1Name : coop.p2Name;
+          coop.activeTile = null;
+          coop.activeQ = null;
+
+          if (isSteal) coop.stealsLeft[cur] = Math.max(0, coop.stealsLeft[cur] - 1);
+
+          let feedback = "";
+          let keepTurn = false;
+          if (choice === q.correctIdx) {
+            SFX.attack();
+            if (cur === 1) coop.p1 += 1; else coop.p2 += 1;
+            coop.board[tidx] = cur;
+            if (isSteal || coop.bonusTiles[tidx] === "shield") {
+              coop.locks[tidx] = true;
+            }
+            if (coop.bonusTiles[tidx] === "extra" && !isSteal) {
+              keepTurn = true;
+              delete coop.bonusTiles[tidx];
+              feedback = `⚡ ${curNm} 觸發「再來一回合」！連續出擊！`;
+            } else if (isSteal) {
+              SFX.win();
+              feedback = `⚔️ ${curNm} 搶地成功並永久上鎖 🔒！`;
+            } else if (coop.bonusTiles[tidx] === "shield") {
+              feedback = `🛡️ ${curNm} 佔領守護盾格，直接上鎖 🔒！`;
+            } else {
+              feedback = `🎉 ${curNm} 成功佔領地盤！`;
+            }
+          } else {
+            SFX.hit();
+            recordCoopWrong(coop.wrongList, q);
+            if (isSteal) {
+              coop.locks[tidx] = true;
+              feedback = `🛡️ ${curNm} 搶地失敗（正解：${q.opts[q.ans]}），該格成功防守並上鎖 🔒！`;
+            } else {
+              feedback = `❌ ${curNm} 答錯了（正解：${q.opts[q.ans]}），換對手進攻！`;
+            }
+          }
+
+          const winCode = checkTerritoryWinner(coop.board);
+          if (winCode) {
+            setTimeout(() => finishCoopGame(winCode === 1 ? "p1" : (winCode === 2 ? "p2" : "draw")), 500);
+            return;
+          }
+          if (!keepTurn) coop.turn = cur === 1 ? 2 : 1;
+          renderTerritoryLocal(feedback);
+        });
+      });
+    }
+
+    // --- Local Mode 3: Starlight Bomb Relay ---
+    function startBombLocalTimer() {
+      if (coop.timerId) clearInterval(coop.timerId);
+      coop.timerId = setInterval(() => {
+        if (!coop) return;
+        coop.timeLeft -= 1;
+        const tb = document.getElementById("coop-timer-box");
+        if (tb) tb.textContent = `💣 剩餘 ${coop.timeLeft} 秒`;
+        const bEl = document.getElementById("bomb-fuse-num");
+        if (bEl) bEl.textContent = `${coop.timeLeft} 秒`;
+        if (coop.timeLeft <= 0) {
+          SFX.hit();
+          finishCoopGame("bomb_boom");
+        }
+      }, 1000);
+    }
+
+    function renderBombLocal(msg = "") {
+      if (!coop) return;
+      const dyn = document.getElementById("coop-dynamic-arena");
+      if (!dyn) return;
+      const q = coop.pool[coop.idx % coop.pool.length];
+      const curName = coop.turn === 1 ? coop.p1Name : coop.p2Name;
+      const labels = ["A", "B", "C", "D"];
+
+      document.getElementById("coop-p1-score").textContent = `${coop.p1} 次傳遞`;
+      document.getElementById("coop-p2-score").textContent = `${coop.p2} 次傳遞`;
+      document.getElementById("coop-center-label").textContent = `💣 接力進度 ${coop.bombPasses} / ${coop.bombGoal}`;
+      document.getElementById("coop-boss-bar").style.width = `${Math.min(100, Math.round((coop.bombPasses / coop.bombGoal) * 100))}%`;
+      document.getElementById("coop-timer-box").textContent = `💣 剩餘 ${coop.timeLeft} 秒`;
+
+      dyn.innerHTML = `
+        <div class="p-3 rounded-2xl border-2 ${coop.timeLeft <= 4 ? 'bg-rose-100 border-rose-400 animate-pulse' : 'bg-orange-50 border-orange-300'} flex items-center justify-between">
+          <div class="text-xs sm:text-sm font-black text-orange-950">
+            💣 炸彈在 <span class="text-rose-600">${coop.turn === 1 ? '🍮 ' + escapeHtmlSafe(coop.p1Name) : '🐾 ' + escapeHtmlSafe(coop.p2Name)}</span> 手上！
+          </div>
+          <div id="bomb-fuse-num" class="px-3 py-1 rounded-full bg-rose-500 text-white text-sm font-black">${coop.timeLeft} 秒</div>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-white border-2 border-orange-200 space-y-2.5 text-center">
+          <div class="text-xs font-bold text-orange-700">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '拆彈題')}</div>
+          <div class="text-sm sm:text-lg font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+          ${msg ? `<div class="text-xs font-black text-rose-600">${escapeHtmlSafe(msg)}</div>` : ""}
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            ${q.shuffledOpts.map((opt, i) => `
+              <button data-bomb-ans="${i}" class="sanrio-btn p-3 rounded-xl bg-amber-50/70 hover:bg-amber-100 border-2 border-amber-300 text-left text-xs sm:text-sm font-black text-stone-800">
+                ${labels[i]}. ${escapeHtmlSafe(opt)}
+              </button>
+            `).join("")}
+          </div>
+        </div>`;
+
+      dyn.querySelectorAll("button[data-bomb-ans]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (!coop) return;
+          const choice = Number(btn.dataset.bombAns);
+          if (choice === q.correctIdx) {
+            SFX.attack();
+            if (coop.turn === 1) coop.p1 += 1; else coop.p2 += 1;
+            coop.bombPasses += 1;
+            if (coop.bombPasses >= coop.bombGoal) {
+              finishCoopGame("bomb_clear");
+              return;
+            }
+            coop.turn = coop.turn === 1 ? 2 : 1;
+            coop.bombMaxTime = Math.max(8, 12 - Math.floor(coop.bombPasses / 3));
+            coop.timeLeft = coop.bombMaxTime;
+            coop.idx += 1;
+            renderBombLocal(`✨ 傳遞成功！剩餘 ${coop.bombGoal - coop.bombPasses} 次拆彈！`);
+          } else {
+            SFX.hit();
+            recordCoopWrong(coop.wrongList, q);
+            coop.timeLeft = Math.max(1, coop.timeLeft - 2);
+            coop.idx += 1;
+            renderBombLocal(`❌ 答錯扣 2 秒！（正解：${q.opts[q.ans]}）快看下一題！`);
+          }
+        });
+      });
+    }
+
+    function finishCoopGame(outcome = "") {
+      if (!coop) return;
+      const st = coop;
+      cleanupCoopAndOnline();
+      coop = null;
       SFX.win();
-      state.stars += 25;
-      const coopExp = grantExp(40);
+
+      const isHighTier = (st.subMode === "territory" || st.subMode === "boss");
+      const baseStars = isHighTier ? 40 : 30;
+      const baseExp = isHighTier ? 60 : 45;
+      const baseBond = isHighTier ? 6 : 5;
+      let winBonus = 0;
+      let headline = "🎊 雙人派對完成！";
+
+      if (st.subMode === "boss") {
+        winBonus = 10;
+        headline = "🏆 雙人協力擊敗 180 HP 彩虹水晶龍！";
+      } else if (st.subMode === "bomb") {
+        if (outcome === "bomb_clear") { winBonus = 10; headline = `🎉 成功接力 ${st.bombGoal} 次，完美拆彈！`; }
+        else headline = `💥 炸彈引爆了！合力撐過 ${st.bombPasses} 次接力！`;
+      } else if (st.subMode === "territory") {
+        if (outcome === "p1") { winBonus = 10; headline = `👑 🍮 ${escapeHtmlSafe(st.p1Name)} 奪地大獲全勝！`; }
+        else if (outcome === "p2") { winBonus = 10; headline = `👑 🐾 ${escapeHtmlSafe(st.p2Name)} 奪地大獲全勝！`; }
+        else headline = "🤝 勢均力敵！平手各得雙倍默契！";
+      } else if (st.subMode === "tug") {
+        if (outcome === "p1") { winBonus = 10; headline = `🪢 🍮 ${escapeHtmlSafe(st.p1Name)} 拔河大獲全勝！`; }
+        else { winBonus = 10; headline = `🪢 🐾 ${escapeHtmlSafe(st.p2Name)} 拔河大獲全勝！`; }
+      } else {
+        if (st.p1 > st.p2) { winBonus = 10; headline = `⚡ 🍮 ${escapeHtmlSafe(st.p1Name)} 搶答稱王！`; }
+        else if (st.p2 > st.p1) { winBonus = 10; headline = `⚡ 🐾 ${escapeHtmlSafe(st.p2Name)} 搶答稱王！`; }
+        else headline = "🤝 平手！雙人默契滿分！";
+      }
+
+      const rew = consumeCoopDailyReward(baseStars + winBonus);
+      state.stars += rew.stars;
+      const coopExp = grantExp(baseExp);
+      state.bondExp = (state.bondExp || 0) + baseBond;
+      state.coopPlays = (state.coopPlays || 0) + 1;
+      saveState();
+      renderHUD();
+
+      showModal("🎊 雙人派對結算", `
+        <div class="text-center space-y-3 py-1">
+          <div class="text-xl sm:text-2xl font-black text-pink-600">${headline}</div>
+          <p class="text-xs sm:text-sm font-bold text-stone-700">🍮 ${escapeHtmlSafe(st.p1Name)}：${st.p1} 題 ｜ 🐾 ${escapeHtmlSafe(st.p2Name)}：${st.p2} 題</p>
+          <div class="inline-block px-4 py-2 rounded-2xl bg-amber-100 border-2 border-amber-300 text-xs sm:text-sm font-black text-amber-900">
+            獲得 +${rew.stars} ⭐ ｜ +${baseExp} EXP ｜ +${baseBond} 默契
+            ${!rew.wasFullQuota ? '<div class="text-[10px] text-stone-600 mt-0.5">（今日 5 場滿星額度已用完，發放 20% 練習星）</div>' : `<div class="text-[10px] text-amber-700 mt-0.5">今日剩餘滿星雙人額度：${rew.leftAfter} / ${COOP_DAILY_REWARD_CAP} 場</div>`}
+          </div>
+          ${coopExp.levelsGained > 0 ? `<div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900">🎉 勇者升級至 Lv.${coopExp.newLevel}！賀禮 +${coopExp.giftStars} ⭐</div>` : ""}
+          ${buildWrongReviewHtml(st.wrongList)}
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button id="btn-coop-again" class="sanrio-btn py-2.5 rounded-2xl bg-pink-500 text-white font-black text-sm">🔄 再玩一場</button>
+            <button id="btn-coop-done" class="sanrio-btn py-2.5 rounded-2xl bg-teal-500 text-white font-black text-sm">返回冒險地圖</button>
+          </div>
+        </div>
+      `);
+      bindSaveWrongsBtn(st.wrongList);
+      document.getElementById("btn-coop-again").addEventListener("click", () => { SFX.click(); closeModal(); startCoopGame(st.subMode); });
+      document.getElementById("btn-coop-done").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
+    }
+
+    // =========================================================================
+    // PART B: FIREBASE RTDB ZERO-SDK ONLINE MULTIPLAYER ENGINE (6 MODES)
+    // =========================================================================
+    async function fbReq(method, path, body = null) {
+      const url = `${FIREBASE_RTDB_URL}/${path}.json`;
+      const opts = { method, headers: { "Content-Type": "application/json" } };
+      if (body !== null) opts.body = JSON.stringify(body);
+      const res = await fetch(url, opts);
+      if (!res.ok) throw new Error("Firebase HTTP " + res.status);
+      return await res.json();
+    }
+
+    function setOnlineStatusMsg(txt) {
+      const el = document.getElementById("ol-status-msg");
+      if (el) el.textContent = txt;
+    }
+
+    function genSeededMathProblem(rng, gradeNum) {
+      const g = Number(gradeNum) || 3;
+      const opPick = rng();
+      let a, b, expr, ans;
+      if (g <= 2) {
+        if (opPick < 0.55) { a = 5 + Math.floor(rng() * 45); b = 3 + Math.floor(rng() * 35); expr = `${a} + ${b}`; ans = a + b; }
+        else { a = 20 + Math.floor(rng() * 60); b = 3 + Math.floor(rng() * (a - 5)); expr = `${a} − ${b}`; ans = a - b; }
+      } else if (g <= 4) {
+        if (opPick < 0.35) { a = 15 + Math.floor(rng() * 80); b = 12 + Math.floor(rng() * 75); expr = `${a} + ${b}`; ans = a + b; }
+        else if (opPick < 0.65) { a = 35 + Math.floor(rng() * 90); b = 10 + Math.floor(rng() * (a - 12)); expr = `${a} − ${b}`; ans = a - b; }
+        else { a = 3 + Math.floor(rng() * 9); b = 4 + Math.floor(rng() * 12); expr = `${a} × ${b}`; ans = a * b; }
+      } else {
+        if (opPick < 0.35) { a = 12 + Math.floor(rng() * 25); b = 4 + Math.floor(rng() * 12); expr = `${a} × ${b}`; ans = a * b; }
+        else if (opPick < 0.65) { b = 3 + Math.floor(rng() * 9); ans = 6 + Math.floor(rng() * 18); a = b * ans; expr = `${a} ÷ ${b}`; }
+        else { a = 120 + Math.floor(rng() * 250); b = 45 + Math.floor(rng() * 180); expr = `${a} + ${b}`; ans = a + b; }
+      }
+      return { expr, ans };
+    }
+
+    async function createOnlineRoom(mode, subject, sameQ, nick, pwd) {
+      setOnlineStatusMsg("⏳ 正在建立連線房間...");
+      try {
+        const code = String(1000 + Math.floor(Math.random() * 9000));
+        const seed = Math.floor(Math.random() * 900000) + 100000;
+        const rng = mulberry32(seed);
+        const bonusIdxs = seededShuffle([0,1,2,3,4,5,6,7,8], rng).slice(0, 2);
+        const bonusTiles = {};
+        bonusTiles[bonusIdxs[0]] = "shield";
+        bonusTiles[bonusIdxs[1]] = "extra";
+
+        const roomData = {
+          code,
+          pwd: pwd || "",
+          mode,
+          subject,
+          sameQ: !!sameQ,
+          seed,
+          grade: CLOUD_GRADE,
+          status: "waiting", // waiting | playing | finished
+          createdAt: Date.now(),
+          host: { name: nick, hero: state.hero || "purin", score: 0, ready: true },
+          guest: null,
+          // Shared game state fields
+          turn: "host",
+          ropePos: 0,
+          bossHp: 200,
+          bossMaxHp: 200,
+          teamCombo: 0,
+          qIdx: 0,
+          heroIdx: 0,
+          board: [0,0,0,0,0,0,0,0,0],
+          locks: [false,false,false,false,false,false,false,false,false],
+          bonusTiles,
+          stealsHost: 2,
+          stealsGuest: 2,
+          bombPasses: 0,
+          bombGoal: 12,
+          fuseEndAt: 0,
+          startAt: 0,
+          lastMsg: "等待好友加入房間..."
+        };
+        await fbReq("PUT", `rooms/${code}`, roomData);
+        enterOnlineWaitingRoom(code, "host", roomData);
+      } catch (err) {
+        setOnlineStatusMsg("❌ 建立房間失敗，請確認網路連線或 Firebase 規則設定。");
+      }
+    }
+
+    async function joinOnlineRoom(code, nick, pwd) {
+      if (!code || code.length !== 4) {
+        setOnlineStatusMsg("⚠️ 請輸入 4 位數字房號！");
+        return;
+      }
+      setOnlineStatusMsg("⏳ 正在連線查詢房間...");
+      try {
+        const data = await fbReq("GET", `rooms/${code}`);
+        if (!data || !data.code) {
+          setOnlineStatusMsg("❌ 找不到這個房號，請確認有沒有打錯喔！");
+          return;
+        }
+        if (Date.now() - (data.createdAt || 0) > 2 * 60 * 60 * 1000) {
+          setOnlineStatusMsg("⚠️ 這個房間已過期，請房主重新建立新房！");
+          return;
+        }
+        if (data.status !== "waiting") {
+          setOnlineStatusMsg("⚠️ 這個房間已經開戰或結束囉！");
+          return;
+        }
+        if (data.pwd && data.pwd !== (pwd || "")) {
+          setOnlineStatusMsg("🔒 房間密碼不正確，請輸入房主設定的密碼！");
+          return;
+        }
+        const now = Date.now();
+        const patch = {
+          guest: { name: nick, hero: state.hero || "pochacco", score: 0, ready: true },
+          status: "playing",
+          startAt: now,
+          fuseEndAt: now + 12000,
+          lastMsg: `🎉 ${nick} 加入房間！對戰開始！`
+        };
+        await fbReq("PATCH", `rooms/${code}`, patch);
+        const merged = { ...data, ...patch };
+        startOnlineMatch(code, "guest", merged);
+      } catch (err) {
+        setOnlineStatusMsg("❌ 加入房間失敗，請檢查網路狀態。");
+      }
+    }
+
+    function subscribeOnlineRoom(code, onData) {
+      if (!onlineRoom) return;
+      if (onlineRoom.es) { try { onlineRoom.es.close(); } catch (e) {} onlineRoom.es = null; }
+      if (onlineRoom.pollId) { clearInterval(onlineRoom.pollId); onlineRoom.pollId = null; }
+
+      const applySnap = (snap) => {
+        if (!onlineRoom || !snap) return;
+        onlineRoom.data = snap;
+        onData(snap);
+      };
+
+      // Native EventSource SSE (Zero SDK)
+      if (typeof EventSource !== "undefined") {
+        try {
+          const es = new EventSource(`${FIREBASE_RTDB_URL}/rooms/${code}.json`);
+          es.addEventListener("put", (e) => {
+            try {
+              const p = JSON.parse(e.data);
+              if (p.path === "/" && p.data) applySnap(p.data);
+              else fbReq("GET", `rooms/${code}`).then(applySnap).catch(() => {});
+            } catch (err) {}
+          });
+          es.addEventListener("patch", () => {
+            fbReq("GET", `rooms/${code}`).then(applySnap).catch(() => {});
+          });
+          onlineRoom.es = es;
+        } catch (err) {}
+      }
+
+      // Gentle 2.2s fallback polling for iOS Safari reliability
+      onlineRoom.pollId = setInterval(() => {
+        if (!onlineRoom) return;
+        fbReq("GET", `rooms/${code}`).then(applySnap).catch(() => {});
+      }, 2200);
+    }
+
+    function enterOnlineWaitingRoom(code, role, data) {
+      cleanupCoopAndOnline();
+      onlineRoom = { code, role, data, es: null, pollId: null, timerId: null, started: false, finished: false, wrongList: [] };
+      const inviteUrl = `${location.origin}${location.pathname}?room=${code}`;
+      const modeNames = {
+        territory: "🏁 3×3 策略奪地戰", tug: "🪢 星光拔河賽", tf_pk: "⚡ 是非快打 60秒PK",
+        math_pk: "🧮 數學心算 60秒PK", boss: "🤝 協力打超級魔王", bomb: "💣 接力傳炸彈"
+      };
+      showModal("⏳ 等待好友加入房間...", `
+        <div class="text-center space-y-3 py-1">
+          <div class="text-xs font-black text-indigo-700">${modeNames[data.mode] || data.mode}｜${escapeHtmlSafe(data.subject)}｜${data.sameQ ? '🎯 同題公平 PK' : '📚 跨年級各自出題'}</div>
+          <div class="p-4 rounded-2xl bg-indigo-50 border-2 border-indigo-300 space-y-1">
+            <div class="text-xs font-bold text-indigo-700">房間號碼（告訴對方這 4 碼）</div>
+            <div class="text-4xl font-black tracking-[0.25em] text-indigo-900">${code}</div>
+            ${data.pwd ? `<div class="text-xs font-black text-rose-600">🔒 房間密碼：${escapeHtmlSafe(data.pwd)}</div>` : `<div class="text-[11px] text-stone-500">無密碼（輸入房號即可進房）</div>`}
+          </div>
+          <button id="btn-ol-copy-link" class="sanrio-btn w-full py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm shadow">
+            📋 複製 LINE 邀請連結（點了自動帶入房號！）
+          </button>
+          <div id="ol-copy-fb" class="text-xs font-black text-emerald-700 min-h-[16px]"></div>
+          <div class="text-xs font-bold text-stone-500 animate-pulse">📡 正在等待另一支手機加入，加入後自動開戰...</div>
+          <button id="btn-ol-cancel" class="sanrio-btn px-5 py-2 rounded-xl bg-stone-200 text-stone-700 text-xs font-black">取消房間</button>
+        </div>
+      `);
+      document.getElementById("btn-ol-copy-link").addEventListener("click", () => {
+        SFX.click();
+        const shareTxt = `🎮 來跟我連線玩三麗鷗冒險 RPG（${modeNames[data.mode] || ''}）！\n🔑 房號：${code}${data.pwd ? '｜密碼：' + data.pwd : ''}\n👉 點此直接進房：${inviteUrl}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(shareTxt).catch(() => {});
+        }
+        const fb = document.getElementById("ol-copy-fb");
+        if (fb) fb.textContent = "✅ 已複製邀請訊息！貼到 LINE 給朋友吧～";
+      });
+      document.getElementById("btn-ol-cancel").addEventListener("click", () => {
+        SFX.click();
+        fbReq("DELETE", `rooms/${code}`).catch(() => {});
+        cleanupCoopAndOnline();
+        closeModal();
+      });
+
+      subscribeOnlineRoom(code, (snap) => {
+        if (!onlineRoom || onlineRoom.started) return;
+        if (snap && snap.status === "playing" && snap.guest) {
+          onlineRoom.started = true;
+          closeModal();
+          startOnlineMatch(code, "host", snap);
+        }
+      });
+    }
+
+    function startOnlineMatch(code, role, data) {
+      const prevEs = onlineRoom && onlineRoom.es;
+      const prevPoll = onlineRoom && onlineRoom.pollId;
+      if (prevEs) { try { prevEs.close(); } catch (e) {} }
+      if (prevPoll) clearInterval(prevPoll);
+
+      const useSeed = data.sameQ ? data.seed : (data.seed + (role === "guest" ? 7777 : 0));
+      const rng = mulberry32(useSeed);
+      const pool = buildCoopPool(data.subject, { rng, noDoubleNeg: data.mode === "tf_pk" });
+      const heroPool = buildCoopPool(data.subject, { tier: "hero", rng: mulberry32(useSeed + 99) });
+      const mathRng = mulberry32(useSeed + 333);
+      const mathGradeNum = (typeof getGradeMeta === "function") ? getGradeMeta(data.sameQ ? (data.grade || CLOUD_GRADE) : CLOUD_GRADE).num : 3;
+      const mathPool = Array.from({ length: 80 }, () => genSeededMathProblem(mathRng, mathGradeNum));
+
+      onlineRoom = {
+        code,
+        role,
+        data,
+        pool,
+        heroPool,
+        mathPool,
+        localIdx: 0,
+        localCombo: 0,
+        localScore: 0,
+        localWrong: 0,
+        mathInput: "",
+        tfTimeBonus: 0,
+        activeTile: null,
+        activeTileIsSteal: false,
+        activeQ: null,
+        locked: false,
+        finished: false,
+        wrongList: [],
+        es: null,
+        pollId: null,
+        timerId: null
+      };
+
+      const hdr = document.getElementById("main-header");
+      if (hdr) hdr.classList.add("hidden");
+      document.getElementById("view-map").classList.add("hidden");
+      document.getElementById("view-battle").classList.add("hidden");
+      document.getElementById("view-coop").classList.remove("hidden");
+      document.getElementById("coop-classic-card").classList.remove("hidden");
+      document.getElementById("coop-standard-body").classList.add("hidden");
+      document.getElementById("coop-dynamic-arena").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "instant" });
+
+      const modeTitles = {
+        territory: "🌐 連線 3×3 策略奪地戰",
+        tug: "🌐 連線星光拔河賽",
+        tf_pk: "🌐 連線是非快打 60秒PK",
+        math_pk: "🌐 連線數學心算 60秒PK",
+        boss: "🌐 連線協力打超級魔王",
+        bomb: "🌐 連線接力傳炸彈"
+      };
+      document.getElementById("coop-mode-badge").textContent = `🌐 房號 ${code}｜${data.sameQ ? '同題PK' : '跨年級'}`;
+      document.getElementById("coop-title").textContent = modeTitles[data.mode] || "🌐 連線對戰";
+
+      // Start countdown ticker for timed modes (tf_pk, math_pk, bomb)
+      if (data.mode === "tf_pk" || data.mode === "math_pk") {
+        onlineRoom.timerId = setInterval(() => {
+          if (!onlineRoom || onlineRoom.finished) return;
+          const elapsed = Math.floor((Date.now() - (onlineRoom.data.startAt || Date.now())) / 1000);
+          const rem = Math.max(0, 60 + onlineRoom.tfTimeBonus - elapsed);
+          const tb = document.getElementById("coop-timer-box");
+          if (tb) tb.textContent = `⏱️ 剩餘 ${rem} 秒`;
+          if (rem <= 0) finishOnlineMatch("timeup");
+        }, 500);
+      } else if (data.mode === "bomb") {
+        onlineRoom.timerId = setInterval(() => {
+          if (!onlineRoom || onlineRoom.finished) return;
+          const rem = Math.max(0, Math.ceil(((onlineRoom.data.fuseEndAt || (Date.now() + 12000)) - Date.now()) / 1000));
+          const tb = document.getElementById("coop-timer-box");
+          if (tb) tb.textContent = `💣 剩餘 ${rem} 秒`;
+          const fEl = document.getElementById("ol-bomb-fuse");
+          if (fEl) fEl.textContent = `${rem} 秒`;
+          if (rem <= 0 && onlineRoom.data.turn === onlineRoom.role) {
+            fbReq("PATCH", `rooms/${code}`, { status: "finished", lastMsg: "💥 炸彈引爆了！" }).catch(() => {});
+            finishOnlineMatch("bomb_boom");
+          }
+        }, 400);
+      } else {
+        document.getElementById("coop-timer-box").textContent = `🌐 連線中 #${code}`;
+      }
+
+      subscribeOnlineRoom(code, (snap) => {
+        if (!onlineRoom || onlineRoom.finished || !snap) return;
+        onlineRoom.data = snap;
+        updateOnlineScoreBanner(snap);
+        if (snap.status === "finished") {
+          finishOnlineMatch("remote_finish");
+          return;
+        }
+        // Re-render synced board/rope/boss/bomb views without wiping local typing in math_pk/tf_pk
+        if (snap.mode === "territory" || snap.mode === "tug" || snap.mode === "boss" || snap.mode === "bomb") {
+          renderOnlineArena();
+        }
+      });
+
+      updateOnlineScoreBanner(data);
+      renderOnlineArena();
+    }
+
+    function updateOnlineScoreBanner(d) {
+      const hName = (d.host && d.host.name) || "房主";
+      const gName = (d.guest && d.guest.name) || "挑戰者";
+      const hScore = (d.host && d.host.score) || 0;
+      const gScore = (d.guest && d.guest.score) || 0;
+      const p1N = document.getElementById("coop-p1-name");
+      const p2N = document.getElementById("coop-p2-name");
+      const p1S = document.getElementById("coop-p1-score");
+      const p2S = document.getElementById("coop-p2-score");
+      if (p1N) p1N.textContent = `🍮 ${hName}${onlineRoom && onlineRoom.role === "host" ? " (你)" : ""}`;
+      if (p2N) p2N.textContent = `🐾 ${gName}${onlineRoom && onlineRoom.role === "guest" ? " (你)" : ""}`;
+      if (p1S) p1S.textContent = `${hScore} 分`;
+      if (p2S) p2S.textContent = `${gScore} 分`;
+
+      if (d.mode === "boss") {
+        document.getElementById("coop-center-label").textContent = `超級魔王 HP ${d.bossHp}/${d.bossMaxHp}`;
+        document.getElementById("coop-boss-bar").style.width = `${Math.max(0, Math.round((d.bossHp / (d.bossMaxHp || 200)) * 100))}%`;
+      } else if (d.mode === "tug") {
+        const pct = Math.max(6, Math.min(94, 50 + (d.ropePos || 0) * 10.5));
+        document.getElementById("coop-center-label").textContent = `🪢 拔河拉鋸 (${d.ropePos || 0})`;
+        document.getElementById("coop-boss-bar").style.width = `${pct}%`;
+      } else if (d.mode === "bomb") {
+        document.getElementById("coop-center-label").textContent = `💣 接力 ${d.bombPasses || 0}/${d.bombGoal || 12}`;
+        document.getElementById("coop-boss-bar").style.width = `${Math.min(100, Math.round(((d.bombPasses || 0) / (d.bombGoal || 12)) * 100))}%`;
+      } else {
+        document.getElementById("coop-center-label").textContent = d.lastMsg || "連線對戰中";
+      }
+    }
+
+    function renderOnlineArena() {
+      if (!onlineRoom || onlineRoom.finished) return;
+      const d = onlineRoom.data;
+      const dyn = document.getElementById("coop-dynamic-arena");
+      if (!dyn) return;
+      const myRole = onlineRoom.role;
+      const isMyTurn = d.turn === myRole;
+      const labels = ["A", "B", "C", "D"];
+
+      // --- ONLINE MODE 1: 3x3 TERRITORY ---
+      if (d.mode === "territory") {
+        const board = Array.isArray(d.board) ? d.board : [0,0,0,0,0,0,0,0,0];
+        const locks = Array.isArray(d.locks) ? d.locks : Array(9).fill(false);
+        const bonusTiles = d.bonusTiles || {};
+        const myNum = myRole === "host" ? 1 : 2;
+        const mySteals = myRole === "host" ? (d.stealsHost ?? 2) : (d.stealsGuest ?? 2);
+
+        let qBoxHtml = "";
+        if (onlineRoom.activeTile !== null && onlineRoom.activeQ) {
+          const q = onlineRoom.activeQ;
+          qBoxHtml = `
+            <div class="p-3.5 rounded-2xl bg-white border-2 ${onlineRoom.activeTileIsSteal ? 'border-rose-400' : 'border-emerald-300'} space-y-2.5">
+              <div class="text-xs font-black ${onlineRoom.activeTileIsSteal ? 'text-rose-600' : 'text-emerald-700'}">
+                ${onlineRoom.activeTileIsSteal ? '⚔️ 搶地英雄題！答對奪下並上鎖' : '🏁 佔領空地挑戰'}
+              </div>
+              <div class="text-sm sm:text-base font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+              <div class="grid grid-cols-2 gap-2">
+                ${q.shuffledOpts.map((opt, i) => `
+                  <button data-ol-terr-ans="${i}" class="sanrio-btn p-2.5 rounded-xl bg-white border-2 border-indigo-200 hover:bg-indigo-50 text-left text-xs sm:text-sm font-black">${labels[i]}. ${escapeHtmlSafe(opt)}</button>
+                `).join("")}
+              </div>
+            </div>`;
+        }
+
+        dyn.innerHTML = `
+          <div class="text-center text-xs sm:text-sm font-black ${isMyTurn ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-stone-100 text-stone-600 border-stone-200'} border-2 rounded-2xl py-2 px-3">
+            ${isMyTurn ? `👉 輪到你出招！（剩 ${mySteals} 張搶地券）` : `⏳ 等待對手行動中...（${escapeHtmlSafe(d.lastMsg || '')}）`}
+          </div>
+          <div class="grid grid-cols-3 gap-2.5 max-w-xs mx-auto">
+            ${board.map((owner, idx) => {
+              const locked = !!locks[idx];
+              const bonus = bonusTiles[idx];
+              const canEmpty = isMyTurn && owner === 0 && onlineRoom.activeTile === null;
+              const canSteal = isMyTurn && owner !== 0 && owner !== myNum && !locked && mySteals > 0 && onlineRoom.activeTile === null;
+              const cls = owner === 1 ? "bg-amber-100 border-amber-400 text-amber-900" : (owner === 2 ? "bg-sky-100 border-sky-400 text-sky-900" : "bg-white border-stone-300 text-stone-600");
+              const badge = owner === 1 ? "🍮" : (owner === 2 ? "🐾" : (bonus === "shield" ? "🛡️" : (bonus === "extra" ? "⚡" : `${idx + 1}`)));
+              const sub = owner === 0 ? (bonus === "shield" ? "守護盾" : (bonus === "extra" ? "再來一回" : "空地")) : (locked ? "🔒 鎖定" : (canSteal ? "⚔️ 可搶" : "已佔領"));
+              return `<button data-ol-tile="${idx}" ${(!canEmpty && !canSteal) ? "disabled" : ""} class="sanrio-btn h-20 rounded-2xl border-2 flex flex-col items-center justify-center ${cls} ${onlineRoom.activeTile === idx ? 'ring-4 ring-pink-400' : ''}"><span class="text-2xl">${badge}</span><span class="text-[10px] font-black">${sub}</span></button>`;
+            }).join("")}
+          </div>
+          ${qBoxHtml}`;
+
+        dyn.querySelectorAll("button[data-ol-tile]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (!onlineRoom || onlineRoom.activeTile !== null) return;
+            SFX.click();
+            const tidx = Number(btn.dataset.olTile);
+            const isSteal = (d.board[tidx] || 0) !== 0;
+            onlineRoom.activeTile = tidx;
+            onlineRoom.activeTileIsSteal = isSteal;
+            onlineRoom.activeQ = isSteal
+              ? onlineRoom.heroPool[(d.heroIdx || 0) % onlineRoom.heroPool.length]
+              : onlineRoom.pool[(d.qIdx || 0) % onlineRoom.pool.length];
+            renderOnlineArena();
+          });
+        });
+
+        dyn.querySelectorAll("button[data-ol-terr-ans]").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            if (!onlineRoom || onlineRoom.activeTile === null || !onlineRoom.activeQ) return;
+            const choice = Number(btn.dataset.olTerrAns);
+            const q = onlineRoom.activeQ;
+            const tidx = onlineRoom.activeTile;
+            const isSteal = onlineRoom.activeTileIsSteal;
+            onlineRoom.activeTile = null;
+            onlineRoom.activeQ = null;
+
+            const nextBoard = (d.board || [0,0,0,0,0,0,0,0,0]).slice();
+            const nextLocks = (d.locks || Array(9).fill(false)).slice();
+            const nextBonus = { ...(d.bonusTiles || {}) };
+            const myNum = myRole === "host" ? 1 : 2;
+            const nextTurnDefault = myRole === "host" ? "guest" : "host";
+            let nextTurn = nextTurnDefault;
+            let msg = "";
+            let myScore = ((d[myRole] && d[myRole].score) || 0);
+            let stealsHost = d.stealsHost ?? 2;
+            let stealsGuest = d.stealsGuest ?? 2;
+            if (isSteal) { if (myRole === "host") stealsHost = Math.max(0, stealsHost - 1); else stealsGuest = Math.max(0, stealsGuest - 1); }
+
+            if (choice === q.correctIdx) {
+              SFX.attack();
+              myScore += 1;
+              nextBoard[tidx] = myNum;
+              if (isSteal || nextBonus[tidx] === "shield") nextLocks[tidx] = true;
+              if (nextBonus[tidx] === "extra" && !isSteal) {
+                delete nextBonus[tidx];
+                nextTurn = myRole;
+                msg = `⚡ ${d[myRole].name} 觸發再來一回合！`;
+              } else {
+                msg = isSteal ? `⚔️ ${d[myRole].name} 搶地成功並上鎖！` : `🎉 ${d[myRole].name} 佔領第 ${tidx + 1} 格！`;
+              }
+            } else {
+              SFX.hit();
+              recordCoopWrong(onlineRoom.wrongList, q);
+              if (isSteal) { nextLocks[tidx] = true; msg = `🛡️ ${d[myRole].name} 搶地失敗，該格鎖定！`; }
+              else msg = `❌ ${d[myRole].name} 答錯了，換人！`;
+            }
+
+            const winCode = checkTerritoryWinner(nextBoard);
+            const patch = {
+              board: nextBoard,
+              locks: nextLocks,
+              bonusTiles: nextBonus,
+              stealsHost,
+              stealsGuest,
+              turn: nextTurn,
+              qIdx: (d.qIdx || 0) + (isSteal ? 0 : 1),
+              heroIdx: (d.heroIdx || 0) + (isSteal ? 1 : 0),
+              lastMsg: msg,
+              status: winCode ? "finished" : "playing",
+              [myRole]: { ...d[myRole], score: myScore }
+            };
+            onlineRoom.data = { ...d, ...patch };
+            await fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
+            if (winCode) finishOnlineMatch("territory_done");
+            else renderOnlineArena();
+          });
+        });
+        return;
+      }
+
+      // --- ONLINE MODE 2: TUG OF WAR ---
+      if (d.mode === "tug") {
+        const q = onlineRoom.pool[onlineRoom.localIdx % onlineRoom.pool.length];
+        const pct = Math.max(6, Math.min(94, 50 + (d.ropePos || 0) * 10.5));
+        dyn.innerHTML = `
+          <div class="space-y-2.5">
+            <div class="relative h-10 rounded-full bg-white border-2 border-amber-300 overflow-hidden flex items-center">
+              <div class="w-1/2 h-full bg-amber-100/80 border-r-2 border-dashed border-pink-400"></div>
+              <div class="w-1/2 h-full bg-sky-100/80"></div>
+              <div class="absolute inset-y-0 flex items-center transition-all duration-300" style="left:calc(${pct}% - 18px);">
+                <img src="./assets/purin.webp" class="w-9 h-9 object-contain drop-shadow" alt="拔河布丁" />
+              </div>
+            </div>
+            <div class="text-center text-xs font-black text-pink-700">${escapeHtmlSafe(d.lastMsg || '快答題把大布丁拉過來！')}</div>
+            <div class="p-3.5 rounded-2xl bg-white border-2 border-pink-200 space-y-2.5 text-center">
+              <div class="text-xs font-bold text-pink-600">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '')}</div>
+              <div class="text-sm sm:text-lg font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+              <div class="grid grid-cols-2 gap-2">
+                ${q.shuffledOpts.map((opt, i) => `
+                  <button data-ol-tug="${i}" class="sanrio-btn p-3 rounded-xl bg-white border-2 border-pink-200 hover:bg-pink-50 text-left text-xs sm:text-sm font-black">${labels[i]}. ${escapeHtmlSafe(opt)}</button>
+                `).join("")}
+              </div>
+            </div>
+          </div>`;
+        dyn.querySelectorAll("button[data-ol-tug]").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            if (!onlineRoom || onlineRoom.locked) return;
+            onlineRoom.locked = true;
+            const choice = Number(btn.dataset.olTug);
+            if (choice === q.correctIdx) {
+              SFX.attack();
+              onlineRoom.localScore += 1;
+              onlineRoom.localCombo += 1;
+              const pull = onlineRoom.localCombo >= 2 ? 2 : 1;
+              const nextPos = Math.max(-4, Math.min(4, (onlineRoom.data.ropePos || 0) + (myRole === "host" ? -pull : pull)));
+              const finished = Math.abs(nextPos) >= 4;
+              const patch = {
+                ropePos: nextPos,
+                status: finished ? "finished" : "playing",
+                lastMsg: `🪢 ${onlineRoom.data[myRole].name} 拉動 ${pull} 格！`,
+                [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore }
+              };
+              onlineRoom.data = { ...onlineRoom.data, ...patch };
+              await fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
+              if (finished) { finishOnlineMatch("tug_done"); return; }
+            } else {
+              SFX.hit();
+              onlineRoom.localCombo = 0;
+              recordCoopWrong(onlineRoom.wrongList, q);
+            }
+            onlineRoom.localIdx += 1;
+            setTimeout(() => { if (onlineRoom) { onlineRoom.locked = false; renderOnlineArena(); } }, choice === q.correctIdx ? 280 : 800);
+          });
+        });
+        return;
+      }
+
+      // --- ONLINE MODE 3: 60s TRUE/FALSE PK ---
+      if (d.mode === "tf_pk") {
+        const q = onlineRoom.pool[onlineRoom.localIdx % onlineRoom.pool.length];
+        const rng = mulberry32((d.seed || 123) + onlineRoom.localIdx * 31);
+        const corrText = q.opts[q.ans];
+        const wrongOpts = q.opts.filter((_, i) => i !== q.ans);
+        const isTrue = rng() < 0.5;
+        const shownAns = isTrue ? corrText : wrongOpts[Math.floor(rng() * wrongOpts.length)];
+        const fmt = formatTfPromptHtml(q.q, shownAns);
+
+        dyn.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-black">
+              <span class="text-rose-700">🔥 連擊 ${onlineRoom.localCombo}（滿5連擊+3秒）</span>
+              <span class="text-emerald-700">✅ 你已答對 ${onlineRoom.localScore} 題</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-white border-2 border-rose-200 space-y-2.5 text-center min-h-[140px] flex flex-col justify-center">
+              <div class="text-xs font-bold text-rose-600">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '是非PK')}</div>
+              <div class="text-sm sm:text-base font-black text-stone-800 leading-relaxed">${fmt.qHtml}</div>
+              ${!fmt.inline ? `<div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-sm font-black text-amber-900">👉 答案：<span class="text-pink-600">${fmt.ansHtml}</span></div>` : ""}
+            </div>
+            <div id="ol-tf-fb" class="text-center text-xs font-black min-h-[20px]"></div>
+            <div class="grid grid-cols-2 gap-3">
+              <button id="btn-ol-tf-t" class="sanrio-btn py-4 rounded-2xl bg-emerald-500 text-white font-black text-lg">⭕ 正確</button>
+              <button id="btn-ol-tf-f" class="sanrio-btn py-4 rounded-2xl bg-rose-500 text-white font-black text-lg">❌ 錯誤</button>
+            </div>
+          </div>`;
+
+        const handleTfPick = async (pick) => {
+          if (!onlineRoom || onlineRoom.locked || onlineRoom.finished) return;
+          onlineRoom.locked = true;
+          const ok = (pick === isTrue);
+          const fb = document.getElementById("ol-tf-fb");
+          if (ok) {
+            SFX.attack();
+            onlineRoom.localScore += 1;
+            onlineRoom.localCombo += 1;
+            let extra = "";
+            if (onlineRoom.localCombo % 5 === 0) { onlineRoom.tfTimeBonus += 3; extra = " 🔥FEVER +3秒！"; SFX.win(); }
+            if (fb) { fb.className = "text-center text-xs font-black text-emerald-600"; fb.textContent = `🎉 答對！${extra}`; }
+            const patch = { [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore } };
+            fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
+          } else {
+            SFX.hit();
+            onlineRoom.localWrong += 1;
+            onlineRoom.localCombo = 0;
+            recordCoopWrong(onlineRoom.wrongList, q);
+            if (fb) { fb.className = "text-center text-xs font-black text-rose-600"; fb.textContent = `❌ 正解是「${corrText}」`; }
+          }
+          onlineRoom.localIdx += 1;
+          setTimeout(() => { if (onlineRoom && !onlineRoom.finished) { onlineRoom.locked = false; renderOnlineArena(); } }, ok ? 320 : 750);
+        };
+        document.getElementById("btn-ol-tf-t").addEventListener("click", () => handleTfPick(true));
+        document.getElementById("btn-ol-tf-f").addEventListener("click", () => handleTfPick(false));
+        return;
+      }
+
+      // --- ONLINE MODE 4: 60s MENTAL MATH PK ---
+      if (d.mode === "math_pk") {
+        const prob = onlineRoom.mathPool[onlineRoom.localIdx % onlineRoom.mathPool.length];
+        dyn.innerHTML = `
+          <div class="space-y-2.5 max-w-sm mx-auto">
+            <div class="p-3.5 rounded-2xl bg-sky-50 border-2 border-sky-300 text-center space-y-1.5">
+              <div class="text-xs font-black text-sky-700">🧮 第 ${onlineRoom.localIdx + 1} 題（連擊 ${onlineRoom.localCombo}）</div>
+              <div class="text-2xl sm:text-3xl font-black text-stone-800">${prob.expr} = <span id="ol-math-val" class="text-pink-600">${onlineRoom.mathInput || "?"}</span></div>
+              <div id="ol-math-fb" class="text-xs font-black min-h-[18px]"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              ${[1,2,3,4,5,6,7,8,9].map(n => `<button data-ol-k="${n}" class="sanrio-btn py-3 rounded-xl bg-white border-2 border-sky-200 text-lg font-black text-stone-800">${n}</button>`).join("")}
+              <button data-ol-k="del" class="sanrio-btn py-3 rounded-xl bg-amber-100 border-2 border-amber-300 text-sm font-black text-amber-900">⌫ 刪除</button>
+              <button data-ol-k="0" class="sanrio-btn py-3 rounded-xl bg-white border-2 border-sky-200 text-lg font-black text-stone-800">0</button>
+              <button data-ol-k="ok" class="sanrio-btn py-3 rounded-xl bg-emerald-500 text-white text-sm font-black">✅ 送出</button>
+            </div>
+          </div>`;
+
+        dyn.querySelectorAll("button[data-ol-k]").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            if (!onlineRoom || onlineRoom.locked || onlineRoom.finished) return;
+            const k = btn.dataset.olK;
+            if (k === "del") {
+              SFX.click();
+              onlineRoom.mathInput = onlineRoom.mathInput.slice(0, -1);
+              const vEl = document.getElementById("ol-math-val");
+              if (vEl) vEl.textContent = onlineRoom.mathInput || "?";
+              return;
+            }
+            if (k === "ok") {
+              if (!onlineRoom.mathInput) return;
+              onlineRoom.locked = true;
+              const ok = Number(onlineRoom.mathInput) === prob.ans;
+              const fb = document.getElementById("ol-math-fb");
+              if (ok) {
+                SFX.attack();
+                onlineRoom.localScore += 1;
+                onlineRoom.localCombo += 1;
+                if (fb) { fb.className = "text-xs font-black text-emerald-600"; fb.textContent = "✅ 答對！"; }
+                fbReq("PATCH", `rooms/${onlineRoom.code}`, { [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore } }).catch(() => {});
+              } else {
+                SFX.hit();
+                onlineRoom.localCombo = 0;
+                if (fb) { fb.className = "text-xs font-black text-rose-600"; fb.textContent = `❌ 正解是 ${prob.ans}`; }
+              }
+              onlineRoom.mathInput = "";
+              onlineRoom.localIdx += 1;
+              setTimeout(() => { if (onlineRoom && !onlineRoom.finished) { onlineRoom.locked = false; renderOnlineArena(); } }, ok ? 260 : 650);
+              return;
+            }
+            if (onlineRoom.mathInput.length < 5) {
+              SFX.click();
+              onlineRoom.mathInput += k;
+              const vEl = document.getElementById("ol-math-val");
+              if (vEl) vEl.textContent = onlineRoom.mathInput;
+            }
+          });
+        });
+        return;
+      }
+
+      // --- ONLINE MODE 5: CO-OP SUPER BOSS (200 HP) ---
+      if (d.mode === "boss") {
+        const q = onlineRoom.pool[onlineRoom.localIdx % onlineRoom.pool.length];
+        dyn.innerHTML = `
+          <div class="space-y-2.5">
+            <div class="text-center text-xs font-black text-purple-700 bg-purple-50 border border-purple-200 rounded-xl py-1.5 px-2">
+              ${escapeHtmlSafe(d.lastMsg || '🤝 雙方同時答題合力擊敗 200 HP 超級魔王！')}（團隊合擊 ${(d.teamCombo || 0) % 4}/4）
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white border-2 border-purple-200 space-y-2.5 text-center">
+              <div class="text-xs font-bold text-purple-600">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '')}</div>
+              <div class="text-sm sm:text-lg font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+              <div class="grid grid-cols-2 gap-2">
+                ${q.shuffledOpts.map((opt, i) => `
+                  <button data-ol-boss="${i}" class="sanrio-btn p-3 rounded-xl bg-white border-2 border-purple-200 hover:bg-purple-50 text-left text-xs sm:text-sm font-black">${labels[i]}. ${escapeHtmlSafe(opt)}</button>
+                `).join("")}
+              </div>
+            </div>
+          </div>`;
+        dyn.querySelectorAll("button[data-ol-boss]").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            if (!onlineRoom || onlineRoom.locked) return;
+            onlineRoom.locked = true;
+            const choice = Number(btn.dataset.olBoss);
+            if (choice === q.correctIdx) {
+              SFX.attack();
+              onlineRoom.localScore += 1;
+              const nextCombo = (onlineRoom.data.teamCombo || 0) + 1;
+              const isUlt = nextCombo % 4 === 0;
+              const dmg = isUlt ? 40 : 20;
+              const nextHp = Math.max(0, (onlineRoom.data.bossHp ?? 200) - dmg);
+              const patch = {
+                bossHp: nextHp,
+                teamCombo: nextCombo,
+                status: nextHp <= 0 ? "finished" : "playing",
+                lastMsg: isUlt ? `🌟 連線合體大招！${onlineRoom.data[myRole].name} 爆擊 -40 HP！` : `⚔️ ${onlineRoom.data[myRole].name} 造成 -20 HP！`,
+                [myRole]: { ...onlineRoom.data[myRole], score: onlineRoom.localScore }
+              };
+              onlineRoom.data = { ...onlineRoom.data, ...patch };
+              await fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
+              if (nextHp <= 0) { finishOnlineMatch("boss_clear"); return; }
+            } else {
+              SFX.hit();
+              recordCoopWrong(onlineRoom.wrongList, q);
+            }
+            onlineRoom.localIdx += 1;
+            setTimeout(() => { if (onlineRoom) { onlineRoom.locked = false; renderOnlineArena(); } }, choice === q.correctIdx ? 300 : 750);
+          });
+        });
+        return;
+      }
+
+      // --- ONLINE MODE 6: BOMB RELAY ---
+      if (d.mode === "bomb") {
+        const q = onlineRoom.pool[(d.qIdx || 0) % onlineRoom.pool.length];
+        const rem = Math.max(0, Math.ceil(((d.fuseEndAt || (Date.now() + 12000)) - Date.now()) / 1000));
+        dyn.innerHTML = `
+          <div class="space-y-2.5">
+            <div class="p-3 rounded-2xl border-2 ${isMyTurn ? 'bg-rose-100 border-rose-400' : 'bg-amber-50 border-amber-200'} flex items-center justify-between">
+              <div class="text-xs sm:text-sm font-black ${isMyTurn ? 'text-rose-800' : 'text-amber-900'}">
+                ${isMyTurn ? '💣 炸彈在你手上！快答對傳給對方！' : '⏳ 炸彈在對手手上，幫他加油！'}
+              </div>
+              <span id="ol-bomb-fuse" class="px-3 py-1 rounded-full bg-rose-500 text-white text-sm font-black">${rem} 秒</span>
+            </div>
+            <div class="p-3.5 rounded-2xl bg-white border-2 border-orange-200 space-y-2.5 text-center">
+              <div class="text-xs font-bold text-orange-600">${escapeHtmlSafe(q.subject || '')}｜${escapeHtmlSafe(q.tag || '連線拆彈')}</div>
+              <div class="text-sm sm:text-lg font-black text-stone-800">${escapeHtmlSafe(cleanMiniPrompt(q.q))}</div>
+              <div class="grid grid-cols-2 gap-2">
+                ${q.shuffledOpts.map((opt, i) => `
+                  <button data-ol-bomb="${i}" ${!isMyTurn ? "disabled" : ""} class="sanrio-btn p-3 rounded-xl border-2 text-left text-xs sm:text-sm font-black ${isMyTurn ? 'bg-amber-50 border-amber-300 hover:bg-amber-100' : 'bg-stone-100 border-stone-200 opacity-50'}">${labels[i]}. ${escapeHtmlSafe(opt)}</button>
+                `).join("")}
+              </div>
+            </div>
+          </div>`;
+        dyn.querySelectorAll("button[data-ol-bomb]").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            if (!onlineRoom || !isMyTurn || onlineRoom.locked) return;
+            onlineRoom.locked = true;
+            const choice = Number(btn.dataset.olBomb);
+            if (choice === q.correctIdx) {
+              SFX.attack();
+              onlineRoom.localScore += 1;
+              const nextPasses = (d.bombPasses || 0) + 1;
+              const cleared = nextPasses >= (d.bombGoal || 12);
+              const nextFuseSec = Math.max(8, 12 - Math.floor(nextPasses / 3));
+              const patch = {
+                bombPasses: nextPasses,
+                turn: myRole === "host" ? "guest" : "host",
+                qIdx: (d.qIdx || 0) + 1,
+                fuseEndAt: Date.now() + nextFuseSec * 1000,
+                status: cleared ? "finished" : "playing",
+                lastMsg: cleared ? "🎉 連線完美拆彈成功！" : `✨ ${d[myRole].name} 傳遞成功！`,
+                [myRole]: { ...d[myRole], score: onlineRoom.localScore }
+              };
+              onlineRoom.data = { ...d, ...patch };
+              await fbReq("PATCH", `rooms/${onlineRoom.code}`, patch).catch(() => {});
+              if (cleared) { finishOnlineMatch("bomb_clear"); return; }
+            } else {
+              SFX.hit();
+              recordCoopWrong(onlineRoom.wrongList, q);
+              await fbReq("PATCH", `rooms/${onlineRoom.code}`, { qIdx: (d.qIdx || 0) + 1, lastMsg: `❌ ${d[myRole].name} 答錯換題！` }).catch(() => {});
+            }
+            setTimeout(() => { if (onlineRoom) { onlineRoom.locked = false; renderOnlineArena(); } }, 350);
+          });
+        });
+      }
+    }
+
+    function finishOnlineMatch(reason = "") {
+      if (!onlineRoom || onlineRoom.finished) return;
+      onlineRoom.finished = true;
+      const snap = onlineRoom.data || {};
+      const myRole = onlineRoom.role;
+      const wrongs = onlineRoom.wrongList || [];
+      const hName = (snap.host && snap.host.name) || "房主";
+      const gName = (snap.guest && snap.guest.name) || "挑戰者";
+      const hScore = (snap.host && snap.host.score) || 0;
+      const gScore = (snap.guest && snap.guest.score) || 0;
+      const myScore = myRole === "host" ? hScore : gScore;
+      const oppScore = myRole === "host" ? gScore : hScore;
+
+      cleanupCoopAndOnline();
+      SFX.win();
+
+      let isWin = false;
+      let headline = "🌐 連線對戰完成！";
+      if (snap.mode === "boss") {
+        isWin = (snap.bossHp || 0) <= 0;
+        headline = isWin ? "🏆 連線協力擊敗超級魔王！" : "⚔️ 協力作戰結束！";
+      } else if (snap.mode === "bomb") {
+        isWin = (snap.bombPasses || 0) >= (snap.bombGoal || 12);
+        headline = isWin ? "🎉 連線接力拆彈大成功！" : `💥 炸彈引爆！合力接力 ${snap.bombPasses || 0} 次`;
+      } else if (snap.mode === "tug") {
+        isWin = (myRole === "host" && (snap.ropePos || 0) < 0) || (myRole === "guest" && (snap.ropePos || 0) > 0);
+        headline = isWin ? "🪢 恭喜你拔河獲勝！" : "🪢 對方略勝一籌，再來一局！";
+      } else {
+        if (myScore > oppScore) { isWin = true; headline = "👑 恭喜你獲得連線勝利！"; }
+        else if (myScore < oppScore) headline = "🌟 精彩對決！再挑戰一場！";
+        else headline = "🤝 旗鼓相當，平手！";
+      }
+
+      const isHighTier = (snap.mode === "territory" || snap.mode === "boss");
+      const baseStars = (isHighTier ? 40 : 30) + (isWin ? 10 : 0);
+      const baseExp = isHighTier ? 60 : 45;
+      const rew = consumeCoopDailyReward(baseStars);
+      state.stars += rew.stars;
+      const coopExp = grantExp(baseExp);
       state.bondExp = (state.bondExp || 0) + 5;
       state.coopPlays = (state.coopPlays || 0) + 1;
       saveState();
       renderHUD();
-      const winner = coop.subMode === "boss" ? "雙人協力大勝利！(+25 ⭐)" : (coop.p1 > coop.p2 ? "🍮 P1 布丁狗獲勝！" : (coop.p2 > coop.p1 ? "🐾 P2 帕恰狗獲勝！" : "🤝 平手！雙倍默契！"));
-      showModal("🎊 雙人模式結算", `
-        <div class="text-center space-y-3 py-2">
-          <div class="text-2xl font-black text-pink-600">${winner}</div>
-          <p class="text-sm font-bold text-stone-700">P1 布丁狗：${coop.p1} 分 ｜ P2 帕恰狗：${coop.p2} 分（+40 EXP）</p>${coopExp.levelsGained > 0 ? `<div class="p-2 rounded-xl bg-amber-100 text-xs font-black text-amber-900">🎉 勇者升級至 Lv.${coopExp.newLevel}！獲得賀禮 +${coopExp.giftStars} ⭐</div>` : ""}
-          <button id="btn-coop-done" class="sanrio-btn w-full py-2.5 rounded-2xl bg-teal-500 text-white font-black">回到冒險地圖</button>
+
+      showModal("🌐 連線對戰結算", `
+        <div class="text-center space-y-3 py-1">
+          <div class="text-xl sm:text-2xl font-black text-indigo-600">${headline}</div>
+          <p class="text-xs sm:text-sm font-bold text-stone-700">🍮 ${escapeHtmlSafe(hName)}：${hScore} 分 ｜ 🐾 ${escapeHtmlSafe(gName)}：${gScore} 分</p>
+          <div class="inline-block px-4 py-2 rounded-2xl bg-amber-100 border-2 border-amber-300 text-xs sm:text-sm font-black text-amber-900">
+            獲得 +${rew.stars} ⭐ ｜ +${baseExp} EXP ｜ +5 默契
+            ${!rew.wasFullQuota ? '<div class="text-[10px] text-stone-600 mt-0.5">（今日 5 場滿星額度已用完，發放 20% 練習星）</div>' : `<div class="text-[10px] text-amber-700 mt-0.5">今日剩餘滿星雙人額度：${rew.leftAfter} / ${COOP_DAILY_REWARD_CAP} 場</div>`}
+          </div>
+          ${coopExp.levelsGained > 0 ? `<div class="p-2 rounded-xl bg-amber-50 border border-amber-200 text-xs font-black text-amber-900">🎉 勇者升級至 Lv.${coopExp.newLevel}！賀禮 +${coopExp.giftStars} ⭐</div>` : ""}
+          ${buildWrongReviewHtml(wrongs)}
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button id="btn-ol-lobby" class="sanrio-btn py-2.5 rounded-2xl bg-indigo-500 text-white font-black text-sm">🌐 回連線大廳</button>
+            <button id="btn-ol-map" class="sanrio-btn py-2.5 rounded-2xl bg-teal-500 text-white font-black text-sm">返回冒險地圖</button>
+          </div>
         </div>
       `);
-      document.getElementById("btn-coop-done").addEventListener("click", () => {
-        closeModal();
-        backToMap();
-      });
+      bindSaveWrongsBtn(wrongs);
+      document.getElementById("btn-ol-lobby").addEventListener("click", () => { SFX.click(); openCoopLauncher("online"); });
+      document.getElementById("btn-ol-map").addEventListener("click", () => { SFX.click(); closeModal(); backToMap(); });
     }
 
 
@@ -8231,10 +10009,10 @@
               <span class="inline-block whitespace-nowrap text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500 text-white">完賽 ${state.monopolyClears || 0} 局</span>
             </button>
 
-            <button id="hub-go-coop" class="sanrio-btn p-3 rounded-2xl border-2 border-teal-300 bg-teal-50/80 hover:bg-teal-100 flex flex-col items-center justify-center gap-1 text-center shadow-sm">
+            <button id="hub-go-coop" class="sanrio-btn p-3 rounded-2xl border-2 border-teal-300 bg-gradient-to-br from-teal-50 to-indigo-50 hover:from-teal-100 hover:to-indigo-100 flex flex-col items-center justify-center gap-1 text-center shadow-sm">
               <span class="text-3xl leading-none">🎮</span>
-              <span class="text-sm font-black text-teal-900 whitespace-nowrap">親子／雙人共玩</span>
-              <span class="inline-block whitespace-nowrap text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-teal-500 text-white">已玩 ${coopPlays} 場</span>
+              <span class="text-sm font-black text-teal-900 whitespace-nowrap">雙人派對＆連線</span>
+              <span class="inline-block whitespace-nowrap text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500 text-white">同機5玩法＋連線PK</span>
             </button>
           </div>
 
@@ -8271,7 +10049,7 @@
         <div class="space-y-3.5 text-center">
           <div class="text-4xl">⚡⭕❌</div>
           <div class="text-sm font-black text-rose-800">選擇挑戰科目，60 秒內快速判斷答案對不對！</div>
-          <p class="text-xs text-stone-600">每答對 1 題獲得 +3 ⭐ 與 +5 EXP（單場上限 +90 ⭐），連對更有快感！</p>
+          <p class="text-xs text-stone-600">已自動過濾雙重否定陷阱題！每 5 連擊觸發 <b>🔥 FEVER 時間 +3 秒</b>，單場最高 +75 ⭐ / +120 EXP！</p>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
             ${subjs.map(s => `
               <button data-tf-subj="${s}" class="tf-start-btn sanrio-btn py-2.5 px-3 rounded-2xl border-2 border-rose-300 bg-rose-50 hover:bg-rose-100 text-rose-900 font-black text-sm">${s}</button>
@@ -8290,7 +10068,9 @@
     function startTfGame(subj) {
       stopTfTimer();
       const srcStages = subj === "全五科" ? STAGES : STAGES.filter(s => s.subject === subj);
-      const pool = shuffle(srcStages.flatMap(s => s.questions.map(q => ({ ...q, subject: s.subject }))));
+      const rawAll = srcStages.flatMap(s => s.questions.map(q => ({ ...q, subject: s.subject })));
+      const filtered = rawAll.filter(q => !isDoubleNegativeQuestion(q.q));
+      const pool = shuffle(filtered.length >= 10 ? filtered : rawAll);
       tfState = {
         subj,
         pool,
@@ -8317,9 +10097,9 @@
               <span id="tf-tag" class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-700">題目</span>
               <button id="tf-speak-btn" class="sanrio-btn px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 text-[11px] font-black">🔊 唸題</button>
             </div>
-            <div id="tf-q-text" class="text-sm sm:text-base font-black text-stone-800 leading-snug"></div>
-            <div class="p-2.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-sm sm:text-base font-black text-amber-900">
-              👉 題目說答案是：<span id="tf-prop-ans" class="text-pink-600"></span>
+            <div id="tf-q-text" class="text-sm sm:text-base font-black text-stone-800 leading-relaxed"></div>
+            <div id="tf-prop-wrap" class="p-2.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-sm sm:text-base font-black text-amber-900">
+              👉 答案：<span id="tf-prop-ans" class="text-pink-600"></span>
             </div>
           </div>
           <div id="tf-fb" class="min-h-[28px] text-center text-xs sm:text-sm font-black"></div>
@@ -8339,17 +10119,24 @@
         const wrongOpts = q.opts.filter((_, i) => i !== q.ans);
         const isTrue = Math.random() < 0.5;
         const shownAns = isTrue ? corrText : wrongOpts[Math.floor(Math.random() * wrongOpts.length)];
+        const fmt = formatTfPromptHtml(q.q, shownAns);
         tfState.curIsTrue = isTrue;
         tfState.curCorrectText = corrText;
-        tfState.curFullSpeak = cleanMiniPrompt(q.q) + "，答案是 " + shownAns;
+        tfState.curFullSpeak = fmt.speakText;
 
         const tagEl = document.getElementById("tf-tag");
         const qEl = document.getElementById("tf-q-text");
+        const propWrap = document.getElementById("tf-prop-wrap");
         const propEl = document.getElementById("tf-prop-ans");
         const fbEl = document.getElementById("tf-fb");
         if (tagEl) tagEl.textContent = `${q.subject}｜${q.tag || "快問快答"}`;
-        if (qEl) qEl.textContent = cleanMiniPrompt(q.q);
-        if (propEl) propEl.textContent = shownAns;
+        if (qEl) qEl.innerHTML = fmt.qHtml;
+        if (fmt.inline) {
+          if (propWrap) propWrap.classList.add("hidden");
+        } else {
+          if (propWrap) propWrap.classList.remove("hidden");
+          if (propEl) propEl.textContent = shownAns;
+        }
         if (fbEl) fbEl.textContent = "";
       };
 
@@ -8363,7 +10150,15 @@
           tfState.score += 1;
           tfState.combo += 1;
           if (tfState.combo > tfState.maxCombo) tfState.maxCombo = tfState.combo;
-          if (fbEl) { fbEl.className = "min-h-[28px] text-center text-xs sm:text-sm font-black text-emerald-600"; fbEl.textContent = `🎉 答對了！（🔥 ${tfState.combo} 連擊）`; }
+          let feverMsg = "";
+          if (tfState.combo > 0 && tfState.combo % 5 === 0) {
+            tfState.timeLeft += 3;
+            SFX.win();
+            const tEl = document.getElementById("tf-timer");
+            if (tEl) tEl.textContent = `⏱️ ${tfState.timeLeft} 秒`;
+            feverMsg = " 🔥 FEVER 時間 +3 秒！";
+          }
+          if (fbEl) { fbEl.className = "min-h-[28px] text-center text-xs sm:text-sm font-black text-emerald-600"; fbEl.textContent = `🎉 答對了！（🔥 ${tfState.combo} 連擊）${feverMsg}`; }
         } else {
           SFX.hit();
           tfState.wrong += 1;
@@ -8376,7 +10171,7 @@
         if (sEl) sEl.textContent = `✅ 答對 ${tfState.score} 題`;
         setTimeout(() => {
           if (tfState && tfState.timeLeft > 0) renderNextTf();
-        }, ok ? 450 : 1050);
+        }, ok ? 420 : 980);
       };
 
       const finishTf = () => {
@@ -8385,24 +10180,36 @@
         const st = tfState;
         tfState = null;
         SFX.win();
-        const starsWon = Math.min(90, st.score * 3);
-        const expWon = Math.min(150, st.score * 5);
+        const totalAns = st.score + st.wrong;
+        const acc = totalAns > 0 ? st.score / totalAns : 0;
+        const antiSpam = (totalAns >= 4 && acc < 0.6);
+        let rawStars = Math.min(75, st.score * 3);
+        let eggProg = Math.min(6, Math.floor(st.score / 3));
+        if (antiSpam) {
+          rawStars = Math.max(2, Math.round(rawStars * 0.5));
+          eggProg = Math.floor(eggProg * 0.5);
+        }
+        const revStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(rawStars) : rawStars;
+        const starsWon = (typeof applySpecialQuotaStars === "function") ? applySpecialQuotaStars(revStars) : revStars;
+        const expWon = Math.min(120, st.score * 4);
         state.stars += starsWon;
         state.totalCorrect = (state.totalCorrect || 0) + st.score;
-        if (typeof addPetEggProgress === "function" && st.score > 0) addPetEggProgress(st.score);
+        if (typeof addPetEggProgress === "function" && eggProg > 0) addPetEggProgress(eggProg);
         state.bondExp = (state.bondExp || 0) + 3;
         if (st.score > (state.bestTfScore || 0)) state.bestTfScore = st.score;
         grantExp(expWon);
         saveState();
         renderHUD();
+        const accPct = Math.round(acc * 100);
         showModal("🏆 是非快打結算", `
           <div class="text-center space-y-3 py-2">
             <div class="text-5xl">⚡🎉</div>
-            <div class="text-lg font-black text-rose-700">60 秒挑戰完成！（${st.subj}）</div>
+            <div class="text-lg font-black text-rose-700">60 秒挑戰完成！（${st.subj}｜正確率 ${accPct}%）</div>
+            ${antiSpam ? `<div class="p-2 rounded-xl bg-amber-50 border border-amber-300 text-xs font-black text-amber-800">💡 正確率未達 60%，星星與孵蛋獎勵減半，看清楚題目再按喔！</div>` : ""}
             <div class="grid grid-cols-3 gap-2 text-xs font-black">
               <div class="p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200"><div class="text-stone-500">答對</div><div class="text-lg text-emerald-700">${st.score} 題</div></div>
               <div class="p-2.5 rounded-2xl bg-amber-50 border border-amber-200"><div class="text-stone-500">最高連擊</div><div class="text-lg text-amber-700">${st.maxCombo}</div></div>
-              <div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200"><div class="text-stone-500">獲得獎勵</div><div class="text-xs sm:text-sm leading-tight text-pink-700"><div>+${starsWon} ⭐</div><div class="text-[11px] text-amber-700">+${expWon} EXP</div></div></div>
+              <div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200"><div class="text-stone-500">獲得獎勵</div><div class="text-xs sm:text-sm leading-tight text-pink-700"><div>+${starsWon} ⭐</div><div class="text-[11px] text-amber-700">+${expWon} EXP${eggProg > 0 ? `｜🥚+${eggProg}` : ""}</div></div></div>
             </div>
             <div class="flex justify-center gap-2 pt-2">
               <button id="btn-tf-again" class="sanrio-btn px-5 py-2.5 rounded-2xl bg-rose-500 text-white font-black text-sm">🔄 再打一場</button>
@@ -8666,9 +10473,13 @@
         const st = mathState;
         mathState = null;
         if (!st) return;
-        const starsWon = Math.min(100, st.score * 4);
-        const expWon = Math.min(150, st.score * 6);
+        const rawMathStars = Math.min(90, st.score * 4);
+        const revMathStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(rawMathStars) : rawMathStars;
+        const starsWon = (typeof applySpecialQuotaStars === "function") ? applySpecialQuotaStars(revMathStars) : revMathStars;
+        const expWon = Math.min(140, st.score * 6);
+        const mathEgg = Math.min(3, Math.floor(st.score / 5));
         state.stars += starsWon;
+        if (typeof addPetEggProgress === "function" && mathEgg > 0) addPetEggProgress(mathEgg);
         grantExp(expWon);
         if (st.score > (state.bestMathScore || 0)) state.bestMathScore = st.score;
         saveState();
@@ -8966,9 +10777,13 @@
       const renderRound = () => {
         if (sp.idx >= sp.list.length) {
           const perfect = sp.mistakes === 0;
-          const starsWon = sp.correct * 4 + (perfect ? 10 : 0);
+          const rawSpellStars = sp.correct * 4 + (perfect ? 10 : 0);
+          const revSpellStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(rawSpellStars) : rawSpellStars;
+          const starsWon = (typeof applySpecialQuotaStars === "function") ? applySpecialQuotaStars(revSpellStars) : revSpellStars;
           const expWon = sp.correct * 6;
+          const spellEgg = Math.min(3, Math.floor(sp.correct / 3));
           state.stars += starsWon;
+          if (typeof addPetEggProgress === "function" && spellEgg > 0) addPetEggProgress(spellEgg);
           grantExp(expWon);
           state.spellClears = (state.spellClears || 0) + 1;
           saveState();
@@ -9526,11 +11341,13 @@
               SFX.win();
               const sec = Math.max(1, Math.round((Date.now() - tStart) / 1000));
               const perfectBonus = mistakes === 0 ? 10 : 0;
-              const starsWon = 25 + perfectBonus;
+              const rawMatchStars = 25 + perfectBonus;
+              const revMatchStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(rawMatchStars) : rawMatchStars;
+              const starsWon = (typeof applySpecialQuotaStars === "function") ? applySpecialQuotaStars(revMatchStars) : revMatchStars;
               state.stars += starsWon;
               state.matchClears = (state.matchClears || 0) + 1;
               state.totalCorrect = (state.totalCorrect || 0) + 5;
-              if (typeof addPetEggProgress === "function") addPetEggProgress(5);
+              if (typeof addPetEggProgress === "function") addPetEggProgress(3);
               state.bondExp = (state.bondExp || 0) + 3;
               grantExp(40);
               saveState();
@@ -10931,6 +12748,15 @@
       const gBtn = document.getElementById("btn-grade-switch"); if (gBtn) gBtn.addEventListener("click", () => { SFX.click(); openGradeSwitcherModal(); });
       migrateLegacyGradesIfNeeded();
       switchActiveGrade(state.activeGrade || "G3", true);
+      try {
+        const sp = new URLSearchParams(location.search || "");
+        const autoRoom = (sp.get("room") || "").replace(/\D/g, "").slice(0, 4);
+        if (autoRoom.length === 4) {
+          setTimeout(() => {
+            if (typeof openCoopLauncher === "function") openCoopLauncher("online", autoRoom);
+          }, 550);
+        }
+      } catch (e) {}
     });
     // ====== 📘 AI 拍照英文單字道場（三軌建本 ＋ 完整維護 ＋ 4 階記憶遊戲） ======
     function speakVocabEn(text, rate = 1.0) {
@@ -12984,7 +14810,7 @@
     }
 
     // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
-    const APP_VERSION = "v3.8.3";
+    const APP_VERSION = "v4.0.0";
     // 背景預載本地核心戰鬥圖檔，徹底消除首次切怪延遲
     try {
       ["./assets/purin.webp","./assets/pochacco.webp","./assets/slime.webp","./assets/robot.webp","./assets/owl.webp","./assets/nature.webp","./assets/english.webp","./assets/dragon.webp","./assets/purify_spirit.webp","./assets/tower_guard.webp","./assets/tower_phoenix.webp","./assets/pet_hood_dog.webp","./assets/pet_mint_hamster.webp","./assets/pet_berry_cat.webp","./assets/pet_cloud_duck.webp","./assets/pet_star_unicorn.webp","./assets/pet_chinchilla.webp"].forEach(u => {
