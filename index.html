@@ -441,7 +441,7 @@
           <div class="pt-1 border-t border-pink-100 flex items-center justify-center sm:justify-between gap-3 text-xs font-black text-stone-700">
             <span>📌 通關 <span id="hud-cleared" class="text-pink-600">0</span> / 45 關</span>
             <span class="text-pink-200">|</span>
-            <span>💎 寶物 <span id="hud-treasures" class="text-amber-600">0</span> / 50</span>
+            <span>💎 寶物 <span id="hud-treasures" class="text-amber-600">0</span> / <span id="hud-treasures-total">100</span></span>
           </div>
         </div>
       </div>
@@ -797,8 +797,8 @@
     "rarity": "common",
     "icon": "🍓",
     "name": "草莓墨水瓶",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "香氣滿滿的墨水瓶，寫國字不容易寫錯邊。"
   },
@@ -808,8 +808,8 @@
     "rarity": "common",
     "icon": "📝",
     "name": "花瓣便條紙",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "記錄形近字小口訣的粉紅便條本。"
   },
@@ -819,8 +819,8 @@
     "rarity": "common",
     "icon": "🎐",
     "name": "詩詞風鈴",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "微風吹過會輕輕唸出唐詩的可愛風鈴。"
   },
@@ -830,8 +830,8 @@
     "rarity": "common",
     "icon": "🔖",
     "name": "櫻花書籤",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "夾在課本裡能快速找到成語頁面的書籤。"
   },
@@ -841,8 +841,8 @@
     "rarity": "common",
     "icon": "🍡",
     "name": "三色詞語糰子",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "吃一口就能聯想到三個近義詞的點心。"
   },
@@ -852,8 +852,8 @@
     "rarity": "common",
     "icon": "✉️",
     "name": "糖果信封",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "裝滿溫暖句子與正確標點符號的信封。"
   },
@@ -863,8 +863,8 @@
     "rarity": "common",
     "icon": "🎀",
     "name": "注音蝴蝶結",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "分辨破音字與多音字的好幫手。"
   },
@@ -874,10 +874,10 @@
     "rarity": "rare",
     "icon": "📖",
     "name": "成語寶典",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "收錄百個四年級必背成語的閃亮典籍。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "crit25",
+    "desc": "收錄百個必背成語的閃亮典籍。【裝備技】國語戰鬥傷害 +25%！"
   },
   {
     "id": "t9",
@@ -885,10 +885,10 @@
     "rarity": "rare",
     "icon": "🏮",
     "name": "修辭星光燈",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "照亮譬喻、擬人與排比句型的魔法提燈。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "eggBoost",
+    "desc": "照亮譬喻與排比句型的魔法提燈。【裝備技】答對 25% 機率額外 +1 孵蛋進度！"
   },
   {
     "id": "t10",
@@ -896,8 +896,8 @@
     "rarity": "legendary",
     "icon": "🪶",
     "name": "文曲星羽毛筆",
-    "atk": 0.5,
-    "starPct": 3,
+    "atk": 0.6,
+    "starPct": 1.3,
     "skill": "fifty",
     "desc": "【傳說】解鎖戰鬥主動技「✂️ 刪去 2 個錯誤選項」+1 次/場！"
   },
@@ -907,8 +907,8 @@
     "rarity": "common",
     "icon": "🧮",
     "name": "星光算盤",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "撥一撥珠子就能秒算大數加減的小算盤。"
   },
@@ -918,8 +918,8 @@
     "rarity": "common",
     "icon": "📏",
     "name": "彩虹直尺",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "畫長方形與正方形周長最直的可愛尺。"
   },
@@ -929,8 +929,8 @@
     "rarity": "common",
     "icon": "📐",
     "name": "奶油三角板",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "一眼找出 90 度直角的秘密工具。"
   },
@@ -940,8 +940,8 @@
     "rarity": "common",
     "icon": "🥧",
     "name": "分數蘋果派",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "切得剛剛好，讓假分數與帶分數一看就懂。"
   },
@@ -951,8 +951,8 @@
     "rarity": "common",
     "icon": "🎲",
     "name": "四則幸運骰",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "提醒你永遠記得「先乘除、後加減」。"
   },
@@ -962,8 +962,8 @@
     "rarity": "common",
     "icon": "⏰",
     "name": "布丁鬧鐘",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "算時間經過與時分進位再也不迷糊。"
   },
@@ -973,8 +973,8 @@
     "rarity": "common",
     "icon": "🪙",
     "name": "找零金幣袋",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "逛商店買文具算找零錢的貼心小袋。"
   },
@@ -984,10 +984,10 @@
     "rarity": "rare",
     "icon": "🧭",
     "name": "黃金量角器",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "精準測量銳角、鈍角與平角的稀有量角器。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "crit25",
+    "desc": "用圓規畫出完美弧線的幾何徽章。【裝備技】數學戰鬥傷害 +25%！"
   },
   {
     "id": "t19",
@@ -995,10 +995,10 @@
     "rarity": "rare",
     "icon": "💎",
     "name": "幾何水晶塊",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "閃閃發光的立體水晶，讓面積公式牢牢記住。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "lootBag",
+    "desc": "裝著幸運數字卡片的數學小袋。【裝備技】通關 30% 機率額外撿到戰鬥道具！"
   },
   {
     "id": "t20",
@@ -1006,8 +1006,8 @@
     "rarity": "legendary",
     "icon": "⏱️",
     "name": "銀河黃金懷錶",
-    "atk": 0.5,
-    "starPct": 3,
+    "atk": 0.6,
+    "starPct": 1.3,
     "skill": "fifty",
     "desc": "【傳說】解鎖戰鬥主動技「✂️ 刪去 2 個錯誤選項」+1 次/場！"
   },
@@ -1017,8 +1017,8 @@
     "rarity": "common",
     "icon": "🔍",
     "name": "森林放大鏡",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "觀察葉片氣孔與昆蟲觸角的探險放大鏡。"
   },
@@ -1028,8 +1028,8 @@
     "rarity": "common",
     "icon": "🪷",
     "name": "睡蓮小船",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "浮葉植物送給小冒險家的水上禮物。"
   },
@@ -1039,8 +1039,8 @@
     "rarity": "common",
     "icon": "🦋",
     "name": "寬尾鳳蝶標本卡",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "記錄蝴蝶完全變態四個階段的珍藏卡。"
   },
@@ -1050,8 +1050,8 @@
     "rarity": "common",
     "icon": "🧲",
     "name": "雙色馬蹄磁鐵",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "同極相斥、異極相吸的科學小魔寶。"
   },
@@ -1061,8 +1061,8 @@
     "rarity": "common",
     "icon": "💡",
     "name": "通路小燈泡",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "只要接成閉合通路就會發出溫暖光芒。"
   },
@@ -1072,8 +1072,8 @@
     "rarity": "common",
     "icon": "🌙",
     "name": "月相觀測盤",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "從朔月到滿月，轉一轉就知道今天月亮長怎樣。"
   },
@@ -1083,8 +1083,8 @@
     "rarity": "common",
     "icon": "🌈",
     "name": "三稜鏡吊飾",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "在陽光下折射出紅橙黃綠藍靛紫七彩光芒。"
   },
@@ -1094,10 +1094,10 @@
     "rarity": "rare",
     "icon": "🌱",
     "name": "生態微景觀瓶",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "裝著水蘊草與小石頭的迷你生態平衡瓶。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "crit25",
+    "desc": "能觀察細胞與礦物紋路的星光放大鏡。【裝備技】自然戰鬥傷害 +25%！"
   },
   {
     "id": "t29",
@@ -1105,10 +1105,10 @@
     "rarity": "rare",
     "icon": "⚡",
     "name": "並聯星光電池",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "源源不絕提供安全電力的稀有能量核心。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "eggBoost",
+    "desc": "散發森林晨露香氣的生態瓶。【裝備技】答對 25% 機率額外 +1 孵蛋進度！"
   },
   {
     "id": "t30",
@@ -1116,8 +1116,8 @@
     "rarity": "legendary",
     "icon": "💧",
     "name": "生命之樹露珠",
-    "atk": 0.5,
-    "starPct": 3,
+    "atk": 0.6,
+    "starPct": 1.3,
     "skill": "heal",
     "desc": "【傳說】解鎖戰鬥主動技「💖 護盾回復 +1」+1 次/場！"
   },
@@ -1127,8 +1127,8 @@
     "rarity": "common",
     "icon": "🗺️",
     "name": "台灣地形小卷軸",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "標出五大山脈與嘉南平原的迷你地圖。"
   },
@@ -1138,8 +1138,8 @@
     "rarity": "common",
     "icon": "🚄",
     "name": "高鐵迷你模型",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "帶你 90 分鐘從台北直達高雄的紀念車廂。"
   },
@@ -1149,8 +1149,8 @@
     "rarity": "common",
     "icon": "🏮",
     "name": "平溪祝福天燈",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "寫滿家鄉心願與平安祝福的可愛小天燈。"
   },
@@ -1160,8 +1160,8 @@
     "rarity": "common",
     "icon": "🛶",
     "name": "蘭嶼迷你拼板舟",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "彩繪著達悟族傳統波浪紋的精緻模型。"
   },
@@ -1171,8 +1171,8 @@
     "rarity": "common",
     "icon": "🧋",
     "name": "夜市珍奶吊飾",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "台灣夜市人氣第一名的超萌代表小吃！"
   },
@@ -1182,8 +1182,8 @@
     "rarity": "common",
     "icon": "🏯",
     "name": "安平古堡積木",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "見證台灣四百年歷史的紅磚城堡模型。"
   },
@@ -1193,8 +1193,8 @@
     "rarity": "common",
     "icon": "♻️",
     "name": "綠色環保徽章",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "自備環保袋與做好分類就能獲得的榮譽章。"
   },
@@ -1204,10 +1204,10 @@
     "rarity": "rare",
     "icon": "⛰️",
     "name": "玉山日出明信片",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "海拔 3952 公尺台灣最高峰的金色曙光。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "crit25",
+    "desc": "標記台灣山川與古蹟的黃金羅盤。【裝備技】社會戰鬥傷害 +25%！"
   },
   {
     "id": "t39",
@@ -1215,10 +1215,10 @@
     "rarity": "rare",
     "icon": "🧿",
     "name": "排灣族琉璃珠",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "象徵智慧與祝福的原住民傳統工藝珍寶。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "lootBag",
+    "desc": "記錄環島旅行回憶的貼紙手札。【裝備技】通關 30% 機率額外撿到戰鬥道具！"
   },
   {
     "id": "t40",
@@ -1226,8 +1226,8 @@
     "rarity": "legendary",
     "icon": "🛡️",
     "name": "台灣守護玉佩",
-    "atk": 0.5,
-    "starPct": 3,
+    "atk": 0.6,
+    "starPct": 1.3,
     "skill": "heal",
     "desc": "【傳說】解鎖戰鬥主動技「💖 護盾回復 +1」+1 次/場！"
   },
@@ -1237,8 +1237,8 @@
     "rarity": "common",
     "icon": "🔤",
     "name": "字母餅乾罐",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "裝滿 A 到 Z 香脆字母餅乾的魔法罐。"
   },
@@ -1248,8 +1248,8 @@
     "rarity": "common",
     "icon": "🥪",
     "name": "三明治單字卡",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "背完食物單字就會肚子餓的可愛字卡。"
   },
@@ -1259,8 +1259,8 @@
     "rarity": "common",
     "icon": "☂️",
     "name": "天氣魔法傘",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "無論 sunny 或 rainy 都能輕鬆回答的雨傘。"
   },
@@ -1270,8 +1270,8 @@
     "rarity": "common",
     "icon": "📅",
     "name": "星期轉盤鐘",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "Monday 到 Sunday 順口唸出來的音樂鐘。"
   },
@@ -1281,8 +1281,8 @@
     "rarity": "common",
     "icon": "🐾",
     "name": "動物王國護照",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "蓋滿 lion、rabbit 與 elephant 印章的護照。"
   },
@@ -1292,8 +1292,8 @@
     "rarity": "common",
     "icon": "🎧",
     "name": "聽力兔耳機",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "戴上後聽英文朗讀題特別清楚的耳機。"
   },
@@ -1303,8 +1303,8 @@
     "rarity": "common",
     "icon": "🏫",
     "name": "校園場景貼紙",
-    "atk": 0.5,
-    "starPct": 1,
+    "atk": 0.25,
+    "starPct": 0.4,
     "skill": "",
     "desc": "記住 library、classroom 與 park 的萬用貼紙。"
   },
@@ -1314,10 +1314,10 @@
     "rarity": "rare",
     "icon": "✨",
     "name": "文法星塵沙漏",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "一眼看穿現在進行式與單複數變化的沙漏。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "crit25",
+    "desc": "一眼看穿時態與單複數變化的沙漏。【裝備技】英文戰鬥傷害 +25%！"
   },
   {
     "id": "t49",
@@ -1325,10 +1325,10 @@
     "rarity": "rare",
     "icon": "🪄",
     "name": "情境對話指揮棒",
-    "atk": 0.5,
-    "starPct": 2,
-    "skill": "",
-    "desc": "點餐、問路、問價錢都能流利對答的魔法棒。"
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "eggBoost",
+    "desc": "點餐、問路都能流利對答的魔法棒。【裝備技】答對 25% 機率額外 +1 孵蛋進度！"
   },
   {
     "id": "t50",
@@ -1336,10 +1336,560 @@
     "rarity": "legendary",
     "icon": "👑",
     "name": "星塵萬能詞典",
-    "atk": 0.5,
-    "starPct": 3,
+    "atk": 0.6,
+    "starPct": 1.3,
     "skill": "both",
     "desc": "【傳說】同時解鎖「✂️ 刪錯選項」與「💖 護盾回復」各 +1 次/場！"
+  },
+  {
+    "id": "t51",
+    "subject": "國語",
+    "rarity": "common",
+    "icon": "🖌️",
+    "name": "焦糖毛筆",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "寫出端正楷書筆畫的布丁狗小毛筆。"
+  },
+  {
+    "id": "t52",
+    "subject": "國語",
+    "rarity": "common",
+    "icon": "📜",
+    "name": "古詩小捲軸",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "展開就會飄出淡淡墨香的五言絕句捲軸。"
+  },
+  {
+    "id": "t53",
+    "subject": "國語",
+    "rarity": "common",
+    "icon": "🍡",
+    "name": "標點糖葫蘆",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "串著逗號、句號與驚嘆號的可愛點心。"
+  },
+  {
+    "id": "t54",
+    "subject": "國語",
+    "rarity": "rare",
+    "icon": "📚",
+    "name": "故事萬花筒",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "lootBag",
+    "desc": "轉一下就能看懂文章主旨！【裝備技】通關 30% 機率額外撿到戰鬥道具！"
+  },
+  {
+    "id": "t55",
+    "subject": "國語",
+    "rarity": "rare",
+    "icon": "🌸",
+    "name": "櫻花字音鈴",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "firstWrong",
+    "desc": "分辨多音字的守護鈴鐺。【裝備技】每場第 1 次答錯不扣盾不斷連擊！"
+  },
+  {
+    "id": "t56",
+    "subject": "國語",
+    "rarity": "rare",
+    "icon": "🦋",
+    "name": "修辭蝶翼扇",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "輕輕一揮就能辨識設問與誇飾句型的彩扇。"
+  },
+  {
+    "id": "t57",
+    "subject": "國語",
+    "rarity": "rare",
+    "icon": "🍵",
+    "name": "文思抹茶杯",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "喝一口就靈感湧現、造句順暢的茶杯。"
+  },
+  {
+    "id": "t58",
+    "subject": "國語",
+    "rarity": "legendary",
+    "icon": "🛡️",
+    "name": "文心守護玉佩",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "firstWrong",
+    "desc": "【傳說】裝備後每場第 1 次答錯不扣護盾、不中斷連擊！"
+  },
+  {
+    "id": "t59",
+    "subject": "國語",
+    "rarity": "legendary",
+    "icon": "⚡",
+    "name": "翰墨連擊印章",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "ult4",
+    "desc": "【傳說】裝備後必殺技門檻從 5 連擊降為 4 連擊！"
+  },
+  {
+    "id": "t60",
+    "subject": "國語",
+    "rarity": "legendary",
+    "icon": "🌺",
+    "name": "花墨天書寶卷",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "crit25",
+    "desc": "【傳說】裝備後國語戰鬥傷害 +25%，助你輕鬆速殺魔王！"
+  },
+  {
+    "id": "t61",
+    "subject": "數學",
+    "rarity": "common",
+    "icon": "🔢",
+    "name": "布丁積木塊",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "一眼算出長方體體積與表面積的積木。"
+  },
+  {
+    "id": "t62",
+    "subject": "數學",
+    "rarity": "common",
+    "icon": "⏱️",
+    "name": "帕恰碼錶",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "精準換算小時、分鐘與秒數的運動碼錶。"
+  },
+  {
+    "id": "t63",
+    "subject": "數學",
+    "rarity": "common",
+    "icon": "⚖️",
+    "name": "草莓小天平",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "輕鬆比較公克、公斤與公噸的可愛天平。"
+  },
+  {
+    "id": "t64",
+    "subject": "數學",
+    "rarity": "rare",
+    "icon": "🧭",
+    "name": "角度量角星",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "eggBoost",
+    "desc": "量出銳角、直角與鈍角的星光量角器。【裝備技】答對 25% 機率 +1 孵蛋！"
+  },
+  {
+    "id": "t65",
+    "subject": "數學",
+    "rarity": "rare",
+    "icon": "🔷",
+    "name": "對稱水晶菱鏡",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "firstWrong",
+    "desc": "照出線對稱圖形的守護菱鏡。【裝備技】每場第 1 次答錯不扣盾不斷連擊！"
+  },
+  {
+    "id": "t66",
+    "subject": "數學",
+    "rarity": "rare",
+    "icon": "📊",
+    "name": "折線圖手帳",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "把長條圖與折線圖整理得清清楚楚的筆記。"
+  },
+  {
+    "id": "t67",
+    "subject": "數學",
+    "rarity": "rare",
+    "icon": "🧩",
+    "name": "因數倍數魔方",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "一轉就找出最大公因數與最小公倍數。"
+  },
+  {
+    "id": "t68",
+    "subject": "數學",
+    "rarity": "legendary",
+    "icon": "⚡",
+    "name": "星算超頻核心",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "ult4",
+    "desc": "【傳說】裝備後必殺技門檻從 5 連擊降為 4 連擊！"
+  },
+  {
+    "id": "t69",
+    "subject": "數學",
+    "rarity": "legendary",
+    "icon": "🛡️",
+    "name": "黃金比例神盾",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "firstWrong",
+    "desc": "【傳說】裝備後每場第 1 次答錯不扣護盾、不中斷連擊！"
+  },
+  {
+    "id": "t70",
+    "subject": "數學",
+    "rarity": "legendary",
+    "icon": "💎",
+    "name": "幾何星穹羅盤",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "crit25",
+    "desc": "【傳說】裝備後數學戰鬥傷害 +25%，快速擊破高血量怪物！"
+  },
+  {
+    "id": "t71",
+    "subject": "自然",
+    "rarity": "common",
+    "icon": "🌱",
+    "name": "嫩芽觀察罐",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "記錄豆子發芽與向光性的透明玻璃罐。"
+  },
+  {
+    "id": "t72",
+    "subject": "自然",
+    "rarity": "common",
+    "icon": "🧲",
+    "name": "雙星蹄形磁鐵",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "同極相斥、異極相吸的彩虹小磁鐵。"
+  },
+  {
+    "id": "t73",
+    "subject": "自然",
+    "rarity": "common",
+    "icon": "🌡️",
+    "name": "彩虹溫度計",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "測量水溫與氣溫變化的精準溫度計。"
+  },
+  {
+    "id": "t74",
+    "subject": "自然",
+    "rarity": "rare",
+    "icon": "🔭",
+    "name": "月相星象儀",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "lootBag",
+    "desc": "看清朔望月相與星座運行的迷你儀器。【裝備技】通關 30% 機率額外撿到道具！"
+  },
+  {
+    "id": "t75",
+    "subject": "自然",
+    "rarity": "rare",
+    "icon": "🔋",
+    "name": "串聯閃電電池",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "ult4",
+    "desc": "讓小燈泡瞬間亮起來的魔法電池。【裝備技】必殺技門檻降為 4 連擊！"
+  },
+  {
+    "id": "t76",
+    "subject": "自然",
+    "rarity": "rare",
+    "icon": "🦋",
+    "name": "昆蟲標本盒",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "展示蝴蝶完全變態四階段的夢幻標本盒。"
+  },
+  {
+    "id": "t77",
+    "subject": "自然",
+    "rarity": "rare",
+    "icon": "🌈",
+    "name": "三稜鏡光束球",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "能把陽光折射成七彩光譜的水晶稜鏡。"
+  },
+  {
+    "id": "t78",
+    "subject": "自然",
+    "rarity": "legendary",
+    "icon": "🥚",
+    "name": "森靈生命之露",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "eggBoost",
+    "desc": "【傳說】裝備後答對時 25% 機率額外 +1 寵物蛋孵蛋進度！"
+  },
+  {
+    "id": "t79",
+    "subject": "自然",
+    "rarity": "legendary",
+    "icon": "🛡️",
+    "name": "大氣層防護罩",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "firstWrong",
+    "desc": "【傳說】裝備後每場第 1 次答錯不扣護盾、不中斷連擊！"
+  },
+  {
+    "id": "t80",
+    "subject": "自然",
+    "rarity": "legendary",
+    "icon": "🌿",
+    "name": "自然萬象法典",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "crit25",
+    "desc": "【傳說】裝備後自然戰鬥傷害 +25%，輕鬆壓制森靈魔王！"
+  },
+  {
+    "id": "t81",
+    "subject": "社會",
+    "rarity": "common",
+    "icon": "🏮",
+    "name": "老街燈籠吊飾",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "掛在台灣傳統老街騎樓下的溫馨紅燈籠。"
+  },
+  {
+    "id": "t82",
+    "subject": "社會",
+    "rarity": "common",
+    "icon": "🚄",
+    "name": "高鐵紀念車票",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "認識台灣一日生活圈與交通建設的車票。"
+  },
+  {
+    "id": "t83",
+    "subject": "社會",
+    "rarity": "common",
+    "icon": "🌾",
+    "name": "嘉南稻穗徽章",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "象徵家鄉農產與水利灌溉的金色徽章。"
+  },
+  {
+    "id": "t84",
+    "subject": "社會",
+    "rarity": "rare",
+    "icon": "🏛️",
+    "name": "古蹟時光印章",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "eggBoost",
+    "desc": "記錄台灣歷史建築的紀念印章。【裝備技】答對 25% 機率額外 +1 孵蛋進度！"
+  },
+  {
+    "id": "t85",
+    "subject": "社會",
+    "rarity": "rare",
+    "icon": "🗺️",
+    "name": "地形立體模型",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "ult4",
+    "desc": "一眼分辨盆地、台地與平原的模型。【裝備技】必殺技門檻降為 4 連擊！"
+  },
+  {
+    "id": "t86",
+    "subject": "社會",
+    "rarity": "rare",
+    "icon": "⛵",
+    "name": "黑潮帆船模型",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "乘著洋流探索台灣海洋文化的精緻帆船。"
+  },
+  {
+    "id": "t87",
+    "subject": "社會",
+    "rarity": "rare",
+    "icon": "🎭",
+    "name": "布袋戲偶吊飾",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "充滿台灣傳統民俗藝術魅力的小戲偶。"
+  },
+  {
+    "id": "t88",
+    "subject": "社會",
+    "rarity": "legendary",
+    "icon": "🍀",
+    "name": "絲路尋寶錦囊",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "lootBag",
+    "desc": "【傳說】裝備後通關有 30% 機率額外獲得 1 個隨機戰鬥道具！"
+  },
+  {
+    "id": "t89",
+    "subject": "社會",
+    "rarity": "legendary",
+    "icon": "🛡️",
+    "name": "家鄉守護令牌",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "firstWrong",
+    "desc": "【傳說】裝備後每場第 1 次答錯不扣護盾、不中斷連擊！"
+  },
+  {
+    "id": "t90",
+    "subject": "社會",
+    "rarity": "legendary",
+    "icon": "🌍",
+    "name": "星海世界地球儀",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "crit25",
+    "desc": "【傳說】裝備後社會戰鬥傷害 +25%，縱橫歷史與地理！"
+  },
+  {
+    "id": "t91",
+    "subject": "英文",
+    "rarity": "common",
+    "icon": "🔤",
+    "name": "字母餅乾盒",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "裝滿 A 到 Z 奶油字母餅乾的可愛鐵盒。"
+  },
+  {
+    "id": "t92",
+    "subject": "英文",
+    "rarity": "common",
+    "icon": "🗣️",
+    "name": "自然發音麥克風",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "練習 Phonics 拼讀最順口的星光麥克風。"
+  },
+  {
+    "id": "t93",
+    "subject": "英文",
+    "rarity": "common",
+    "icon": "🌦️",
+    "name": "天氣單字轉盤",
+    "atk": 0.25,
+    "starPct": 0.4,
+    "skill": "",
+    "desc": "sunny、rainy、windy 一轉就記住的轉盤。"
+  },
+  {
+    "id": "t94",
+    "subject": "英文",
+    "rarity": "rare",
+    "icon": "🎫",
+    "name": "環遊登機證",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "lootBag",
+    "desc": "帶著英文對話環遊世界！【裝備技】通關 30% 機率額外撿到戰鬥道具！"
+  },
+  {
+    "id": "t95",
+    "subject": "英文",
+    "rarity": "rare",
+    "icon": "🔔",
+    "name": "雙語星光門鈴",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "firstWrong",
+    "desc": "聽力測驗的貼心守護鈴。【裝備技】每場第 1 次答錯不扣盾不斷連擊！"
+  },
+  {
+    "id": "t96",
+    "subject": "英文",
+    "rarity": "rare",
+    "icon": "📆",
+    "name": "星期月份日曆",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "Monday 到 Sunday 絕對不會拼錯的日曆。"
+  },
+  {
+    "id": "t97",
+    "subject": "英文",
+    "rarity": "rare",
+    "icon": "🍔",
+    "name": "點餐對話菜單",
+    "atk": 0.4,
+    "starPct": 0.8,
+    "skill": "",
+    "desc": "記熟食物單字與點餐句型的可愛餐廳菜單。"
+  },
+  {
+    "id": "t98",
+    "subject": "英文",
+    "rarity": "legendary",
+    "icon": "⚡",
+    "name": "閃電拼字權杖",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "ult4",
+    "desc": "【傳說】裝備後必殺技門檻從 5 連擊降為 4 連擊！"
+  },
+  {
+    "id": "t99",
+    "subject": "英文",
+    "rarity": "legendary",
+    "icon": "🥚",
+    "name": "奇蹟彩蛋字卡",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "eggBoost",
+    "desc": "【傳說】裝備後答對時 25% 機率額外 +1 寵物蛋孵蛋進度！"
+  },
+  {
+    "id": "t100",
+    "subject": "英文",
+    "rarity": "legendary",
+    "icon": "🔮",
+    "name": "魔典奧術水晶球",
+    "atk": 0.6,
+    "starPct": 1.3,
+    "skill": "crit25",
+    "desc": "【傳說】裝備後英文戰鬥傷害 +25%，制霸雙語魔法塔！"
   }
 ];
 
@@ -1378,9 +1928,10 @@
       { id: "a32", cat: "收集養成", tier: "bronze", reward: 100, icon: "🎒", title: "小小寶物袋", desc: "收集 5 件以上冒險寶物", check: s => (s.treasures.length >= 5) },
       { id: "a33", cat: "收集養成", tier: "silver", reward: 250, icon: "💼", title: "寶物大富翁", desc: "收集 15 件以上冒險寶物", check: s => (s.treasures.length >= 15) },
       { id: "a34", cat: "收集養成", tier: "gold", reward: 500, icon: "🏰", title: "皇家寶庫長", desc: "收集 30 件以上冒險寶物", check: s => (s.treasures.length >= 30) },
-      { id: "a35", cat: "收集養成", tier: "diamond", reward: 1000, icon: "👑", title: "50寶物全圖鑑", desc: "集滿全部 50 件冒險寶物", check: s => (s.treasures.length >= 50) },
-      { id: "a36", cat: "收集養成", tier: "silver", reward: 250, icon: "✨", title: "遇見傳說", desc: "獲得任意 1 件傳說級寶物", check: s => (['t10','t20','t30','t40','t50'].some(id => s.treasures.includes(id))) },
-      { id: "a37", cat: "收集養成", tier: "diamond", reward: 1000, icon: "🌈", title: "五大傳說集結", desc: "集滿全部 5 件傳說級寶物", check: s => (['t10','t20','t30','t40','t50'].every(id => s.treasures.includes(id))) },
+      { id: "a35", cat: "收集養成", tier: "diamond", reward: 1000, icon: "👑", title: "半百寶物收藏家", desc: "收集 50 件以上冒險寶物", check: s => (s.treasures.length >= 50) },
+      { id: "a35b", cat: "收集養成", tier: "diamond", reward: 2500, icon: "🏆", title: "百寶圖鑑大宗師", desc: "集滿全部 100 件冒險寶物", check: s => (s.treasures.length >= TREASURES.length) },
+      { id: "a36", cat: "收集養成", tier: "silver", reward: 250, icon: "✨", title: "遇見傳說", desc: "獲得任意 1 件傳說級寶物", check: s => TREASURES.some(t => t.rarity === "legendary" && s.treasures.includes(t.id)) },
+      { id: "a37", cat: "收集養成", tier: "diamond", reward: 1000, icon: "🌈", title: "五傳說集結", desc: "收集 5 件以上傳說級寶物", check: s => TREASURES.filter(t => t.rarity === "legendary" && s.treasures.includes(t.id)).length >= 5 },
       { id: "a38", cat: "收集養成", tier: "bronze", reward: 100, icon: "🛍️", title: "初次購物", desc: "在星星商店購買 1 件裝扮或家具", check: s => ((s.ownedItems || []).length >= 1) },
       { id: "a39", cat: "收集養成", tier: "silver", reward: 250, icon: "🏠", title: "溫馨設計師", desc: "在星星商店購買 5 件以上商品", check: s => ((s.ownedItems || []).length >= 5) },
       { id: "a40", cat: "收集養成", tier: "gold", reward: 500, icon: "🏡", title: "夢幻小屋大師", desc: "買齊星星商店全部 10 件商品", check: s => ((s.ownedItems || []).length >= 10) },
@@ -1822,7 +2373,13 @@
       activeTitleSuf: "suf_1",
       ownedFrames: ["frame_default"],
       activeFrame: "frame_default",
-      furnWorkshopOwned: false
+      furnWorkshopOwned: false,
+      paragonStars: 0,
+      treasureSlots: 1,
+      equippedTreasures: [],
+      dailyDouble: { date: "", claimed: [] },
+      bossFirstClearSubjects: [],
+      winStreak: 0
     };
 
     let state = loadState();
@@ -1831,7 +2388,30 @@
     function loadState() {
       try {
         const raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem("sanrio_g4_rpg_save_v1");
-        if (raw) return compactSaveData({ ...defaultState, ...JSON.parse(raw) });
+        if (raw) {
+          const merged = compactSaveData({ ...defaultState, ...JSON.parse(raw) });
+          // v3.5 無痛遷移：若舊存檔 Lv.50 且累積了舊版 paragonExp，自動轉入 Lv.50 -> Lv.51+ 繼續升級
+          if (merged.level >= 50 && merged.level < 100 && (merged.paragonExp || 0) > 0) {
+            merged.exp = (merged.exp || 0) + merged.paragonExp;
+            merged.paragonExp = 0;
+            while (merged.level < 100) {
+              const need = merged.level <= 30 ? (60 + (merged.level - 1) * 20)
+                : (merged.level <= 60 ? (660 + (merged.level - 30) * 45) : (2010 + (merged.level - 60) * 80));
+              if (merged.exp >= need) {
+                merged.exp -= need;
+                merged.level += 1;
+              } else break;
+            }
+            if (merged.level >= 100 && merged.exp > 0) {
+              merged.paragonExp = merged.exp;
+              merged.exp = 0;
+            }
+          }
+          if (!Array.isArray(merged.equippedTreasures)) merged.equippedTreasures = [];
+          if (!merged.dailyDouble || typeof merged.dailyDouble !== "object") merged.dailyDouble = { date: "", claimed: [] };
+          if (!Array.isArray(merged.bossFirstClearSubjects)) merged.bossFirstClearSubjects = [];
+          return merged;
+        }
       } catch (e) {}
       return { ...defaultState };
     }
@@ -2444,13 +3024,21 @@
       scheduleCloudPush();
     }
 
-    const MAX_LEVEL = 50;
+    const MAX_LEVEL = 100;
+    const PARAGON_STEP_EXP = 3500;
 
     function expToNextLevel(lv) {
-      return 60 + (lv - 1) * 20;
+      if (lv <= 30) return 60 + (lv - 1) * 20;
+      if (lv <= 60) return 660 + (lv - 30) * 45;
+      return 2010 + (lv - 60) * 80;
     }
 
     function getTitleForLevel(lv) {
+      if (lv >= 100) return "👑 三麗鷗宇宙大宗師";
+      if (lv >= 90) return "永恆星光傳奇";
+      if (lv >= 80) return "彩虹創世賢者";
+      if (lv >= 70) return "銀河守護神";
+      if (lv >= 60) return "星穹魔導王";
       if (lv >= 50) return "傳說三麗鷗大賢者";
       if (lv >= 40) return "五科全能賢者";
       if (lv >= 35) return "彩虹英雄";
@@ -2464,25 +3052,43 @@
     }
 
     function getLevelAtkBonus() {
-      return Math.floor((state.level || 1) / 5);
+      const lv = Math.min(MAX_LEVEL, Math.max(1, state.level || 1));
+      if (lv <= 50) return Math.floor(lv / 5);
+      return 10 + Math.floor((lv - 50) / 10);
     }
 
     function getLevelInfo() {
       const lv = Math.min(MAX_LEVEL, Math.max(1, state.level || 1));
-      return `Lv.${lv} ${getTitleForLevel(lv)}`;
+      const pStars = state.paragonStars || 0;
+      const starBadge = (lv >= MAX_LEVEL && pStars > 0) ? ` ★${pStars}` : "";
+      return `Lv.${lv}${starBadge} ${getTitleForLevel(lv)}`;
+    }
+
+    function grantRandomBattleItem() {
+      if (!state.bag) state.bag = { item_candy: 0, item_shield: 0, item_skip: 0 };
+      const pool = [
+        { key: "item_candy", label: "🍬 雙倍幸運糖" },
+        { key: "item_shield", label: "🛡️ 黃金備用盾" },
+        { key: "item_skip", label: "⏭️ 換題魔法卡" }
+      ];
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      state.bag[pick.key] = (state.bag[pick.key] || 0) + 1;
+      return pick;
     }
 
     function grantExp(amount) {
       if (state && state.teaPartyBuff) { amount = Math.round(amount * 1.1); state.teaPartyBuff = false; }
-      if (!amount || amount <= 0) return { added: 0, levelsGained: 0, giftStars: 0, paragonChests: 0, oldLevel: state.level || 1, newLevel: state.level || 1 };
+      if (!amount || amount <= 0) return { added: 0, levelsGained: 0, giftStars: 0, paragonChests: 0, paragonItems: [], oldLevel: state.level || 1, newLevel: state.level || 1 };
       if (typeof state.level !== "number" || state.level < 1) state.level = 1;
       if (typeof state.exp !== "number" || state.exp < 0) state.exp = 0;
       if (typeof state.paragonExp !== "number" || state.paragonExp < 0) state.paragonExp = 0;
+      if (typeof state.paragonStars !== "number" || state.paragonStars < 0) state.paragonStars = 0;
 
       const oldLevel = state.level;
       let levelsGained = 0;
       let giftStars = 0;
       let paragonChests = 0;
+      const paragonItems = [];
 
       if (state.level < MAX_LEVEL) {
         state.exp += amount;
@@ -2490,7 +3096,7 @@
           state.exp -= expToNextLevel(state.level);
           state.level += 1;
           levelsGained += 1;
-          const gift = 30 + state.level * 2;
+          const gift = Math.min(180, 30 + state.level * 2);
           giftStars += gift;
           state.stars += gift;
         }
@@ -2502,13 +3108,16 @@
         state.paragonExp += amount;
       }
 
-      while (state.level >= MAX_LEVEL && state.paragonExp >= 1000) {
-        state.paragonExp -= 1000;
+      while (state.level >= MAX_LEVEL && state.paragonExp >= PARAGON_STEP_EXP) {
+        state.paragonExp -= PARAGON_STEP_EXP;
+        state.paragonStars += 1;
         paragonChests += 1;
-        state.stars += 100;
+        state.stars += 150;
+        paragonItems.push(grantRandomBattleItem().label);
+        if (typeof addPetEggProgress === "function") addPetEggProgress(3);
       }
 
-      return { added: amount, levelsGained, giftStars, paragonChests, oldLevel, newLevel: state.level };
+      return { added: amount, levelsGained, giftStars, paragonChests, paragonItems, oldLevel, newLevel: state.level };
     }
 
     // ====== 4. RENDER HUD & WORLD MAP ======
@@ -2535,8 +3144,9 @@
         const atkB = getLevelAtkBonus();
         if (curLv >= MAX_LEVEL) {
           const pExp = state.paragonExp || 0;
-          const pct = Math.min(100, Math.round((pExp / 1000) * 100));
-          expLbl.textContent = `👑 滿等巔峰 ${pExp}/1000 EXP（等級增傷 +${atkB}）`;
+          const pStars = state.paragonStars || 0;
+          const pct = Math.min(100, Math.round((pExp / PARAGON_STEP_EXP) * 100));
+          expLbl.textContent = `✨ 巔峰星階 ★${pStars}（${pExp}/${PARAGON_STEP_EXP} EXP｜增傷封頂 +${atkB}）`;
           expPctEl.textContent = `${pct}%`;
           expBarEl.style.width = `${pct}%`;
         } else {
@@ -2560,6 +3170,8 @@
       }
       document.getElementById("hud-cleared").textContent = state.clearedStages.length;
       document.getElementById("hud-treasures").textContent = state.treasures.length;
+      const htTot = document.getElementById("hud-treasures-total");
+      if (htTot) htTot.textContent = TREASURES.length;
 
       const h = HEROES[state.hero];
       const partnerId = state.hero === "purin" ? "pochacco" : "purin";
@@ -2598,12 +3210,23 @@
       }
     }
 
+    function ensureDailyDoubleState() {
+      const today = getTodayStr();
+      if (!state.dailyDouble || typeof state.dailyDouble !== "object" || state.dailyDouble.date !== today) {
+        state.dailyDouble = { date: today, claimed: [] };
+      }
+      if (!Array.isArray(state.dailyDouble.claimed)) state.dailyDouble.claimed = [];
+      return state.dailyDouble;
+    }
+
     function getDailyBonusStages() {
       const today = getTodayStr();
       let seed = 0;
       for (let i = 0; i < today.length; i++) seed = (seed * 31 + today.charCodeAt(i)) % 1000003;
       const normals = STAGES.filter(s => s.tier === "normal");
       const elites = STAGES.filter(s => s.tier === "elite");
+      const heroes = STAGES.filter(s => s.tier === "hero");
+      const hasHeroUnlocked = heroes.some(s => isStageUnlocked(s));
       const pick = (arr, n, offset) => {
         const res = [];
         const copy = [...arr];
@@ -2615,7 +3238,26 @@
         }
         return res;
       };
+      if (hasHeroUnlocked) {
+        return [...pick(normals, 1, 1), ...pick(elites, 1, 2), ...pick(heroes, 1, 3)];
+      }
       return [...pick(normals, 2, 1), ...pick(elites, 1, 2)];
+    }
+
+    function isDailyDoubleClaimed(stageId) {
+      const dd = ensureDailyDoubleState();
+      return dd.claimed.includes(stageId);
+    }
+
+    function isDailyDoubleAvailable(stageId) {
+      const dd = ensureDailyDoubleState();
+      if (dd.claimed.length >= 3) return false;
+      return getDailyBonusStages().includes(stageId) && !isDailyDoubleClaimed(stageId);
+    }
+
+    function markDailyDoubleClaimed(stageId) {
+      const dd = ensureDailyDoubleState();
+      if (!dd.claimed.includes(stageId)) dd.claimed.push(stageId);
     }
 
     function getStageMasteryInfo(stageId) {
@@ -2761,10 +3403,11 @@
           const st = STAGES.find(s => s.id === lid);
           if (!st) return;
           const unlocked = isStageUnlocked(st);
+          const claimed2x = isDailyDoubleClaimed(st.id);
           const m = getStageMasteryInfo(st.id);
           const b = document.createElement("button");
-          b.className = `sanrio-btn px-2.5 py-1 rounded-full text-xs font-black border-2 ${unlocked ? "bg-white hover:bg-amber-100 border-rose-300 text-rose-700" : "bg-stone-100 border-stone-200 text-stone-500"}`;
-          b.textContent = `${unlocked ? "🔥" : "🔒"} ${st.subject}${st.id} ${st.short} (${m.count}/${m.total})`;
+          b.className = `sanrio-btn px-2.5 py-1 rounded-full text-xs font-black border-2 ${claimed2x ? "bg-emerald-50 border-emerald-300 text-emerald-700" : (unlocked ? "bg-white hover:bg-amber-100 border-rose-300 text-rose-700" : "bg-stone-100 border-stone-200 text-stone-500")}`;
+          b.textContent = `${claimed2x ? "✅ 已領2x" : (unlocked ? "🔥 2x" : "🔒")} ${st.subject}${st.id} ${st.short} (${m.count}/${m.total})`;
           b.addEventListener("click", () => {
             SFX.click();
             if (!unlocked) {
@@ -2780,7 +3423,7 @@
       worldStages.forEach((st) => {
         const cleared = state.clearedStages.includes(st.id);
         const unlocked = isStageUnlocked(st);
-        const isLucky = luckyIds.includes(st.id);
+        const isLucky = isDailyDoubleAvailable(st.id);
         const mastery = getStageMasteryInfo(st.id);
         const stStyle = subjectStyle[st.subject] || subjectStyle["國語"];
         const bgCol = cleared ? "bg-emerald-400 border-white" : (!unlocked ? "bg-stone-400 border-white" : `${stStyle.node} border-white`);
@@ -2903,7 +3546,8 @@
       const cardsHtml = curTierStages.map(st => {
         const unlocked = isStageUnlocked(st);
         const mInfo = getStageMasteryInfo(st.id);
-        const isLucky = luckyIds.includes(st.id);
+        const isLucky = isDailyDoubleAvailable(st.id);
+        const isLuckyDone = luckyIds.includes(st.id) && isDailyDoubleClaimed(st.id);
         const isFinalBoss = !!st.isFinalBoss || Number(st.stageNum) === 9;
         const starStr = mInfo.stars >= 4 ? "👑★★★" : ("★".repeat(Math.min(3, mInfo.stars)) + "☆".repeat(Math.max(0, 3 - mInfo.stars)));
         const pct = Math.min(100, Math.round((mInfo.count / Math.max(1, mInfo.t3)) * 100));
@@ -2916,7 +3560,7 @@
           <button data-launch-stage="${st.id}" class="launch-stage-btn sanrio-btn w-full p-3.5 sm:p-4 rounded-2xl border-2 text-left transition-all ${unlocked ? stStyle.card : "bg-stone-100 border-stone-200 opacity-75"}">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-xs font-black px-2.5 py-0.5 rounded-full whitespace-nowrap ${unlocked ? stStyle.badge : "bg-stone-200 text-stone-600"}">${st.id}${isLucky ? " 🔥2x" : ""}</span>
+                <span class="text-xs font-black px-2.5 py-0.5 rounded-full whitespace-nowrap ${unlocked ? stStyle.badge : "bg-stone-200 text-stone-600"}">${st.id}${isLucky ? " 🔥2x" : (isLuckyDone ? " ✅已領2x" : "")}</span>
                 ${isFinalBoss ? `<span class="text-[11px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-pink-500 text-white whitespace-nowrap">👑 最終魔王</span>` : ""}
               </div>
               <span class="text-sm sm:text-base font-black text-amber-500 whitespace-nowrap">${!unlocked ? "🔒 未解鎖" : starStr}</span>
@@ -3057,26 +3701,180 @@
       return { atkBonus, ultBonus, starPct, startShieldBonus, hintBonus, dropBonus, healBonus, wandSet, shieldSet, expPct, furnCnt, bgCnt };
     }
 
-    function getTreasureBonuses() {
+    const TREASURE_SLOT_COSTS = { 2: 1200, 3: 3500, 4: 7500 };
+    const TREASURE_SKILL_META = {
+      fifty:      { icon: "✂️", name: "刪錯剪刀", short: "刪去2錯選項 +1次/場" },
+      heal:       { icon: "💖", name: "護盾回復", short: "回復1護盾 +1次/場" },
+      both:       { icon: "🌟", name: "雙重秘技", short: "刪錯 +1 且 回盾 +1" },
+      firstWrong: { icon: "🛡️", name: "首錯結界", short: "第1次答錯免傷不斷連擊" },
+      ult4:       { icon: "⚡", name: "連擊蓄力", short: "4 連擊即可放必殺技" },
+      crit25:     { icon: "🔥", name: "學科爆擊", short: "對應學科傷害 +25%" },
+      eggBoost:   { icon: "🥚", name: "孵蛋催化", short: "答對 25% 額外 +1 孵蛋" },
+      lootBag:    { icon: "🍀", name: "幸運戰利品", short: "通關 30% 額外撿道具" }
+    };
+
+    function getUnlockedTreasureSlots() {
+      const base = Math.max(1, Math.min(4, Number(state.treasureSlots || 1)));
+      const free2 = (state.treasures || []).length >= 25 ? 2 : 1;
+      return Math.max(base, free2);
+    }
+
+    function syncEquippedTreasures(autoFill = false) {
+      if (!Array.isArray(state.equippedTreasures)) state.equippedTreasures = [];
+      const ownedSet = new Set(state.treasures || []);
+      const maxSlots = getUnlockedTreasureSlots();
+      state.equippedTreasures = state.equippedTreasures
+        .filter(id => {
+          if (!ownedSet.has(id)) return false;
+          const t = TREASURES.find(x => x.id === id);
+          return !!(t && t.skill);
+        })
+        .slice(0, maxSlots);
+
+      if (autoFill && state.equippedTreasures.length < maxSlots) {
+        const candidates = (state.treasures || [])
+          .map(id => TREASURES.find(x => x.id === id))
+          .filter(t => t && t.skill && !state.equippedTreasures.includes(t.id))
+          .sort((a, b) => (b.rarity === "legendary" ? 2 : 1) - (a.rarity === "legendary" ? 2 : 1));
+        for (const c of candidates) {
+          if (state.equippedTreasures.length >= maxSlots) break;
+          state.equippedTreasures.push(c.id);
+        }
+      }
+      return state.equippedTreasures;
+    }
+
+    function autoRecommendTreasures(preferSubject = "") {
+      const maxSlots = getUnlockedTreasureSlots();
+      const ownedSkill = (state.treasures || [])
+        .map(id => TREASURES.find(x => x.id === id))
+        .filter(t => t && t.skill);
+      const priority = ["firstWrong", "ult4", "both", "crit25", "fifty", "heal", "eggBoost", "lootBag"];
+      const scored = ownedSkill.map(t => {
+        let sc = (t.rarity === "legendary" ? 20 : 10);
+        const idx = priority.indexOf(t.skill);
+        if (idx >= 0) sc += (10 - idx);
+        if (preferSubject && t.subject === preferSubject) sc += 15;
+        return { t, sc };
+      }).sort((a, b) => b.sc - a.sc);
+      const picked = [];
+      const usedSkills = new Set();
+      for (const item of scored) {
+        if (picked.length >= maxSlots) break;
+        if (usedSkills.has(item.t.skill) && scored.length > maxSlots) continue;
+        picked.push(item.t.id);
+        usedSkills.add(item.t.skill);
+      }
+      for (const item of scored) {
+        if (picked.length >= maxSlots) break;
+        if (!picked.includes(item.t.id)) picked.push(item.t.id);
+      }
+      state.equippedTreasures = picked;
+      saveState();
+      return picked;
+    }
+
+    function getSubjectMilestoneBonuses(subject) {
+      if (!subject) return { count: 0, expPct: 0, atkBonus: 0, dropBonus: 0, masterStars: 0, masterBond: 0 };
+      const count = (state.treasures || []).filter(id => {
+        const t = TREASURES.find(x => x.id === id);
+        return t && t.subject === subject;
+      }).length;
+      return {
+        count,
+        expPct: count >= 5 ? 5 : 0,
+        atkBonus: count >= 10 ? 4 : 0,
+        dropBonus: count >= 15 ? 0.05 : 0,
+        masterStars: count >= 20 ? 15 : 0,
+        masterBond: count >= 20 ? 2 : 0
+      };
+    }
+
+    function getTreasureBonuses(subject = "") {
       const owned = (state.treasures || []).map(id => TREASURES.find(t => t.id === id)).filter(Boolean);
-      const atkBonus = Math.floor(owned.reduce((acc, t) => acc + (t.atk || 0.5), 0));
-      const starPct = owned.reduce((acc, t) => acc + (t.starPct || 1), 0);
+      const atkBonus = Math.floor(owned.reduce((acc, t) => acc + (t.atk || 0.25), 0));
+      const starPct = Math.round(owned.reduce((acc, t) => acc + (t.starPct || 0.4), 0));
+
+      const eqIds = syncEquippedTreasures(state.equippedTreasures.length === 0);
+      const equipped = eqIds.map(id => TREASURES.find(t => t.id === id)).filter(Boolean);
+
       let fiftyUses = 0;
       let healUses = 0;
-      owned.forEach(t => {
+      let firstWrongShields = 0;
+      let ultThreshold = 5;
+      let critBonusPct = 0;
+      let eggBoostPct = 0;
+      let lootBagPct = 0;
+      let sameSubjCount = 0;
+
+      equipped.forEach(t => {
         if (t.skill === "fifty" || t.skill === "both") fiftyUses += 1;
         if (t.skill === "heal" || t.skill === "both") healUses += 1;
+        if (t.skill === "firstWrong") firstWrongShields = 1;
+        if (t.skill === "ult4") ultThreshold = 4;
+        if (t.skill === "crit25" && (!subject || t.subject === subject)) critBonusPct += 25;
+        if (t.skill === "eggBoost") eggBoostPct += 25;
+        if (t.skill === "lootBag") lootBagPct += 30;
+        if (subject && t.subject === subject) sameSubjCount += 1;
       });
+
+      fiftyUses = Math.min(2, fiftyUses);
+      healUses = Math.min(2, healUses);
+      critBonusPct = Math.min(50, critBonusPct);
+      eggBoostPct = Math.min(50, eggBoostPct);
+      lootBagPct = Math.min(60, lootBagPct);
+
+      const resonance = !!(subject && sameSubjCount >= 2);
+      const ms = getSubjectMilestoneBonuses(subject);
       const trShield = (state.training && state.training.shieldLv) ? state.training.shieldLv : 0;
-      return { ownedCount: owned.length, atkBonus, starPct, fiftyUses, healUses: healUses + trShield };
+
+      return {
+        ownedCount: owned.length,
+        atkBonus: atkBonus + ms.atkBonus,
+        starPct: starPct + (resonance ? 5 : 0),
+        fiftyUses,
+        healUses: healUses + trShield,
+        firstWrongShields,
+        ultThreshold,
+        critBonusPct,
+        dmgMult: 1 + (critBonusPct / 100) + (resonance ? 0.10 : 0),
+        eggBoostPct,
+        lootBagPct,
+        resonance,
+        milestone: ms,
+        equipped
+      };
     }
 
     function rollTreasureDrop(stage) {
       if (typeof state.noDropStreak !== "number") state.noDropStreak = 0;
       if (typeof state.dupDropCount !== "number") state.dupDropCount = 0;
+      if (!Array.isArray(state.bossFirstClearSubjects)) state.bossFirstClearSubjects = [];
 
-      const cbDrop = (stage && (stage.isBoss || stage.tier === "hero")) ? getCollectionBonuses().dropBonus : 0;
-      const baseRate = (stage && stage.isBoss ? 0.50 : (stage && stage.tier === "hero" ? 0.45 : 0.30)) + cbDrop;
+      const subj = (stage && stage.subject) ? stage.subject : "國語";
+      const tier = (stage && stage.tier) ? stage.tier : "normal";
+      const isFinalBoss = !!(stage && (stage.isFinalBoss || Number(stage.stageNum) === 9 || (tier === "hero" && stage.isBoss)));
+      const subjPool = TREASURES.filter(t => t.subject === subj);
+      const ownedSet = new Set(state.treasures || []);
+
+      // 第 9 關大魔王每學科首次擊敗：100% 必掉該科未擁有之稀有／傳說寶物
+      if (isFinalBoss && !state.bossFirstClearSubjects.includes(subj)) {
+        state.bossFirstClearSubjects.push(subj);
+        const firstCandidates = subjPool.filter(t => (t.rarity === "legendary" || t.rarity === "rare") && !ownedSet.has(t.id));
+        const legFirst = firstCandidates.filter(t => t.rarity === "legendary");
+        const chosenPool = legFirst.length > 0 ? legFirst : firstCandidates;
+        if (chosenPool.length > 0) {
+          const picked = chosenPool[Math.floor(Math.random() * chosenPool.length)];
+          state.treasures.push(picked.id);
+          state.noDropStreak = 0;
+          syncEquippedTreasures(true);
+          return { dropped: true, isNew: true, item: picked, firstBossGuarantee: true };
+        }
+      }
+
+      const cbDrop = (stage && (stage.isBoss || tier === "hero")) ? getCollectionBonuses().dropBonus : 0;
+      const msDrop = getSubjectMilestoneBonuses(subj).dropBonus;
+      const baseRate = (isFinalBoss ? 0.60 : (tier === "hero" ? 0.48 : (tier === "elite" ? 0.38 : 0.30))) + cbDrop + msDrop;
       const guaranteed = state.noDropStreak >= 3;
       const dropped = guaranteed || Math.random() < baseRate;
 
@@ -3086,22 +3884,45 @@
       }
 
       state.noDropStreak = 0;
-      const unowned = TREASURES.filter(t => !(state.treasures || []).includes(t.id));
+      const eligRarities = isFinalBoss ? ["rare", "legendary"]
+        : (tier === "hero" ? ["rare", "legendary"]
+        : (tier === "elite" ? ["common", "rare"] : ["common", "rare"]));
+      const eligPool = subjPool.filter(t => eligRarities.includes(t.rarity));
+      const eligUnowned = eligPool.filter(t => !ownedSet.has(t.id));
+
       let picked = null;
-      if (state.dupDropCount >= 5 && unowned.length > 0) {
-        picked = unowned[Math.floor(Math.random() * unowned.length)];
+      if (state.dupDropCount >= 3 && eligUnowned.length > 0) {
+        picked = eligUnowned[Math.floor(Math.random() * eligUnowned.length)];
         state.dupDropCount = 0;
       } else {
-        picked = TREASURES[Math.floor(Math.random() * TREASURES.length)];
+        const r = Math.random();
+        let targetRarity = "common";
+        if (isFinalBoss) targetRarity = r < 0.55 ? "legendary" : "rare";
+        else if (tier === "hero") targetRarity = r < 0.35 ? "legendary" : "rare";
+        else if (tier === "elite") targetRarity = r < 0.55 ? "rare" : "common";
+        else targetRarity = r < 0.15 ? "rare" : "common";
+        const rPool = subjPool.filter(t => t.rarity === targetRarity);
+        const finalPool = rPool.length > 0 ? rPool : eligPool;
+        picked = finalPool[Math.floor(Math.random() * finalPool.length)];
       }
 
-      if (!(state.treasures || []).includes(picked.id)) {
+      if (!ownedSet.has(picked.id)) {
         state.treasures.push(picked.id);
+        syncEquippedTreasures(true);
         return { dropped: true, isNew: true, item: picked };
       } else {
-        state.stars += 50;
+        const dupStars = picked.rarity === "legendary" ? 120 : (picked.rarity === "rare" ? 70 : 40);
+        state.stars += dupStars;
         state.dupDropCount += 1;
-        return { dropped: true, isNew: false, item: picked, dupCount: state.dupDropCount };
+        let extraEgg = false;
+        const allSubjCommonOwned = subjPool.filter(t => t.rarity === "common").every(t => ownedSet.has(t.id));
+        if (picked.rarity === "common" && allSubjCommonOwned && typeof addPetEggProgress === "function") {
+          addPetEggProgress(1);
+          extraEgg = true;
+        }
+        const poolFull = eligUnowned.length === 0;
+        if (poolFull) state.dupDropCount = 0;
+        return { dropped: true, isNew: false, item: picked, dupCount: Math.min(3, state.dupDropCount), dupStars, extraEgg, poolFull };
       }
     }
 
@@ -3198,9 +4019,12 @@
         shuffle(st.questions.filter(q => isMasteredQ(q) && !isRecentQ(q))),
         shuffle(st.questions.filter(q => isMasteredQ(q) && isRecentQ(q)))
       ];
+      const isFinalBoss = !!(st.isFinalBoss || Number(st.stageNum) === 9 || (st.tier === "hero" && st.isBoss));
+      const totalWanted = isFinalBoss ? 8 : 6;
+      const dynCount = st.subject === "數學" ? (isFinalBoss ? 3 : 2) : 0;
+      const wantStatic = totalWanted - dynCount;
       const usedCores = new Set();
       let picked = [];
-      const wantStatic = st.subject === "數學" ? 4 : 6;
       for (const b of buckets) {
         for (const q of b) {
           const core = normalizeQCore(q.q);
@@ -3212,9 +4036,8 @@
         if (picked.length >= wantStatic) break;
       }
       if (st.subject === "數學") {
-        // Mix 2 strictly unique dynamic parametric math questions that don't collide with static picks or each other
         const dyn = [];
-        for (let tries = 0; tries < 24 && dyn.length < 2; tries++) {
+        for (let tries = 0; tries < 32 && dyn.length < dynCount; tries++) {
           const cand = generateDynamicMathQuestion(st.id);
           const core = normalizeQCore(cand.q);
           if (!usedCores.has(core)) {
@@ -3228,17 +4051,22 @@
       state.recentAsked[st.id] = Array.from(new Set(newRecent)).slice(0, 12);
       const selectedQs = picked.map(prepareQuestion);
 
-      const hpPerQ = st.tier === "hero" ? 30 : (st.tier === "elite" ? 25 : 20);
-      const tb = getTreasureBonuses();
+      const maxHp = isFinalBoss ? 720 : (st.tier === "hero" ? 480 : (st.tier === "elite" ? 320 : 180));
+      const tb = getTreasureBonuses(st.subject);
       const cb = getCollectionBonuses();
       const initSh = 3 + cb.startShieldBonus;
       battle = {
         mode: "stage",
         stage: st,
+        isFinalBoss,
         questions: selectedQs,
         qIndex: 0,
-        monsterMaxHp: selectedQs.length * hpPerQ,
-        monsterHp: selectedQs.length * hpPerQ,
+        monsterMaxHp: maxHp,
+        monsterHp: maxHp,
+        bossPhase: 1,
+        bossShieldHits: 0,
+        bossShieldBroken: false,
+        bossShieldBonus: 0,
         baseMaxShields: initSh,
         shields: initSh,
         wrongCount: 0,
@@ -3247,6 +4075,12 @@
         usedFiftyThisQ: false,
         fiftyLeft: tb.fiftyUses,
         healLeft: Math.min(2 + (cb.shieldSet ? 1 : 0), tb.healUses + cb.healBonus),
+        firstWrongLeft: tb.firstWrongShields,
+        ultThreshold: tb.ultThreshold,
+        subjectDmgMult: tb.dmgMult,
+        subjectResonance: tb.resonance,
+        eggBoostPct: tb.eggBoostPct,
+        lootBagPct: tb.lootBagPct,
         hintLeft: 1 + cb.hintBonus,
         usedHintThisQ: false
       };
@@ -3420,7 +4254,10 @@
     function renderBattleStatus() {
       const pct = Math.max(0, Math.round((battle.monsterHp / battle.monsterMaxHp) * 100));
       document.getElementById("battle-monster-hp-bar").style.width = pct + "%";
-      document.getElementById("battle-monster-hp-text").textContent = `HP ${battle.monsterHp}/${battle.monsterMaxHp}`;
+      const shieldTag = (battle.isFinalBoss && battle.bossPhase === 2 && battle.bossShieldHits > 0)
+        ? ` 🛡️水晶護罩(${battle.bossShieldHits}連擊破)` : (battle.bossShieldBroken ? " 💥已破罩" : "");
+      const resTag = battle.subjectResonance ? " ✨共鳴" : "";
+      document.getElementById("battle-monster-hp-text").textContent = `HP ${battle.monsterHp}/${battle.monsterMaxHp}${shieldTag}${resTag}`;
       const baseMax = battle.baseMaxShields || 3;
       const maxSh = Math.max(baseMax, battle.shields);
       document.getElementById("battle-shield-text").textContent = `護盾 ${battle.shields}/${maxSh}`;
@@ -3565,15 +4402,50 @@
         if (battle.combo > state.maxCombo) state.maxCombo = battle.combo;
 
         const isSubjectBonus = HEROES[state.hero].bonusSubjects.includes(battle.stage.subject);
-        const isUlt = battle.combo >= 5;
-        const tb = getTreasureBonuses();
+        const ultNeed = battle.ultThreshold || 5;
+        const isUlt = battle.combo >= ultNeed;
+        const tb = getTreasureBonuses(battle.stage ? battle.stage.subject : "");
         const tr = state.training || { ultLv: 0, atkLv: 0, shieldLv: 0 };
         const cb = getCollectionBonuses();
-        const dmg = (isUlt ? (45 + (tr.ultLv || 0) * 10 + cb.ultBonus) : (20 + (battle.combo >= 3 ? 5 : 0))) + tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + getLevelAtkBonus();
-        battle.monsterHp = Math.max(0, battle.monsterHp - dmg);
+        const rawDmg = (isUlt ? (45 + (tr.ultLv || 0) * 10 + cb.ultBonus) : (20 + (battle.combo >= 3 ? 5 : 0))) + tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + getLevelAtkBonus();
+        const dmg = Math.round(rawDmg * (battle.subjectDmgMult || 1));
+
+        let phaseEventMsg = "";
+        if (battle.isFinalBoss && battle.bossPhase === 2 && battle.bossShieldHits > 0) {
+          battle.bossShieldHits -= 1;
+          if (battle.bossShieldHits === 0) {
+            battle.bossShieldBroken = true;
+            const shBonus = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(25) : 25;
+            battle.bossShieldBonus = shBonus;
+            state.stars += shBonus;
+            if (typeof confetti === "function") confetti({ particleCount: 45, spread: 60, origin: { y: 0.45 } });
+            phaseEventMsg = `💥 水晶護罩擊碎！現場獲得 +${shBonus} ⭐ 破罩賞金，魔王防禦解除！`;
+          } else {
+            phaseEventMsg = `🛡️ 擊中水晶護罩！再連續答對 ${battle.bossShieldHits} 題即可擊碎並拿 +25 ⭐！`;
+          }
+        } else {
+          const halfHp = Math.ceil(battle.monsterMaxHp * 0.5);
+          if (battle.isFinalBoss && battle.bossPhase === 1 && (battle.monsterHp - dmg) <= halfHp) {
+            battle.monsterHp = halfHp;
+            battle.bossPhase = 2;
+            battle.bossShieldHits = 2;
+            phaseEventMsg = "🌈 彩虹水晶龍覺醒進入二階段！展開「2 連擊水晶護罩」，連對 2 題擊碎護罩拿 +25 ⭐！";
+          } else {
+            battle.monsterHp = Math.max(0, battle.monsterHp - dmg);
+          }
+        }
         state.bondExp = (state.bondExp || 0) + 1;
         state.totalCorrect = (state.totalCorrect || 0) + 1;
-        if (typeof addPetEggProgress === "function") addPetEggProgress(1);
+        let eggExtra = 0;
+        if (typeof addPetEggProgress === "function") {
+          addPetEggProgress(1);
+          if ((battle.eggBoostPct || 0) > 0 && Math.random() * 100 < battle.eggBoostPct) {
+            addPetEggProgress(1);
+            eggExtra = 1;
+          }
+        }
+        battle._lastPhaseMsg = phaseEventMsg;
+        battle._lastEggExtra = eggExtra;
         if (battle.stage && battle.stage.subject && state.subjectStats && state.subjectStats[battle.stage.subject]) {
           state.subjectStats[battle.stage.subject].ok += 1;
         }
@@ -3604,7 +4476,7 @@
           if (typeof spawnFrameBattleCelebration === "function") spawnFrameBattleCelebration(battle.combo);
         }, 220);
 
-        speech.textContent = battle.combo >= 5 ? "🌟雙星合體技！" : (battle.combo >= 3 ? "超厲害連擊！" : "太棒了！");
+        speech.textContent = battle.combo >= (battle.ultThreshold || 5) ? "🌟雙星合體技！" : (battle.combo >= 3 ? "超厲害連擊！" : "太棒了！");
         speech.classList.remove("hidden");
         setTimeout(() => speech.classList.add("hidden"), 900);
 
@@ -3653,17 +4525,27 @@
         }
 
         battle.lastExplain = q.explain;
+        const phaseBadge = battle._lastPhaseMsg ? `<div class="mt-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-100 to-pink-100 border border-amber-300 text-xs font-black text-amber-900">${battle._lastPhaseMsg}</div>` : "";
+        const eggBadge = battle._lastEggExtra ? `<span class="ml-1.5 inline-block px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-black">🥚 孵蛋催化 +1</span>` : "";
         fbBox.className = "mt-3.5 p-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50 space-y-3";
-        fbText.innerHTML = `<div class="font-black text-emerald-700">🎉 答對了！</div><div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
+        fbText.innerHTML = `<div class="font-black text-emerald-700">🎉 答對了！${eggBadge}</div>${phaseBadge}<div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
       } else {
         SFX.hit();
-        battle.combo = 0;
-        battle.wrongCount = (battle.wrongCount || 0) + 1;
+        const usedBarrier = (battle.mode === "stage" && (battle.firstWrongLeft || 0) > 0);
         const isHeroHard = (battle.mode === "stage" && battle.stage && battle.stage.tier === "hero");
-        if (isHeroHard) {
-          battle.shields = Math.max(0, battle.shields - 2);
+        if (usedBarrier) {
+          battle.firstWrongLeft -= 1;
         } else {
-          battle.shields = Math.max(1, battle.shields - 1);
+          battle.combo = 0;
+          battle.wrongCount = (battle.wrongCount || 0) + 1;
+          if (battle.isFinalBoss && battle.bossPhase === 2 && battle.bossShieldHits > 0 && !battle.bossShieldBroken) {
+            battle.bossShieldHits = 2;
+          }
+          if (isHeroHard) {
+            battle.shields = Math.max(0, battle.shields - 2);
+          } else {
+            battle.shields = Math.max(1, battle.shields - 1);
+          }
         }
 
         triggerAnim(monsterWrap, "anim-monster-attack", "anim-monster-idle");
@@ -3671,7 +4553,7 @@
           triggerAnim(heroWrap, "anim-hero-shield", "anim-hero-idle");
         }, 220);
 
-        speech.textContent = isHeroHard ? (battle.shields <= 0 ? "護盾歸零了！" : "好痛！護盾 -2") : "護盾擋住！別氣餒";
+        speech.textContent = usedBarrier ? "🛡️ 首錯結界擋下！" : (isHeroHard ? (battle.shields <= 0 ? "護盾歸零了！" : "好痛！護盾 -2") : "護盾擋住！別氣餒");
         speech.classList.remove("hidden");
         setTimeout(() => speech.classList.add("hidden"), 1000);
 
@@ -3690,7 +4572,10 @@
         }
 
         battle.lastExplain = q.explain;
-        if (isHeroHard && battle.shields <= 0) {
+        if (usedBarrier) {
+          fbBox.className = "mt-3.5 p-4 rounded-2xl border-2 border-sky-300 bg-sky-50 space-y-3";
+          fbText.innerHTML = `<div class="font-black text-sky-700">🛡️ 首錯守護結界發動！免扣護盾並保留 ${battle.combo} 連擊！</div><div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
+        } else if (isHeroHard && battle.shields <= 0) {
           fbBox.className = "mt-3.5 p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 space-y-3";
           fbText.innerHTML = `<div class="font-black text-rose-700">💥 英雄級護盾歸零！挑戰失敗…</div><div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
         } else if (isHeroHard) {
@@ -3746,6 +4631,8 @@
     }
 
     function finishHeroDefeat() {
+      state.winStreak = 0;
+      saveState();
       const st = battle.stage;
       showModal("💔 英雄級挑戰失敗", `
         <div class="text-center space-y-3.5 py-2">
@@ -3782,6 +4669,8 @@
 
     function finishStageNotPassed() {
       clearBattleReadLock();
+      state.winStreak = 0;
+      saveState();
       SFX.hit();
       const totalQ = (battle && battle.questions) ? battle.questions.length : 6;
       const wrongQ = (battle && battle.wrongCount) ? battle.wrongCount : 0;
@@ -3823,7 +4712,8 @@
 
     function finishBattle() {
       clearBattleReadLock();
-      if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
+      const isKilled = battle && battle.monsterHp <= 0;
+      if (battle && (battle.mode === "stage" || battle.mode === "dungeon") && !isKilled) {
         const totalQ = battle.questions.length || 6;
         const correctQ = Math.max(0, totalQ - (battle.wrongCount || 0));
         const minPass = Math.ceil(totalQ * 0.66);
@@ -3837,18 +4727,35 @@
         confetti({ particleCount: 70, spread: 65, origin: { y: 0.6 } });
       }
 
-      const tb = getTreasureBonuses();
+      const subj = (battle.stage && battle.stage.subject) ? battle.stage.subject : "";
+      const tb = getTreasureBonuses(subj);
       const tierMult = battle.mode === "stage" ? (battle.stage.tier === "hero" ? 2.5 : (battle.stage.tier === "elite" ? 1.5 : 1)) : 1;
       const isPerfect = (battle.wrongCount || 0) === 0;
-      const baseStars = (battle.stage.isBoss ? 40 : 25) + (isPerfect ? 10 : 0);
-      const isLuckyDouble = battle.mode === "stage" && getDailyBonusStages().includes(battle.stage.id);
+      const isFinalBoss = !!battle.isFinalBoss;
+      const baseStars = isFinalBoss
+        ? (48 + (isPerfect ? 12 : 0))
+        : ((battle.stage.isBoss ? 40 : 25) + (isPerfect ? 10 : 0));
+      const isLuckyDouble = battle.mode === "stage" && isDailyDoubleAvailable(battle.stage.id);
+      if (isLuckyDouble) markDailyDoubleClaimed(battle.stage.id);
       const candyMult = battle.candyActive ? 2 : 1;
       const luckyMult = (isLuckyDouble ? 2 : 1) * candyMult;
       const pCnt = battle.purifiedInBattle || 0;
       const purifySweepBonus = (battle.mode === "purify" && (pCnt >= 6 || (state.wrongBank.length === 0 && pCnt >= 3))) ? 10 : 0;
       const rawStars = battle.mode === "purify" ? (pCnt * 5 + purifySweepBonus) : Math.round(baseStars * tierMult * luckyMult);
       const cbFinish = getCollectionBonuses();
-      const earnedStars = Math.round(rawStars * (1 + (tb.starPct + cbFinish.starPct) / 100));
+      let earnedStars = Math.round(rawStars * (1 + (tb.starPct + cbFinish.starPct) / 100));
+      const isRevStar = (battle.mode === "stage" && typeof isReviewMode === "function" && isReviewMode());
+      if (isRevStar && typeof applyReviewStarRate === "function") {
+        earnedStars = applyReviewStarRate(earnedStars);
+      }
+
+      // 單科 20/20 制霸滿血加成
+      let masterBonusMsg = "";
+      if (battle.mode === "stage" && isPerfect && tb.milestone && tb.milestone.masterStars > 0) {
+        earnedStars += tb.milestone.masterStars;
+        state.bondExp = (state.bondExp || 0) + tb.milestone.masterBond;
+        masterBonusMsg = `👑 ${subj}寶物全制霸共鳴：額外 +${tb.milestone.masterStars} ⭐、+${tb.milestone.masterBond} 默契！`;
+      }
       state.stars += earnedStars;
 
       let masteryRewardMsg = "";
@@ -3870,6 +4777,7 @@
               : `⭐ 達成「★★ 熟練進階（${mInfo.count}/${mInfo.total} 題）」！獲得熟練獎勵 +${bonusM} ⭐！`);
         }
       }
+      const isEarlyKill = (battle.mode === "stage" && isKilled && (battle.qIndex + 1) < battle.questions.length);
       let earnedExp = 0;
       if (battle.mode === "purify") {
         earnedExp = pCnt * 8;
@@ -3877,11 +4785,29 @@
         const tier = battle.stage.tier || "normal";
         const isB = !!battle.stage.isBoss;
         const fullShield = isPerfect;
-        if (tier === "hero") earnedExp = (isB ? 150 : 100) + (fullShield ? 25 : 0);
+        if (isFinalBoss) earnedExp = 190 + (fullShield ? 35 : 0);
+        else if (tier === "hero") earnedExp = (isB ? 150 : 100) + (fullShield ? 25 : 0);
         else if (tier === "elite") earnedExp = (isB ? 95 : 65) + (fullShield ? 15 : 0);
         else earnedExp = (isB ? 60 : 40) + (fullShield ? 10 : 0);
       }
-      const expRes = grantExp(Math.round(earnedExp * luckyMult * (1 + cbFinish.expPct / 100)));
+      const earlyExpMult = isEarlyKill ? 1.10 : 1.0;
+      const msExpPct = (tb.milestone && tb.milestone.expPct) ? tb.milestone.expPct : 0;
+      const expRes = grantExp(Math.round(earnedExp * luckyMult * earlyExpMult * (1 + (cbFinish.expPct + msExpPct) / 100)));
+      if (isEarlyKill) state.bondExp = (state.bondExp || 0) + 2;
+
+      // 連勝熱血氣勢 & 幸運戰利品袋
+      let winStreakEgg = false;
+      let lootDroppedLabel = "";
+      if (battle.mode === "stage") {
+        state.winStreak = (state.winStreak || 0) + 1;
+        if (state.winStreak >= 5 && typeof addPetEggProgress === "function") {
+          addPetEggProgress(1);
+          winStreakEgg = true;
+        }
+        if ((battle.lootBagPct || 0) > 0 && Math.random() * 100 < battle.lootBagPct) {
+          lootDroppedLabel = grantRandomBattleItem().label;
+        }
+      }
 
       if (battle.mode === "stage") {
         if (!state.clearedStages.includes(battle.stage.id)) {
@@ -3910,19 +4836,30 @@
       renderMap();
 
       let dropHtml = "";
+      const extraBonuses = [];
+      if (isEarlyKill) extraBonuses.push(`⚡ 速殺擊破（${battle.qIndex + 1}/${battle.questions.length} 題）：EXP +10%、默契 +2！`);
+      if (battle.bossShieldBonus > 0) extraBonuses.push(`💥 大魔王破罩賞金：+${battle.bossShieldBonus} ⭐！`);
+      if (battle.subjectResonance) extraBonuses.push(`✨ ${subj}學科共鳴生效（傷害 +10%、星星 +5%）！`);
+      if (masterBonusMsg) extraBonuses.push(masterBonusMsg);
+      if (lootDroppedLabel) extraBonuses.push(`🍀 幸運戰利品袋觸發：額外撿到 ${lootDroppedLabel}！`);
+      if (battle.mode === "stage" && (state.winStreak || 0) >= 3) {
+        extraBonuses.push(`🔥 連勝熱血氣勢：目前 ${state.winStreak} 連勝！${winStreakEgg ? "（連勝 ≥5 額外 +1 孵蛋進度！）" : ""}`);
+      }
+      const extraBonusHtml = extraBonuses.length ? `<div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200 text-xs font-bold text-pink-900 space-y-1 text-left">${extraBonuses.map(x => `<div>${x}</div>`).join("")}</div>` : "";
+
       if (dropRes.dropped && dropRes.isNew) {
         const r = dropRes.item;
-        dropHtml = `
+        dropHtml = `${extraBonusHtml}
           <div class="p-3 rounded-2xl bg-amber-50 border-2 border-amber-300 text-sm font-bold text-amber-900">
-            🎁 幸運掉寶！獲得【${rarityLabel[r.rarity]}】${r.icon} ${r.name}<br/>
+            ${dropRes.firstBossGuarantee ? "👑 大魔王首通必掉！" : "🎁 幸運掉寶！"}獲得【${r.subject}・${rarityLabel[r.rarity]}】${r.icon} ${r.name}<br/>
             <span class="text-xs font-medium text-amber-800">${r.desc}</span>
           </div>`;
       } else if (dropRes.dropped && !dropRes.isNew) {
         const r = dropRes.item;
-        dropHtml = `
+        dropHtml = `${extraBonusHtml}
           <div class="p-3 rounded-2xl bg-sky-50 border-2 border-sky-300 text-sm font-bold text-sky-900">
-            ♻️ 掉落重複寶物「${r.icon} ${r.name}」，自動換成 <strong class="text-amber-600">+50 ⭐</strong>！<br/>
-            <span class="text-xs font-medium text-sky-700">（重複保底進度 ${dropRes.dupCount}/5，滿 5 次下次必出新寶物）</span>
+            ♻️ 掉落重複【${rarityLabel[r.rarity]}】「${r.icon} ${r.name}」，換成 <strong class="text-amber-600">+${dropRes.dupStars || 40} ⭐</strong>${dropRes.extraEgg ? " ＋ 🥚 孵蛋 +1" : ""}！<br/>
+            <span class="text-xs font-medium text-sky-700">${dropRes.poolFull ? "（✨ 本科此分級寶物已全收齊，改換星星回饋！）" : `（重複保底進度 ${dropRes.dupCount}/3，滿 3 次下次必出本階新寶物）`}</span>
           </div>`;
       } else if (dropRes.skippedPurify) {
         dropHtml = `
@@ -3930,7 +4867,7 @@
             ✨ 本場成功淨化 ${pCnt} 題${purifySweepBonus > 0 ? "（含清倉鼓勵 +10 ⭐）" : ""}！錯題淨化不掉落寶物，收集寶物請挑戰正規關卡喔！
           </div>`;
       } else {
-        dropHtml = `
+        dropHtml = `${extraBonusHtml}
           <div class="p-2.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs font-bold text-stone-500">
             💫 本次未掉落寶物（保底進度 ${dropRes.noDropStreak}/3，滿 3 次下次必掉！）
           </div>`;
@@ -3948,15 +4885,16 @@
             <div class="text-3xl">🎊</div>
           </div>
           <div>
-            <div class="text-xl font-black text-pink-600">${battle.stage.name} 通關完成！</div>
+            <div class="text-xl font-black text-pink-600">${battle.stage.name} ${battle.mode === "stage" ? (isKilled ? "⚔️ 完美擊破！" : "🛡️ 成功擊退！") : "通關完成！"}</div>
             <p class="text-sm text-stone-600 mt-1">
               獲得 <strong class="text-amber-600">+${earnedStars} 顆星星</strong>
+              ${isRevStar ? `（複習 30%）` : ""}
               ${tierMult > 1 ? `（${battle.stage.tier === "hero" ? "英雄 2.5x" : "菁英 1.5x"}）` : ""}
               ${tb.starPct > 0 ? `（含寶物 +${tb.starPct}%）` : ""}
               ${expRes.added > 0 ? `｜<strong class="text-pink-600">+${expRes.added} EXP</strong>` : ""}
             </p>
             ${expRes.levelsGained > 0 ? `<div class="mt-2 p-2.5 rounded-2xl bg-gradient-to-r from-amber-100 to-pink-100 border-2 border-amber-300 text-xs sm:text-sm font-black text-amber-950">🎉 勇者升級！Lv.${expRes.oldLevel} ➜ Lv.${expRes.newLevel}（${getTitleForLevel(expRes.newLevel)}），贈送升級賀禮 +${expRes.giftStars} ⭐！</div>` : ""}
-            ${expRes.paragonChests > 0 ? `<div class="mt-2 p-2.5 rounded-2xl bg-purple-100 border-2 border-purple-300 text-xs font-black text-purple-900">👑 觸發滿等巔峰寶箱 ×${expRes.paragonChests}（+${expRes.paragonChests * 100} ⭐）！</div>` : ""}
+            ${expRes.paragonChests > 0 ? `<div class="mt-2 p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-xs font-black text-amber-800">👑 晉升巔峰星階 ★${state.paragonStars || 1}（寶箱 ×${expRes.paragonChests}）！獲得 +${expRes.paragonChests * 150} ⭐、🥚 孵蛋 +${expRes.paragonChests * 3}、${(expRes.paragonItems || []).join("、")}！</div>` : ""}
           </div>
           ${isLuckyDouble ? `<div class="p-2.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-xs sm:text-sm font-black text-rose-700">🔥 觸發「今日幸運雙倍關」加成！星星與經驗值雙倍獲得！</div>` : ""}
           ${masteryRewardMsg ? `<div class="p-2.5 rounded-2xl bg-amber-100 border-2 border-amber-400 text-xs sm:text-sm font-black text-amber-950">${masteryRewardMsg}</div>` : ""}
@@ -4061,33 +4999,104 @@
 
     let dexFilter = "全部";
 
+    let lastSlotMsg = "";
     function openCollectionModal() {
-      const tb = getTreasureBonuses();
+      const tb = getTreasureBonuses(dexFilter === "全部" ? "" : dexFilter);
+      const maxSlots = getUnlockedTreasureSlots();
+      const eqIds = syncEquippedTreasures(false);
       const subjects = ["全部", "國語", "數學", "自然", "社會", "英文"];
       const rarityMeta = {
-        common: { label: "普通", cls: "bg-stone-100 text-stone-700 border-stone-300", card: "bg-amber-50/70 border-amber-200" },
-        rare: { label: "稀有", cls: "bg-purple-100 text-purple-800 border-purple-300", card: "bg-purple-50/70 border-purple-300" },
-        legendary: { label: "傳說", cls: "bg-gradient-to-r from-amber-300 to-pink-300 text-amber-950 border-amber-400", card: "bg-gradient-to-br from-amber-50 to-pink-50 border-amber-400" }
+        common: { label: "普通", cls: "bg-stone-100 text-stone-700 border-stone-300", card: "bg-amber-50/70 border-amber-200", src: "🟢 普通／菁英關掉落、或星光扭蛋" },
+        rare: { label: "稀有", cls: "bg-purple-100 text-purple-800 border-purple-300", card: "bg-purple-50/70 border-purple-300", src: "🔵 菁英／英雄關掉落、或星光扭蛋" },
+        legendary: { label: "傳說", cls: "bg-gradient-to-r from-amber-300 to-pink-300 text-amber-950 border-amber-400", card: "bg-gradient-to-br from-amber-50 to-pink-50 border-amber-400", src: "🟣 英雄關(7–8)與第 9 關大魔王限定" }
       };
 
+      const slotCardsHtml = [1, 2, 3, 4].map(idx => {
+        if (idx <= maxSlots) {
+          const tid = eqIds[idx - 1];
+          const t = tid ? TREASURES.find(x => x.id === tid) : null;
+          if (t) {
+            const sk = TREASURE_SKILL_META[t.skill] || { icon: "✨", name: "特殊技", short: "" };
+            return `
+              <div class="p-2 rounded-2xl border-2 border-pink-300 bg-white flex flex-col justify-between gap-1 shadow-sm">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xl">${t.icon}</span>
+                  <div class="min-w-0 flex-1">
+                    <div class="text-[11px] font-black text-stone-800 truncate">${t.name}</div>
+                    <div class="text-[10px] font-bold text-purple-700 truncate">${sk.icon} ${sk.name}</div>
+                  </div>
+                </div>
+                <button data-unequip-tid="${t.id}" class="btn-unequip-tr w-full py-0.5 rounded-lg bg-stone-100 hover:bg-rose-100 text-stone-600 hover:text-rose-700 text-[10px] font-black">卸下</button>
+              </div>`;
+          }
+          return `
+            <div class="p-2 rounded-2xl border-2 border-dashed border-pink-200 bg-pink-50/40 flex flex-col items-center justify-center text-center min-h-[68px]">
+              <div class="text-base">➕</div>
+              <div class="text-[10px] font-bold text-stone-500">第 ${idx} 格空位</div>
+              <div class="text-[9px] text-stone-400">點下方技能寶物裝備</div>
+            </div>`;
+        }
+        const cost = TREASURE_SLOT_COSTS[idx] || 3500;
+        const canUnlockNow = idx === maxSlots + 1;
+        const freeHint = idx === 2 ? "或集滿 25 寶物免費" : "";
+        return `
+          <div class="p-2 rounded-2xl border-2 border-stone-200 bg-stone-100/80 flex flex-col items-center justify-center text-center gap-1 min-h-[68px]">
+            <div class="text-xs font-black text-stone-600">🔒 第 ${idx} 格</div>
+            ${freeHint ? `<div class="text-[9px] font-bold text-emerald-700">${freeHint}</div>` : ""}
+            <button data-unlock-slot="${idx}" ${canUnlockNow ? "" : "disabled"} class="btn-unlock-slot px-2 py-1 rounded-lg text-[10px] font-black ${canUnlockNow ? "bg-amber-400 hover:bg-amber-500 text-amber-950 shadow-sm" : "bg-stone-200 text-stone-400 cursor-not-allowed"}">⭐ ${cost.toLocaleString()} 解鎖</button>
+          </div>`;
+      }).join("");
+
+      const subjMilestoneBar = dexFilter !== "全部" ? (() => {
+        const ms = getSubjectMilestoneBonuses(dexFilter);
+        const steps = [
+          { n: 5, label: "EXP+5%" },
+          { n: 10, label: "ATK+4" },
+          { n: 15, label: "掉寶+5%" },
+          { n: 20, label: "滿血+15⭐" }
+        ];
+        return `
+          <div class="p-2.5 rounded-2xl bg-sky-50 border border-sky-200 space-y-1.5">
+            <div class="flex items-center justify-between text-xs font-black text-sky-900">
+              <span>🏅 ${dexFilter}學科收藏里程碑（${ms.count} / 20）</span>
+              <span class="text-[11px] text-purple-700">裝 2 顆同科即觸發 ✨共鳴</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-center">
+              ${steps.map(st => {
+                const ok = ms.count >= st.n;
+                return `<div class="py-1 px-1 rounded-xl border text-[10px] font-black ${ok ? "bg-emerald-100 border-emerald-300 text-emerald-800" : "bg-white border-sky-100 text-stone-400"}">${ok ? "✅" : "🔒"} ${st.n}顆 ${st.label}</div>`;
+              }).join("")}
+            </div>
+          </div>`;
+      })() : "";
+
       const filtered = dexFilter === "全部" ? TREASURES : TREASURES.filter(t => t.subject === dexFilter);
-      const filterBtns = subjects.map(s => `
-        <button data-dex-subj="${s}" class="dex-filter-btn px-2.5 py-1 rounded-full text-xs font-black border ${dexFilter === s ? "bg-pink-500 text-white border-pink-600" : "bg-white text-stone-700 border-pink-200 hover:bg-pink-50"}">${s}</button>
-      `).join("");
+      const filterBtns = subjects.map(s => {
+        const cnt = s === "全部" ? (state.treasures || []).length : (state.treasures || []).filter(id => { const x = TREASURES.find(t => t.id === id); return x && x.subject === s; }).length;
+        const tot = s === "全部" ? TREASURES.length : TREASURES.filter(t => t.subject === s).length;
+        return `<button data-dex-subj="${s}" class="dex-filter-btn px-2.5 py-1 rounded-full text-xs font-black border ${dexFilter === s ? "bg-pink-500 text-white border-pink-600" : "bg-white text-stone-700 border-pink-200 hover:bg-pink-50"}">${s} ${cnt}/${tot}</button>`;
+      }).join("");
 
       const treasureHtml = filtered.map(t => {
         const owned = (state.treasures || []).includes(t.id);
+        const isEq = eqIds.includes(t.id);
         const rm = rarityMeta[t.rarity] || rarityMeta.common;
+        const sk = t.skill ? TREASURE_SKILL_META[t.skill] : null;
+        const actionBtn = (owned && t.skill)
+          ? `<button data-toggle-eq="${t.id}" class="btn-toggle-eq shrink-0 px-2 py-1 rounded-xl text-[11px] font-black border ${isEq ? "bg-pink-500 text-white border-pink-600" : "bg-white hover:bg-amber-100 text-amber-900 border-amber-300"}">${isEq ? "✅ 已裝備" : "⚔️ 裝備"}</button>`
+          : "";
         return `
-          <div class="p-2.5 rounded-2xl border-2 ${owned ? rm.card : "bg-stone-100 border-stone-200 opacity-60"} flex items-center gap-2.5">
+          <div class="p-2.5 rounded-2xl border-2 ${isEq ? "border-pink-400 bg-pink-50/70 ring-1 ring-pink-300" : (owned ? rm.card : "bg-stone-100 border-stone-200 opacity-65")} flex items-center gap-2.5">
             <div class="text-2xl sm:text-3xl shrink-0">${owned ? t.icon : "❔"}</div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1 flex-wrap">
                 <span class="text-xs sm:text-sm font-black">${owned ? t.name : "尚未獲得的寶物"}</span>
                 <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full border ${rm.cls}">${t.subject}・${rm.label}</span>
+                ${sk && owned ? `<span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-800">${sk.icon}${sk.name}</span>` : ""}
               </div>
-              <div class="text-[11px] text-stone-600 mt-0.5">${owned ? `${t.desc}（增傷+${t.atk} / 星星+${t.starPct}%）` : "通關隨機掉落（30%～50%，含 3 場保底）"}</div>
+              <div class="text-[11px] text-stone-600 mt-0.5">${owned ? `${t.desc}（增傷+${t.atk} / 星星+${t.starPct}%）` : rm.src}</div>
             </div>
+            ${actionBtn}
           </div>
         `;
       }).join("");
@@ -4098,7 +5107,7 @@
         { name: "葉子小精靈", img: ASSETS.nature, desc: "（自然專屬）最愛觀察植物與自然奧秘，高階形態會圍繞翠綠森靈微粒。" },
         { name: "星光貓頭鷹博士", img: ASSETS.owl, desc: "（社會專屬）熟悉地理歷史的智者，高階形態會散發金色星海羅盤光環。" },
         { name: "魔法書小惡魔", img: ASSETS.english, desc: "（英文專屬）愛用英文單字變魔術，高階形態會啟動秘紫奧術符文陣。" },
-        { name: "彩虹水晶龍", img: ASSETS.dragon, desc: "（各科第 9 關最終魔王）會依科目化身花墨、星算、森靈、星海、魔典五大屬性魔王！" }
+        { name: "彩虹水晶龍", img: ASSETS.dragon, desc: "（各科第 9 關最終魔王，720 HP 雙階段水晶護罩）會依科目化身五大屬性魔王！" }
       ];
       const monsterHtml = monsters.map(m => {
         const keyWord = m.name.slice(0, 2);
@@ -4114,17 +5123,26 @@
         `;
       }).join("");
 
-      showModal("📖 冒險手冊｜寶物圖鑑", `
+      showModal("📖 冒險手冊｜百寶圖鑑＆裝備槽", `
         ${getBookHubBar("dex")}
         <div class="p-3 mt-2 rounded-2xl bg-gradient-to-r from-amber-50 to-pink-50 border-2 border-amber-200 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-          <div><div class="text-[11px] text-stone-500 font-bold">⚔️ 寶物總增傷</div><div class="text-base font-black text-rose-600">+${tb.atkBonus}</div></div>
-          <div><div class="text-[11px] text-stone-500 font-bold">⭐ 星星總加成</div><div class="text-base font-black text-amber-600">+${tb.starPct}%</div></div>
-          <div><div class="text-[11px] text-stone-500 font-bold">✂️ 刪錯技</div><div class="text-base font-black text-purple-600">${tb.fiftyUses} 次/場</div></div>
-          <div><div class="text-[11px] text-stone-500 font-bold">💖 護盾回復</div><div class="text-base font-black text-pink-600">${tb.healUses} 次/場</div></div>
+          <div><div class="text-[11px] text-stone-500 font-bold">⚔️ 圖鑑總增傷</div><div class="text-base font-black text-rose-600">+${tb.atkBonus}</div></div>
+          <div><div class="text-[11px] text-stone-500 font-bold">⭐ 圖鑑星星加成</div><div class="text-base font-black text-amber-600">+${tb.starPct}%</div></div>
+          <div><div class="text-[11px] text-stone-500 font-bold">✂️/💖 裝備主動技</div><div class="text-base font-black text-purple-600">${tb.fiftyUses}刪 / ${tb.healUses}盾</div></div>
+          <div><div class="text-[11px] text-stone-500 font-bold">⚡ 必殺門檻</div><div class="text-base font-black text-pink-600">${tb.ultThreshold} 連擊</div></div>
         </div>
+        <div class="p-3 rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-xs sm:text-sm font-black text-purple-900">💎 隨身魔導寶物槽（已開 ${maxSlots} / 4 格｜裝 2 顆同科觸發 ✨共鳴）</div>
+            <button id="btn-auto-equip-tr" class="sanrio-btn px-2.5 py-1 rounded-xl bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black">✨ 一鍵推薦配裝</button>
+          </div>
+          ${lastSlotMsg ? `<div class="p-2 rounded-xl bg-rose-50 border border-rose-200 text-xs font-black text-rose-700 text-center">${lastSlotMsg}</div>` : ""}
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">${slotCardsHtml}</div>
+        </div>
+        ${subjMilestoneBar}
         <div class="space-y-2">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <h4 class="text-sm font-black text-amber-800">🎁 50 項冒險寶物庫（重複掉寶自動換 +50 ⭐）</h4>
+            <h4 class="text-sm font-black text-amber-800">🎁 ${TREASURES.length} 項冒險寶物庫（重複返還 40/70/120 ⭐）</h4>
             <div class="flex flex-wrap gap-1">${filterBtns}</div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${treasureHtml}</div>
@@ -4136,6 +5154,60 @@
       `);
 
       bindBookHubBar();
+      const autoBtn = document.getElementById("btn-auto-equip-tr");
+      if (autoBtn) autoBtn.addEventListener("click", () => {
+        SFX.win();
+        autoRecommendTreasures(dexFilter === "全部" ? "" : dexFilter);
+        openCollectionModal();
+      });
+      document.querySelectorAll(".btn-unequip-tr").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const tid = btn.getAttribute("data-unequip-tid");
+          state.equippedTreasures = (state.equippedTreasures || []).filter(x => x !== tid);
+          saveState();
+          openCollectionModal();
+        });
+      });
+      document.querySelectorAll(".btn-unlock-slot").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetSlot = Number(btn.getAttribute("data-unlock-slot"));
+          const cost = TREASURE_SLOT_COSTS[targetSlot] || 3500;
+          if ((state.stars || 0) < cost) {
+            SFX.hit();
+            lastSlotMsg = `⚠️ 星星不足！解鎖第 ${targetSlot} 格需要 ${cost.toLocaleString()} ⭐（目前還差 ${(cost - (state.stars || 0)).toLocaleString()} ⭐）`;
+            openCollectionModal();
+            return;
+          }
+          lastSlotMsg = "";
+          state.stars -= cost;
+          state.treasureSlots = Math.max(getUnlockedTreasureSlots(), targetSlot);
+          syncEquippedTreasures(true);
+          saveState();
+          renderHUD();
+          SFX.win();
+          openCollectionModal();
+        });
+      });
+      document.querySelectorAll(".btn-toggle-eq").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tid = btn.getAttribute("data-toggle-eq");
+          const cur = syncEquippedTreasures(false);
+          if (cur.includes(tid)) {
+            state.equippedTreasures = cur.filter(x => x !== tid);
+            SFX.click();
+          } else {
+            if (cur.length >= maxSlots) {
+              state.equippedTreasures = [...cur.slice(1), tid];
+            } else {
+              state.equippedTreasures = [...cur, tid];
+            }
+            SFX.win();
+          }
+          saveState();
+          openCollectionModal();
+        });
+      });
       document.querySelectorAll(".dex-filter-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           SFX.click();
@@ -4288,6 +5360,7 @@
     // ====== STAR HUB: GACHA (300 / 3000) + PARENT VOUCHERS + TRAINING ======
     let lastGachaMsg = "";
     let lastArtGachaMsg = "";
+    let gachaSubjectFilter = "全部";
 
     function openStarHubModal() {
       const tb = getTreasureBonuses();
@@ -4302,18 +5375,34 @@
 
       let contentHtml = "";
       if (starHubTab === "gacha") {
+        const gachaPoolAll = TREASURES.filter(t => t.rarity !== "legendary");
+        const gachaPoolOwned = gachaPoolAll.filter(t => (state.treasures || []).includes(t.id));
+        const gachaPoolSubj = gachaSubjectFilter === "全部" ? gachaPoolAll : gachaPoolAll.filter(t => t.subject === gachaSubjectFilter);
+        const unownedSubjCR = gachaPoolSubj.filter(t => !(state.treasures || []).includes(t.id));
+        const allCRFull = gachaPoolOwned.length >= gachaPoolAll.length;
+        const subjBtns = ["全部", "國語", "數學", "自然", "社會", "英文"].map(s => `
+          <button data-gacha-subj="${s}" class="gacha-subj-btn px-2.5 py-1 rounded-full text-xs font-black border ${gachaSubjectFilter === s ? "bg-purple-500 text-white border-purple-600" : "bg-white text-stone-700 border-purple-200 hover:bg-purple-50"}">${s}</button>
+        `).join("");
+
         contentHtml = `
           <div class="p-4 rounded-2xl bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 border-2 border-purple-200 text-center space-y-3">
-            <div class="text-4xl">🎰✨</div>
-            <div class="text-base font-black text-purple-900">星光寶物扭蛋機（已收集 ${tb.ownedCount} / 50 件寶物）</div>
-            <p class="text-xs text-stone-600">用多餘的星星轉扭蛋！單抽 300 ⭐ 隨機出寶（重複返還 +50 ⭐ 與 +5 默契）；必中池 3,000 ⭐ 保證開出尚未擁有的新寶物！</p>
-            ${lastGachaMsg ? `<div class="p-3 rounded-xl bg-white border-2 border-amber-300 text-sm font-black text-amber-900">${lastGachaMsg}</div>` : ""}
+            <div class="text-4xl">${allCRFull ? "🎁✨" : "🎰✨"}</div>
+            <div class="text-base font-black text-purple-900">
+              ${allCRFull ? "星光驚喜道具池（普／稀 80 件已全收集！）" : `學科星光扭蛋機（普／稀已收集 ${gachaPoolOwned.length} / ${gachaPoolAll.length} 件）`}
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              ${allCRFull
+                ? "普通與稀有寶物已全數集齊！扭蛋機自動升級為「驚喜道具池」，每次 300 ⭐ 必得 2 個戰鬥道具 ＋ 🥚 孵蛋 +3 ＋ 雙星默契 +15！（傳說寶物請挑戰英雄關＆大魔王取得！）"
+                : "可指定學科抽取<strong>普通／稀有寶物</strong>（傳說寶物限定英雄關＆第 9 關大魔王掉落）！重複寶物自動轉換為「隨機戰鬥道具 或 🥚孵蛋+2」＋ +40 ⭐！"}
+            </p>
+            ${!allCRFull ? `<div class="flex flex-wrap justify-center gap-1.5">${subjBtns}</div>` : ""}
+            ${lastGachaMsg ? `<div class="p-3 rounded-xl bg-white border-2 border-amber-300 text-xs sm:text-sm font-black text-amber-900">${lastGachaMsg}</div>` : ""}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
               <button id="btn-gacha-300" class="sanrio-btn p-3 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-black text-sm">
-                🎲 隨機轉一次（300 ⭐）
+                ${allCRFull ? "🎁 抽驚喜道具箱（300 ⭐）" : `🎲 ${gachaSubjectFilter}單抽（300 ⭐）`}
               </button>
-              <button id="btn-gacha-3000" ${unownedCount === 0 ? "disabled" : ""} class="sanrio-btn p-3 rounded-2xl font-black text-sm ${unownedCount === 0 ? "bg-stone-200 text-stone-500 cursor-not-allowed" : "bg-gradient-to-r from-amber-400 to-rose-400 text-white"}">
-                ${unownedCount === 0 ? "👑 已集齊全部 50 件！" : "🌟 必中新寶物（3,000 ⭐）"}
+              <button id="btn-gacha-3000" ${unownedSubjCR.length === 0 ? "disabled" : ""} class="sanrio-btn p-3 rounded-2xl font-black text-sm ${unownedSubjCR.length === 0 ? "bg-stone-200 text-stone-500 cursor-not-allowed" : "bg-gradient-to-r from-amber-400 to-rose-400 text-white"}">
+                ${unownedSubjCR.length === 0 ? `👑 ${gachaSubjectFilter}普／稀已集齊！` : `🌟 ${gachaSubjectFilter}必中新寶（1,800 ⭐）`}
               </button>
             </div>
           </div>
@@ -4587,23 +5676,53 @@
         });
       });
 
+      document.querySelectorAll(".gacha-subj-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          gachaSubjectFilter = btn.getAttribute("data-gacha-subj") || "全部";
+          lastGachaMsg = "";
+          openStarHubModal();
+        });
+      });
+
       const g300 = document.getElementById("btn-gacha-300");
       if (g300) {
         g300.addEventListener("click", () => {
           if (state.stars < 300) { lastGachaMsg = "⚠️ 星星不足 300 ⭐，再去闖關存一點吧！"; openStarHubModal(); return; }
           state.stars -= 300;
           state.gachaPulls = (state.gachaPulls || 0) + 1;
-          const picked = TREASURES[Math.floor(Math.random() * TREASURES.length)];
-          if (!state.treasures.includes(picked.id)) {
-            state.treasures.push(picked.id);
+          const allCR = TREASURES.filter(t => t.rarity !== "legendary");
+          const allCRFull = allCR.every(t => (state.treasures || []).includes(t.id));
+          if (allCRFull) {
+            const it1 = grantRandomBattleItem();
+            const it2 = grantRandomBattleItem();
+            if (typeof addPetEggProgress === "function") addPetEggProgress(3);
+            state.bondExp = (state.bondExp || 0) + 15;
             SFX.win();
-            if (typeof confetti === "function") confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 } });
-            lastGachaMsg = `🎉 抽到全新寶物：${picked.icon} ${picked.name}！（${picked.desc}）`;
+            lastGachaMsg = `🎁 驚喜道具箱開出：${it1.label} ＋ ${it2.label} ＋ 🥚孵蛋+3 ＋ 默契+15！`;
           } else {
-            state.stars += 50;
-            state.bondExp = (state.bondExp || 0) + 5;
-            SFX.click();
-            lastGachaMsg = `♻️ 抽到重複寶物「${picked.icon} ${picked.name}」，返還 +50 ⭐ 與 +5 雙星默契！`;
+            const subPool = gachaSubjectFilter === "全部" ? allCR : allCR.filter(t => t.subject === gachaSubjectFilter);
+            const rPool = Math.random() < 0.25 ? subPool.filter(t => t.rarity === "rare") : subPool.filter(t => t.rarity === "common");
+            const finalPool = rPool.length > 0 ? rPool : subPool;
+            const picked = finalPool[Math.floor(Math.random() * finalPool.length)];
+            if (!(state.treasures || []).includes(picked.id)) {
+              state.treasures.push(picked.id);
+              syncEquippedTreasures(true);
+              SFX.win();
+              if (typeof confetti === "function") confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 } });
+              lastGachaMsg = `🎉 抽到全新【${picked.subject}・${picked.rarity === "rare" ? "稀有" : "普通"}】${picked.icon} ${picked.name}！（${picked.desc}）`;
+            } else {
+              state.stars += 40;
+              state.bondExp = (state.bondExp || 0) + 5;
+              SFX.click();
+              if (Math.random() < 0.5) {
+                const it = grantRandomBattleItem();
+                lastGachaMsg = `♻️ 抽到重複「${picked.icon} ${picked.name}」，轉化為 ${it.label} ＋ +40 ⭐ ＋ +5 默契！`;
+              } else {
+                if (typeof addPetEggProgress === "function") addPetEggProgress(2);
+                lastGachaMsg = `♻️ 抽到重複「${picked.icon} ${picked.name}」，轉化為 🥚 孵蛋進度 +2 ＋ +40 ⭐ ＋ +5 默契！`;
+              }
+            }
           }
           saveState();
           renderHUD();
@@ -4612,18 +5731,21 @@
       }
 
       const g3000 = document.getElementById("btn-gacha-3000");
-      if (g3000 && unownedCount > 0) {
+      if (g3000) {
         g3000.addEventListener("click", () => {
-          if (state.stars < 3000) { lastGachaMsg = "⚠️ 必中扭蛋需要 3,000 ⭐，目前星星還不夠喔！"; openStarHubModal(); return; }
-          const unowned = TREASURES.filter(t => !state.treasures.includes(t.id));
+          if (state.stars < 1800) { lastGachaMsg = "⚠️ 指定必中扭蛋需要 1,800 ⭐，目前星星還不夠喔！"; openStarHubModal(); return; }
+          const allCR = TREASURES.filter(t => t.rarity !== "legendary");
+          const subPool = gachaSubjectFilter === "全部" ? allCR : allCR.filter(t => t.subject === gachaSubjectFilter);
+          const unowned = subPool.filter(t => !(state.treasures || []).includes(t.id));
           if (unowned.length === 0) return;
-          state.stars -= 3000;
+          state.stars -= 1800;
           state.gachaPulls = (state.gachaPulls || 0) + 1;
           const picked = unowned[Math.floor(Math.random() * unowned.length)];
           state.treasures.push(picked.id);
+          syncEquippedTreasures(true);
           SFX.win();
-          if (typeof confetti === "function") confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
-          lastGachaMsg = `🌟 必中大成功！獲得新寶物：${picked.icon} ${picked.name}！（${picked.desc}）`;
+          if (typeof confetti === "function") confetti({ particleCount: 70, spread: 70, origin: { y: 0.5 } });
+          lastGachaMsg = `🌟 必中全新【${picked.subject}・${picked.rarity === "rare" ? "稀有" : "普通"}】${picked.icon} ${picked.name}！（${picked.desc}）`;
           saveState();
           renderHUD();
           openStarHubModal();
@@ -5804,7 +6926,7 @@
       return `
         <div class="grid grid-cols-4 gap-1.5 pb-2 border-b border-emerald-100">
           <button id="sw-book-daily" class="${bCls} ${activeKey === 'daily' ? 'bg-rose-500 text-white border-rose-600' : 'bg-white text-rose-700 border-rose-200 hover:bg-rose-50'}"><span>📅</span><span>每日委託</span></button>
-          <button id="sw-book-dex" class="${bCls} ${activeKey === 'dex' ? 'bg-sky-500 text-white border-sky-600' : 'bg-white text-sky-700 border-sky-200 hover:bg-sky-50'}"><span>📖</span><span>圖鑑 ${(state.treasures||[]).length}/50</span></button>
+          <button id="sw-book-dex" class="${bCls} ${activeKey === 'dex' ? 'bg-sky-500 text-white border-sky-600' : 'bg-white text-sky-700 border-sky-200 hover:bg-sky-50'}"><span>📖</span><span>圖鑑 ${(state.treasures||[]).length}/${TREASURES.length}</span></button>
           <button id="sw-book-ach" class="${bCls} relative ${activeKey === 'ach' ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-white text-emerald-700 border-emerald-200 hover:bg-emerald-50'}"><span>🏆</span><span>成就 ${(state.achievements||[]).length}/${ACHIEVEMENTS.length}</span>${unc > 0 ? `<span class="absolute -top-1.5 -right-1 bg-rose-500 text-white text-[9px] px-1 rounded-full">${unc}</span>` : ""}</button>
           <button id="sw-book-radar" class="${bCls} ${activeKey === 'radar' ? 'bg-indigo-500 text-white border-indigo-600' : 'bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50'}"><span>📊</span><span>戰力備份</span></button>
         </div>`;
@@ -7405,7 +8527,7 @@
         home: `
           <div class="space-y-2.5 text-sm leading-relaxed">
             <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200"><strong>1. 🏠 冒險小屋與裝扮：</strong>用星星購買帽子、領結、翅膀、魔杖與家具，支持購買前「👁️ 預覽」，擺出的家具可自由拖曳或點地板移動！花掉星星不會影響 Lv.50 永久勇者等級。</div>
-            <div class="p-3 rounded-2xl bg-sky-50 border border-sky-200"><strong>2. 🌟 星星樂園（三大回收機制）：</strong>星星太多時可來轉「寶物扭蛋機（300⭐／3,000⭐必中）」、強化「雙星特訓室」，或兌換家長自訂的「🎟️ 親子現實獎勵券」！</div>
+            <div class="p-3 rounded-2xl bg-sky-50 border border-sky-200"><strong>2. 🌟 星星樂園（三大回收機制）：</strong>星星太多時可來轉「學科寶物扭蛋機（300⭐／1,800⭐指定必中）」、強化「雙星特訓室」，或兌換家長自訂的「🎟️ 親子現實獎勵券」！</div>
           </div>`
       };
 
@@ -8349,7 +9471,7 @@
       showModal("🎓 選擇年級與主修設定", `
         <div class="space-y-3.5">
           <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-stone-700 leading-relaxed">
-            <strong>✨ 跨年級規則：</strong>小屋、家具、裝扮、50 種寶物與星星<strong>全 6 年級共用</strong>；45 關進度與錯題本按年級獨立紀錄。切回低於「主修年級」複習時，星星自動折算為 <strong>30%</strong> 以防溢出！
+            <strong>✨ 跨年級規則：</strong>小屋、家具、裝扮、100 種寶物與星星<strong>全 6 年級共用</strong>；45 關進度與錯題本按年級獨立紀錄。切回低於「主修年級」複習時，星星自動折算為 <strong>30%</strong> 以防溢出！
           </div>
           <div class="grid grid-cols-2 gap-2">${cardsHtml}</div>
           <div class="p-3 rounded-2xl bg-sky-50 border border-sky-200 space-y-2">
@@ -8483,9 +9605,9 @@
           finishHeroDefeat();
           return;
         }
-        if (battle && (battle.mode === "stage" || battle.mode === "dungeon")) {
+        if (battle && (battle.mode === "stage" || battle.mode === "dungeon") && battle.monsterHp > 0) {
           const totalQ = battle.questions.length || 6;
-          const maxAllowedWrong = totalQ - Math.ceil(totalQ * 0.66); // 6 題最多只能錯 2 題，錯達 3 題即溫柔中斷
+          const maxAllowedWrong = totalQ - Math.ceil(totalQ * 0.66); // 6 題最多錯 2 題；8 題最多錯 2 題
           if ((battle.wrongCount || 0) > maxAllowedWrong) {
             finishStageNotPassed();
             return;
