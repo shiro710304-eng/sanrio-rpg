@@ -6390,6 +6390,12 @@
       return Math.max(5, Math.min(58, Math.round(55 - bottomPct)));
     }
 
+    let cottagePos = {
+      lead: { left: 32, bottom: 11, face: 1 },
+      partner: { left: 56, bottom: 13, face: -1 }
+    };
+    let selectedFurnId = null;
+
     function getFurnCoords(item) {
       const saved = (state.furniturePos && state.furniturePos[item.id]) ? state.furniturePos[item.id] : null;
       return {
@@ -12426,7 +12432,7 @@
     }
 
     // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
-    const APP_VERSION = "v3.7.0";
+    const APP_VERSION = "v3.7.2";
     let _pwaReg = null;
     let _lastUpdateCheckTs = 0;
 
