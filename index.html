@@ -729,7 +729,8 @@
       pet_hood_dog: "https://drive.google.com/thumbnail?id=1wgobwbtHfsLGtcipfSgmEQZORmVclGtT&sz=w600",
       pet_mint_hamster: "https://drive.google.com/thumbnail?id=1dUtzzsa6Bb5AcS3zTjD5cY-F_7sAHQfz&sz=w600",
       pet_berry_cat: "https://drive.google.com/thumbnail?id=1kaPxagNcHuOMJQ27QmCU0alUntZ6Bx2J&sz=w600",
-      pet_star_unicorn: "https://drive.google.com/thumbnail?id=1HYT1Xivz9OHD1o7Xzccpa74rIKSixVAU&sz=w600",
+      pet_star_unicorn: "https://drive.google.com/thumbnail?id=1ihyhQuN5FwkYlnboXpoakeZO_weIAwVI&sz=w600",
+      pet_chinchilla: "https://drive.google.com/thumbnail?id=1fb0gfuRDKRtSCtWaeBOW4roHVo5r0G9n&sz=w600",
       pet_cloud_duck: "https://drive.google.com/thumbnail?id=1DnmeN9xJfwANr0eRd2BUb0ROGLrfjvZu&sz=w600",
       room_dessert_cafe: "https://drive.google.com/thumbnail?id=1f2KfXRnnZ3lMqPYEPNpwPXiiW_aEmr1I&sz=w1600",
       room_star_balcony: "https://drive.google.com/thumbnail?id=1G0FQzcnoCcnpRGk79Og4Ow53cwgtiABl&sz=w1600",
@@ -1001,7 +1002,7 @@
     "atk": 0.4,
     "starPct": 0.8,
     "skill": "lootBag",
-    "desc": "裝著幸運數字卡片的數學小袋。【裝備技】通關 30% 機率額外撿到戰鬥道具！"
+    "desc": "裝著幸運數字卡片的數學小袋。【裝備技】通關 15% 機率額外撿到戰鬥道具！"
   },
   {
     "id": "t20",
@@ -1221,7 +1222,7 @@
     "atk": 0.4,
     "starPct": 0.8,
     "skill": "lootBag",
-    "desc": "記錄環島旅行回憶的貼紙手札。【裝備技】通關 30% 機率額外撿到戰鬥道具！"
+    "desc": "記錄環島旅行回憶的貼紙手札。【裝備技】通關 15% 機率額外撿到戰鬥道具！"
   },
   {
     "id": "t40",
@@ -1386,7 +1387,7 @@
     "atk": 0.4,
     "starPct": 0.8,
     "skill": "lootBag",
-    "desc": "轉一下就能看懂文章主旨！【裝備技】通關 30% 機率額外撿到戰鬥道具！"
+    "desc": "轉一下就能看懂文章主旨！【裝備技】通關 15% 機率額外撿到戰鬥道具！"
   },
   {
     "id": "t55",
@@ -1606,7 +1607,7 @@
     "atk": 0.4,
     "starPct": 0.8,
     "skill": "lootBag",
-    "desc": "看清朔望月相與星座運行的迷你儀器。【裝備技】通關 30% 機率額外撿到道具！"
+    "desc": "看清朔望月相與星座運行的迷你儀器。【裝備技】通關 15% 機率額外撿到道具！"
   },
   {
     "id": "t75",
@@ -1760,7 +1761,7 @@
     "atk": 0.6,
     "starPct": 1.3,
     "skill": "lootBag",
-    "desc": "【傳說】裝備後通關有 30% 機率額外獲得 1 個隨機戰鬥道具！"
+    "desc": "【傳說】裝備後通關有 15% 機率額外獲得 1 個隨機戰鬥道具！"
   },
   {
     "id": "t89",
@@ -1826,7 +1827,7 @@
     "atk": 0.4,
     "starPct": 0.8,
     "skill": "lootBag",
-    "desc": "帶著英文對話環遊世界！【裝備技】通關 30% 機率額外撿到戰鬥道具！"
+    "desc": "帶著英文對話環遊世界！【裝備技】通關 15% 機率額外撿到戰鬥道具！"
   },
   {
     "id": "t95",
@@ -1959,7 +1960,75 @@
       { id: "a59", cat: "挑戰模式", tier: "bronze", reward: 100, icon: "🎰", title: "扭蛋首抽", desc: "在星光寶物扭蛋機抽獎 1 次", check: s => ((s.gachaPulls || 0) >= 1) },
       { id: "a60", cat: "挑戰模式", tier: "silver", reward: 250, icon: "🎟️", title: "生活獎勵達成", desc: "使用星星兌換 1 張親子現實獎勵券", check: s => (((s.redeemedVouchers || []).length) >= 1) },
       { id: "a61", cat: "戰鬥技巧", tier: "diamond", reward: 1000, icon: "📚", title: "千二學海大師", desc: "累計答對 1,200 題題目", check: s => ((s.totalCorrect || 0) >= 1200) },
-      { id: "a62", cat: "戰鬥技巧", tier: "diamond", reward: 1200, icon: "👑", title: "千五題傳說賢者", desc: "累計答對 1,500 題題目", check: s => ((s.totalCorrect || 0) >= 1500) }
+      { id: "a62", cat: "戰鬥技巧", tier: "diamond", reward: 1200, icon: "👑", title: "千五題傳說賢者", desc: "累計答對 1,500 題題目", check: s => ((s.totalCorrect || 0) >= 1500) },
+      // === v3.7 擴充：冒險通關 (+6 -> 24) ===
+      { id: "a64", cat: "冒險通關", tier: "gold", reward: 400, icon: "🌌", title: "星穹魔導王", desc: "勇者等級達到 Lv.60", check: s => (s.level || 1) >= 60 },
+      { id: "a65", cat: "冒險通關", tier: "gold", reward: 500, icon: "🌈", title: "彩虹創世賢者", desc: "勇者等級達到 Lv.80", check: s => (s.level || 1) >= 80 },
+      { id: "a66", cat: "冒險通關", tier: "diamond", reward: 800, icon: "👑", title: "三麗鷗宇宙大宗師", desc: "勇者等級達到滿百 Lv.100", check: s => (s.level || 1) >= 100 },
+      { id: "a67", cat: "冒險通關", tier: "gold", reward: 400, icon: "✨", title: "初登巔峰星階", desc: "滿百後晉升巔峰星階 ★1", check: s => (s.paragonStars || 0) >= 1 },
+      { id: "a68", cat: "冒險通關", tier: "diamond", reward: 800, icon: "🌠", title: "五星巔峰傳奇", desc: "巔峰星階達到 ★5 以上", check: s => (s.paragonStars || 0) >= 5 },
+      { id: "a69", cat: "冒險通關", tier: "diamond", reward: 800, icon: "🐉", title: "五科魔王全制霸", desc: "五個學科皆成功擊敗過第 9 關大魔王", check: s => (s.bossFirstClearSubjects || []).length >= 5 },
+
+      // === v3.7 擴充：戰鬥技巧 (+8 -> 22) ===
+      { id: "a70", cat: "戰鬥技巧", tier: "bronze", reward: 100, icon: "🔥", title: "五連勝氣勢", desc: "達成 5 場連續過關不敗", check: s => (s.winStreak || 0) >= 5 },
+      { id: "a71", cat: "戰鬥技巧", tier: "silver", reward: 200, icon: "💥", title: "十連勝無敵", desc: "達成 10 場連續過關不敗", check: s => (s.winStreak || 0) >= 10 },
+      { id: "a72", cat: "戰鬥技巧", tier: "gold", reward: 400, icon: "⚡", title: "二十連勝戰神", desc: "達成 20 場連續過關不敗", check: s => (s.winStreak || 0) >= 20 },
+      { id: "a73", cat: "戰鬥技巧", tier: "silver", reward: 200, icon: "📚", title: "千題知識王", desc: "累計答對題數達 1,000 題", check: s => (s.totalCorrect || 0) >= 1000 },
+      { id: "a74", cat: "戰鬥技巧", tier: "gold", reward: 400, icon: "🎓", title: "兩千題大學士", desc: "累計答對題數達 2,000 題", check: s => (s.totalCorrect || 0) >= 2000 },
+      { id: "a75", cat: "戰鬥技巧", tier: "diamond", reward: 800, icon: "🏛️", title: "五千題智慧殿堂", desc: "累計答對題數達 5,000 題", check: s => (s.totalCorrect || 0) >= 5000 },
+      { id: "a76", cat: "戰鬥技巧", tier: "bronze", reward: 150, icon: "💎", title: "雙槽魔導師", desc: "解鎖第 2 格隨身魔導寶物槽", check: s => (s.treasureSlots || 1) >= 2 || (s.treasures || []).length >= 25 },
+      { id: "a77", cat: "戰鬥技巧", tier: "gold", reward: 400, icon: "🌟", title: "四槽全開宗師", desc: "解鎖全部 4 格隨身魔導寶物槽", check: s => (s.treasureSlots || 1) >= 4 },
+
+      // === v3.7 擴充：收集養成 (+11 -> 24) ===
+      { id: "a78", cat: "收集養成", tier: "gold", reward: 400, icon: "🏺", title: "七十五寶收藏家", desc: "收集 75 件以上冒險寶物", check: s => (s.treasures || []).length >= 75 },
+      { id: "a79", cat: "收集養成", tier: "gold", reward: 400, icon: "🌟", title: "十傳說降臨", desc: "收集 10 件以上傳說級寶物", check: s => TREASURES.filter(t => t.rarity === "legendary" && (s.treasures || []).includes(t.id)).length >= 10 },
+      { id: "a80", cat: "收集養成", tier: "diamond", reward: 800, icon: "👑", title: "二十傳說大圓滿", desc: "集齊全部 20 件傳說級寶物", check: s => TREASURES.filter(t => t.rarity === "legendary" && (s.treasures || []).includes(t.id)).length >= 20 },
+      { id: "a81", cat: "收集養成", tier: "silver", reward: 200, icon: "🌸", title: "國語寶庫達人", desc: "收集 10 件以上國語科寶物", check: s => TREASURES.filter(t => t.subject === "國語" && (s.treasures || []).includes(t.id)).length >= 10 },
+      { id: "a82", cat: "收集養成", tier: "silver", reward: 200, icon: "📐", title: "數學寶庫達人", desc: "收集 10 件以上數學科寶物", check: s => TREASURES.filter(t => t.subject === "數學" && (s.treasures || []).includes(t.id)).length >= 10 },
+      { id: "a83", cat: "收集養成", tier: "silver", reward: 200, icon: "🌿", title: "自然寶庫達人", desc: "收集 10 件以上自然科寶物", check: s => TREASURES.filter(t => t.subject === "自然" && (s.treasures || []).includes(t.id)).length >= 10 },
+      { id: "a84", cat: "收集養成", tier: "silver", reward: 200, icon: "🧭", title: "社會寶庫達人", desc: "收集 10 件以上社會科寶物", check: s => TREASURES.filter(t => t.subject === "社會" && (s.treasures || []).includes(t.id)).length >= 10 },
+      { id: "a85", cat: "收集養成", tier: "silver", reward: 200, icon: "🪄", title: "英文寶庫達人", desc: "收集 10 件以上英文科寶物", check: s => TREASURES.filter(t => t.subject === "英文" && (s.treasures || []).includes(t.id)).length >= 10 },
+      { id: "a86", cat: "收集養成", tier: "gold", reward: 400, icon: "🎖️", title: "單科百寶全制霸", desc: "任意一個學科集滿全部 20 件寶物", check: s => ["國語","數學","自然","社會","英文"].some(sub => TREASURES.filter(t => t.subject === sub && (s.treasures || []).includes(t.id)).length >= 20) },
+      { id: "a87", cat: "收集養成", tier: "gold", reward: 400, icon: "🖼️", title: "繪本相簿大滿貫", desc: "收集全部 8 張三麗鷗夢幻插畫卡", check: s => (s.ownedArts || []).length >= 8 },
+      { id: "a88", cat: "收集養成", tier: "silver", reward: 200, icon: "✨", title: "閃耀頭像造型師", desc: "收集 3 款以上發光頭像框或 8 個稱號詞條", check: s => (s.ownedFrames || []).length >= 3 || ((s.ownedTitlePre || []).length + (s.ownedTitleSuf || []).length) >= 8 },
+
+      // === v3.7 擴充：寵物小屋 (新分類 20 項) ===
+      { id: "a89", cat: "寵物小屋", tier: "bronze", reward: 100, icon: "🥚", title: "第一位小跟班", desc: "成功孵化出第 1 隻迷你小跟班", check: s => Object.keys(s.ownedMiniPets || {}).length >= 1 },
+      { id: "a90", cat: "寵物小屋", tier: "silver", reward: 200, icon: "🐾", title: "萌寵三人行", desc: "收集 3 隻以上不同的迷你小跟班", check: s => Object.keys(s.ownedMiniPets || {}).length >= 3 },
+      { id: "a91", cat: "寵物小屋", tier: "diamond", reward: 800, icon: "🦄", title: "六萌寵全圖鑑", desc: "集齊全部 6 隻小屋迷你小跟班", check: s => Object.keys(s.ownedMiniPets || {}).length >= 6 },
+      { id: "a92", cat: "寵物小屋", tier: "bronze", reward: 100, icon: "✏️", title: "專屬愛的暱稱", desc: "幫任意一隻小跟班取一個專屬名字", check: s => Object.keys(s.miniPetNames || {}).length >= 1 },
+      { id: "a93", cat: "寵物小屋", tier: "silver", reward: 200, icon: "⭐", title: "戰鬥應援夥伴", desc: "任意一隻小跟班升到 Lv.3 解鎖戰鬥追擊", check: s => Object.values(s.ownedMiniPets || {}).some(lv => lv >= 3) },
+      { id: "a94", cat: "寵物小屋", tier: "gold", reward: 400, icon: "👑", title: "皇冠滿等萌寵", desc: "將任意一隻小跟班培養至 Lv.5 戴皇冠", check: s => Object.values(s.ownedMiniPets || {}).some(lv => lv >= 5) },
+      { id: "a95", cat: "寵物小屋", tier: "diamond", reward: 800, icon: "🌟", title: "三皇冠寵物戰隊", desc: "擁有 3 隻以上 Lv.5 滿等戴皇冠小跟班", check: s => Object.values(s.ownedMiniPets || {}).filter(lv => lv >= 5).length >= 3 },
+      { id: "a96", cat: "寵物小屋", tier: "silver", reward: 200, icon: "🏠", title: "三寵同堂小屋", desc: "解鎖第 3 個小屋寵物陪伴位", check: s => !!(s.petSlot3Unlocked || (s.unlockedRooms || []).includes("room2")) },
+      { id: "a97", cat: "寵物小屋", tier: "bronze", reward: 100, icon: "🍓", title: "點心餵食達人", desc: "累計餵食小跟班 3 顆以上星光點心", check: s => (s.petFeedCount || 0) >= 3 },
+      { id: "a98", cat: "寵物小屋", tier: "silver", reward: 200, icon: "💞", title: "黃金拍檔連攜", desc: "在小屋同時陪伴出任一組雙寵或三寵連攜", check: s => (typeof getActivePetBonuses === "function") ? !!getActivePetBonuses().synergy : false },
+      { id: "a99", cat: "寵物小屋", tier: "bronze", reward: 100, icon: "🎁", title: "初次散步伴手禮", desc: "在小屋領取小跟班散步叼回的禮物 1 次", check: s => (s.petWalkGiftCount || 0) >= 1 },
+      { id: "a100", cat: "寵物小屋", tier: "silver", reward: 250, icon: "🎒", title: "散步尋寶大豐收", desc: "累計領取小跟班散步叼寶禮物 10 次", check: s => (s.petWalkGiftCount || 0) >= 10 },
+      { id: "a101", cat: "寵物小屋", tier: "silver", reward: 250, icon: "🍰", title: "甜點吧開業啦", desc: "擴建並解鎖「2 號焦糖甜點吧」", check: s => (s.unlockedRooms || []).includes("room2") },
+      { id: "a102", cat: "寵物小屋", tier: "gold", reward: 400, icon: "🔭", title: "星空陽台落成", desc: "擴建並解鎖「3 號星夜觀星陽台」", check: s => (s.unlockedRooms || []).includes("room3") },
+      { id: "a103", cat: "寵物小屋", tier: "silver", reward: 200, icon: "🔧", title: "室內設計大師", desc: "解鎖家具「縮放＆左右翻轉」工坊", check: s => !!s.furnWorkshopOwned },
+      { id: "a104", cat: "寵物小屋", tier: "silver", reward: 200, icon: "🔮", title: "氣象魔法學徒", desc: "收集 3 種以上小屋天氣魔法球", check: s => (s.ownedWeathers || []).filter(w => w !== "none").length >= 3 },
+      { id: "a105", cat: "寵物小屋", tier: "gold", reward: 400, icon: "❄️", title: "四季氣象大師", desc: "集齊全部 5 種小屋天氣魔法球", check: s => (s.ownedWeathers || []).filter(w => w !== "none").length >= 5 },
+      { id: "a106", cat: "寵物小屋", tier: "bronze", reward: 100, icon: "🫖", title: "歡樂下午茶時光", desc: "在 2 號甜點吧舉辦過 1 次下午茶派對", check: s => (s.teaPartyCount || 0) >= 1 || !!s.teaPartyBuff },
+      { id: "a107", cat: "寵物小屋", tier: "bronze", reward: 100, icon: "🌠", title: "向流星許個願", desc: "在 3 號觀星陽台抽過 1 次許願流星籤", check: s => (s.wishStarCount || 0) >= 1 || !!(s.lastWishDate) },
+      { id: "a108", cat: "寵物小屋", tier: "silver", reward: 200, icon: "👗", title: "榮譽時尚達人", desc: "獲得任意 1 套榮譽通行證限定造型", check: s => (s.ownedHonorItems || []).length >= 1 },
+
+      // === v3.7 擴充：習慣複習 (+6 -> 16) ===
+      { id: "a109", cat: "習慣複習", tier: "silver", reward: 200, icon: "📅", title: "雙週堅持之星", desc: "累積完成每日打卡印章達 14 天", check: s => ((s.daily && s.daily.stampedDates) ? s.daily.stampedDates.length : 0) >= 14 },
+      { id: "a110", cat: "習慣複習", tier: "gold", reward: 400, icon: "🗓️", title: "滿月自律勇者", desc: "累積完成每日打卡印章達 30 天", check: s => ((s.daily && s.daily.stampedDates) ? s.daily.stampedDates.length : 0) >= 30 },
+      { id: "a111", cat: "習慣複習", tier: "diamond", reward: 800, icon: "🏅", title: "雙月學習傳奇", desc: "累積完成每日打卡印章達 60 天", check: s => ((s.daily && s.daily.stampedDates) ? s.daily.stampedDates.length : 0) >= 60 },
+      { id: "a112", cat: "習慣複習", tier: "bronze", reward: 150, icon: "📜", title: "首次每週大委託", desc: "完成並領取 1 項每週大委託獎勵", check: s => (s.weeklyQuestsDone || 0) >= 1 },
+      { id: "a113", cat: "習慣複習", tier: "silver", reward: 300, icon: "🏆", title: "週委託常勝軍", desc: "累計完成並領取 4 項以上每週大委託", check: s => (s.weeklyQuestsDone || 0) >= 4 },
+      { id: "a114", cat: "習慣複習", tier: "gold", reward: 400, icon: "✨", title: "百題錯題大淨化", desc: "累計在錯題道場成功淨化 100 題錯題", check: s => (s.purifiedCount || 0) >= 100 },
+
+      // === v3.7 擴充：挑戰模式 (+6 -> 14) ===
+      { id: "a115", cat: "挑戰模式", tier: "bronze", reward: 100, icon: "📖", title: "英文單字建庫師", desc: "在英文單字道場建立至少 1 組單字卡組", check: s => (s.vocabDecks || []).length >= 1 },
+      { id: "a116", cat: "挑戰模式", tier: "silver", reward: 200, icon: "🎧", title: "雙語道場達人", desc: "在英文單字道場完成至少 1 組牌組特訓", check: s => (s.vocabDecks || []).some(d => d && d.badges && Object.values(d.badges).some(Boolean)) },
+      { id: "a117", cat: "挑戰模式", tier: "bronze", reward: 150, icon: "📸", title: "AI 副本初體驗", desc: "通關任意 1 次 AI 拍照專屬考卷副本", check: s => (s.dungeons || []).some(d => d && d.cleared) },
+      { id: "a118", cat: "挑戰模式", tier: "silver", reward: 300, icon: "🗺️", title: "副本征服專家", desc: "累計通關 AI 專屬副本達 5 次以上", check: s => (s.dungeons || []).reduce((acc, d) => acc + ((d && d.plays) ? d.plays : 0), 0) >= 5 },
+      { id: "a119", cat: "挑戰模式", tier: "gold", reward: 400, icon: "🗼", title: "星光塔三十層", desc: "在星光無限塔突破第 30 層", check: s => (s.bestTowerFloor || 0) >= 30 },
+      { id: "a120", cat: "挑戰模式", tier: "diamond", reward: 800, icon: "🌌", title: "星光塔五十層傳說", desc: "在星光無限塔突破第 50 層", check: s => (s.bestTowerFloor || 0) >= 50 }
     ];
 
     let STAGES = [];
@@ -2185,32 +2254,50 @@
       {
         id: "pet_hood_dog", icon: "🐾", name: "戴帽小汪", rarity: "SR",
         img: ASSETS.pet_hood_dog,
-        desc: "戴著棕白小狗毛絨帽的害羞小白汪，最愛跟在布丁狗身旁散步！",
-        quote: "汪嗚～戴著毛絨帽帽好暖和，我們一起去冒險吧！"
+        skillDesc: "戰鬥 EXP +2%/級（Lv.5 +10%）｜Lv.3起 3連擊汪汪追擊",
+        desc: "戴著棕白小狗毛絨帽的熱血小白汪，最愛跟在布丁狗身旁衝鋒冒險！",
+        quote: "汪嗚～戴著毛絨帽帽好暖和，我們一起去冒險吧！",
+        maxQuote: "👑 汪汪！我已經是滿等皇家小汪了，永遠守護主人拿滿分！"
       },
       {
         id: "pet_mint_hamster", icon: "🐹", name: "薄荷緞帶小倉鼠", rarity: "SR",
         img: ASSETS.pet_mint_hamster,
-        desc: "戴著棕白條紋緞帶的薄荷綠小倉鼠，雙手捧著會發光的小星星！",
-        quote: "吱吱～把幸運小星星送給你，答題一定全對！"
+        skillDesc: "戰鬥星星 +2%/級（Lv.5 +10%）｜Lv.3起 3連擊頰囊抖星星",
+        desc: "戴著緞帶的薄荷小倉鼠，圓滾滾頰囊裡總是藏著閃亮亮的小星星！",
+        quote: "吱吱～把幸運小星星送給你，答題一定全對！",
+        maxQuote: "👑 吱吱吱！滿等頰囊裝滿超級星光，星星源源不絕送給主人！"
+      },
+      {
+        id: "pet_chinchilla", icon: "💜", name: "薰衣草小龍貓", rarity: "SR",
+        img: ASSETS.pet_chinchilla,
+        skillDesc: "全科傷害 +1%/級＋孵蛋催化 +5%/級｜Lv.3起 3連擊星尾追擊+孵蛋",
+        desc: "戴著粉紅薰衣草貝雷帽與奶油針織圍巾的蓬鬆小龍貓，尾巴軟綿綿的！",
+        quote: "咪嗚～圍著暖暖圍巾陪你讀書，蓬鬆大尾巴給你加油！",
+        maxQuote: "👑 咪嗚！滿等薰衣草星塵綻放中，答題跟孵蛋都會超順利喔！"
       },
       {
         id: "pet_berry_cat", icon: "🐱", name: "草莓貝雷小貓咪", rarity: "R",
         img: ASSETS.pet_berry_cat,
+        skillDesc: "關卡掉寶率 +1%/級（Lv.5 +5%）｜Lv.3起 3連擊星爪追擊",
         desc: "戴著粉紅草莓帽與金鈴鐺的奶油小貓，走起路來叮噹作響！",
-        quote: "喵嗚～鈴鐺響起來代表好運降臨囉！"
+        quote: "喵嗚～鈴鐺響起來代表好運掉寶降臨囉！",
+        maxQuote: "👑 喵嗚～滿等幸運金鈴響不停，傳說寶物快快掉出來吧！"
       },
       {
         id: "pet_cloud_duck", icon: "🐥", name: "星光圍巾小鴨鴨", rarity: "R",
         img: ASSETS.pet_cloud_duck,
+        skillDesc: "通關默契 +1/級（Lv.5 +5）｜Lv.3起 3連擊元氣應援",
         desc: "圍著天藍星星領巾的元氣小鴨，答對題目會開心拍翅膀！",
-        quote: "呱呱！你剛剛的表現超級棒，繼續加油！"
+        quote: "呱呱！你剛剛的表現超級棒，繼續加油！",
+        maxQuote: "👑 呱呱呱！滿等元氣小鴨全力應援，我們的默契天下無敵！"
       },
       {
-        id: "pet_star_unicorn", icon: "🦄", name: "夢幻迷你小獨角獸", rarity: "SSR",
+        id: "pet_star_unicorn", icon: "🦄", name: "星夜魔導小獨角獸", rarity: "SSR",
         img: ASSETS.pet_star_unicorn,
-        desc: "擁有星光小翅膀與粉紫鬃毛的傳說小獨角獸，會帶來滿滿奇蹟！",
-        quote: "✨ 閃耀星光祝福你，今天也是滿分的一天！"
+        skillDesc: "戰鬥 ATK +1/級（Lv.5 +5）｜Lv.3起 3連擊星夜魔杖追擊",
+        desc: "披著星夜藍披風、揮舞發光星星魔杖的傳說級夢幻獨角獸小跟班！",
+        quote: "✨ 揮動星夜魔杖，為你點亮最閃耀的勝利星光！",
+        maxQuote: "👑 ✨ 滿等星夜魔導覺醒！星光披風與你並肩征服所有大魔王！"
       }
     ];
 
@@ -2365,6 +2452,16 @@
       activeMiniPets: [],
       miniPetNames: {},
       miniPetRenameCount: {},
+      petFeedExp: {},
+      petWalkClears: 0,
+      petSlot3Unlocked: false,
+      petWalkItemDaily: { date: "", count: 0 },
+      weekly: { weekKey: "", correctCnt: 0, subjects: [], activeDays: [], claimed: [] },
+      petWalkGiftCount: 0,
+      petFeedCount: 0,
+      teaPartyCount: 0,
+      wishStarCount: 0,
+      weeklyQuestsDone: 0,
       activeRoomId: "room1",
       unlockedRooms: ["room1"],
       cottageRooms: null,
@@ -3069,16 +3166,30 @@
       return `Lv.${lv}${starBadge} ${getTitleForLevel(lv)}`;
     }
 
-    function grantRandomBattleItem() {
+    const BAG_ITEM_CAPS = { item_shield: 10, item_candy: 10, item_skip: 5 };
+    const BAG_OVERFLOW_STARS = 50;
+
+    function addBagItemWithCap(key, label) {
       if (!state.bag) state.bag = { item_candy: 0, item_shield: 0, item_skip: 0 };
-      const pool = [
-        { key: "item_candy", label: "🍬 雙倍幸運糖" },
-        { key: "item_shield", label: "🛡️ 黃金備用盾" },
-        { key: "item_skip", label: "⏭️ 換題魔法卡" }
-      ];
-      const pick = pool[Math.floor(Math.random() * pool.length)];
-      state.bag[pick.key] = (state.bag[pick.key] || 0) + 1;
-      return pick;
+      const cap = BAG_ITEM_CAPS[key] || 10;
+      const cur = state.bag[key] || 0;
+      if (cur >= cap) {
+        state.stars = (state.stars || 0) + BAG_OVERFLOW_STARS;
+        return { key, label: `${label}（滿袋換 +${BAG_OVERFLOW_STARS}⭐）`, overflow: true };
+      }
+      state.bag[key] = cur + 1;
+      return { key, label, overflow: false };
+    }
+
+    function grantRandomBattleItem() {
+      // 加權機率：備用盾 55% / 雙倍糖 30% / 必勝跳題卡 15%
+      const r = Math.random();
+      const pick = r < 0.55
+        ? { key: "item_shield", label: "🛡️ 黃金備用盾" }
+        : (r < 0.85
+          ? { key: "item_candy", label: "🍬 雙倍幸運糖" }
+          : { key: "item_skip", label: "⚡ 必勝跳題卡" });
+      return addBagItemWithCap(pick.key, pick.label);
     }
 
     function grantExp(amount) {
@@ -3715,7 +3826,7 @@
       ult4:       { icon: "⚡", name: "連擊蓄力", short: "4 連擊即可放必殺技" },
       crit25:     { icon: "🔥", name: "學科爆擊", short: "對應學科傷害 +25%" },
       eggBoost:   { icon: "🥚", name: "孵蛋催化", short: "答對 25% 額外 +1 孵蛋" },
-      lootBag:    { icon: "🍀", name: "幸運戰利品", short: "通關 30% 額外撿道具" }
+      lootBag:    { icon: "🍀", name: "幸運戰利品", short: "通關 15% 額外撿道具" }
     };
 
     function getUnlockedTreasureSlots() {
@@ -3819,7 +3930,7 @@
         if (t.skill === "ult4") ultThreshold = 4;
         if (t.skill === "crit25" && (!subject || t.subject === subject)) critBonusPct += 25;
         if (t.skill === "eggBoost") eggBoostPct += 25;
-        if (t.skill === "lootBag") lootBagPct += 30;
+        if (t.skill === "lootBag") lootBagPct += 15;
         if (subject && t.subject === subject) sameSubjCount += 1;
       });
 
@@ -3827,7 +3938,7 @@
       healUses = Math.min(2, healUses);
       critBonusPct = Math.min(50, critBonusPct);
       eggBoostPct = Math.min(50, eggBoostPct);
-      lootBagPct = Math.min(60, lootBagPct);
+      lootBagPct = Math.min(25, lootBagPct);
 
       const resonance = !!(subject && sameSubjCount >= 2);
       const ms = getSubjectMilestoneBonuses(subject);
@@ -3879,7 +3990,8 @@
 
       const cbDrop = (stage && (stage.isBoss || tier === "hero")) ? getCollectionBonuses().dropBonus : 0;
       const msDrop = getSubjectMilestoneBonuses(subj).dropBonus;
-      const baseRate = (isFinalBoss ? 0.60 : (tier === "hero" ? 0.48 : (tier === "elite" ? 0.38 : 0.30))) + cbDrop + msDrop;
+      const petDrop = (typeof getActivePetBonuses === "function") ? getActivePetBonuses().dropBonus : 0;
+      const baseRate = (isFinalBoss ? 0.60 : (tier === "hero" ? 0.48 : (tier === "elite" ? 0.38 : 0.30))) + cbDrop + msDrop + petDrop;
       const guaranteed = state.noDropStreak >= 3;
       const dropped = guaranteed || Math.random() < baseRate;
 
@@ -4412,8 +4524,9 @@
         const tb = getTreasureBonuses(battle.stage ? battle.stage.subject : "");
         const tr = state.training || { ultLv: 0, atkLv: 0, shieldLv: 0 };
         const cb = getCollectionBonuses();
-        const rawDmg = (isUlt ? (45 + (tr.ultLv || 0) * 10 + cb.ultBonus) : (20 + (battle.combo >= 3 ? 5 : 0))) + tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + getLevelAtkBonus();
-        const dmg = Math.round(rawDmg * (battle.subjectDmgMult || 1));
+        const petB = (typeof getActivePetBonuses === "function") ? getActivePetBonuses() : { atkBonus: 0, dmgPct: 0, eggBoostPct: 0, assistPet: null };
+        const rawDmg = (isUlt ? (45 + (tr.ultLv || 0) * 10 + cb.ultBonus) : (20 + (battle.combo >= 3 ? 5 : 0))) + tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + getLevelAtkBonus() + (petB.atkBonus || 0);
+        const dmg = Math.round(rawDmg * (battle.subjectDmgMult || 1) * (1 + (petB.dmgPct || 0) / 100));
 
         let phaseEventMsg = "";
         if (battle.isFinalBoss && battle.bossPhase === 2 && battle.bossShieldHits > 0) {
@@ -4444,13 +4557,52 @@
         let eggExtra = 0;
         if (typeof addPetEggProgress === "function") {
           addPetEggProgress(1);
-          if ((battle.eggBoostPct || 0) > 0 && Math.random() * 100 < battle.eggBoostPct) {
+          const totalEggPct = Math.min(75, (battle.eggBoostPct || 0) + (petB.eggBoostPct || 0));
+          if (totalEggPct > 0 && Math.random() * 100 < totalEggPct) {
             addPetEggProgress(1);
             eggExtra = 1;
           }
         }
+
+        // Lv.3+ 迷你寵物 3 連擊應援追擊（每場觸發 1 次）
+        let petAssistHtml = "";
+        if (battle.mode === "stage" && battle.combo === 3 && !battle.petAssistUsed && petB.assistPet) {
+          battle.petAssistUsed = true;
+          const ap = petB.assistPet;
+          const aName = getMiniPetDisplayName(ap);
+          const lvIdx = Math.max(0, Math.min(2, ap.lv - 3));
+          const dmgMap = {
+            pet_hood_dog: [12, 18, 28],
+            pet_mint_hamster: [10, 15, 22],
+            pet_chinchilla: [12, 18, 26],
+            pet_berry_cat: [10, 15, 22],
+            pet_cloud_duck: [10, 15, 22],
+            pet_star_unicorn: [15, 22, 30]
+          };
+          const aDmg = (dmgMap[ap.id] || [10, 15, 22])[lvIdx];
+          if (!(battle.isFinalBoss && battle.bossPhase === 2 && battle.bossShieldHits > 0)) {
+            const halfHp = Math.ceil(battle.monsterMaxHp * 0.5);
+            if (battle.isFinalBoss && battle.bossPhase === 1 && (battle.monsterHp - aDmg) <= halfHp) {
+              battle.monsterHp = halfHp;
+            } else {
+              battle.monsterHp = Math.max(0, battle.monsterHp - aDmg);
+            }
+          }
+          let extraTxt = "";
+          if (ap.id === "pet_mint_hamster") {
+            const rawCheek = [5, 8, 12][lvIdx];
+            const cheekStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(rawCheek) : rawCheek;
+            state.stars += cheekStars;
+            extraTxt = `，並從頰囊抖出 +${cheekStars} ⭐！`;
+          } else if (ap.id === "pet_chinchilla") {
+            if (typeof addPetEggProgress === "function") addPetEggProgress(1);
+            extraTxt = `，蓬鬆星尾再 +1 孵蛋進度！`;
+          }
+          petAssistHtml = `<div class="mt-1.5 p-2 rounded-xl bg-gradient-to-r from-pink-100 to-amber-100 border border-pink-300 flex items-center gap-2 text-xs font-black text-pink-900"><img referrerpolicy="no-referrer" src="${ap.img}" class="w-9 h-9 object-contain sprite-cutout shrink-0" alt="${aName}" /><div>${ap.icon} <strong>${aName} (Lv.${ap.lv})</strong> 蹦出來應援追擊！造成 <strong>-${aDmg}</strong> 傷害${extraTxt}</div></div>`;
+        }
         battle._lastPhaseMsg = phaseEventMsg;
         battle._lastEggExtra = eggExtra;
+        battle._lastPetAssistHtml = petAssistHtml;
         if (battle.stage && battle.stage.subject && state.subjectStats && state.subjectStats[battle.stage.subject]) {
           state.subjectStats[battle.stage.subject].ok += 1;
         }
@@ -4462,7 +4614,10 @@
             state.stageMastery[battle.stage.id].push(qCode);
           }
         }
-        syncDailyProgress(true, battle.combo >= 3);
+        syncDailyProgress(true, battle.combo >= 3, false, {
+          subject: battle.stage ? battle.stage.subject : "",
+          isPurify: battle.mode === "purify"
+        });
         if (battle.mode === "tower") {
           battle.towerFloor = (battle.towerFloor || 1) + 1;
           state.stars += 5;
@@ -4533,7 +4688,7 @@
         const phaseBadge = battle._lastPhaseMsg ? `<div class="mt-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-100 to-pink-100 border border-amber-300 text-xs font-black text-amber-900">${battle._lastPhaseMsg}</div>` : "";
         const eggBadge = battle._lastEggExtra ? `<span class="ml-1.5 inline-block px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-black">🥚 孵蛋催化 +1</span>` : "";
         fbBox.className = "mt-3.5 p-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50 space-y-3";
-        fbText.innerHTML = `<div class="font-black text-emerald-700">🎉 答對了！${eggBadge}</div>${phaseBadge}<div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
+        fbText.innerHTML = `<div class="font-black text-emerald-700">🎉 答對了！${eggBadge}</div>${phaseBadge}${battle._lastPetAssistHtml || ""}<div class="mt-1 text-stone-800 font-bold">${q.explain}</div>`;
       } else {
         SFX.hit();
         const usedBarrier = (battle.mode === "stage" && (battle.firstWrongLeft || 0) > 0);
@@ -4748,7 +4903,8 @@
       const purifySweepBonus = (battle.mode === "purify" && (pCnt >= 6 || (state.wrongBank.length === 0 && pCnt >= 3))) ? 10 : 0;
       const rawStars = battle.mode === "purify" ? (pCnt * 5 + purifySweepBonus) : Math.round(baseStars * tierMult * luckyMult);
       const cbFinish = getCollectionBonuses();
-      let earnedStars = Math.round(rawStars * (1 + (tb.starPct + cbFinish.starPct) / 100));
+      const petFinish = (typeof getActivePetBonuses === "function") ? getActivePetBonuses() : { starPct: 0, expPct: 0, bondBonus: 0, walkNeed: 3, activePets: [] };
+      let earnedStars = Math.round(rawStars * (1 + (tb.starPct + cbFinish.starPct + (petFinish.starPct || 0)) / 100));
       const isRevStar = (battle.mode === "stage" && typeof isReviewMode === "function" && isReviewMode());
       if (isRevStar && typeof applyReviewStarRate === "function") {
         earnedStars = applyReviewStarRate(earnedStars);
@@ -4797,8 +4953,12 @@
       }
       const earlyExpMult = isEarlyKill ? 1.10 : 1.0;
       const msExpPct = (tb.milestone && tb.milestone.expPct) ? tb.milestone.expPct : 0;
-      const expRes = grantExp(Math.round(earnedExp * luckyMult * earlyExpMult * (1 + (cbFinish.expPct + msExpPct) / 100)));
+      const expRes = grantExp(Math.round(earnedExp * luckyMult * earlyExpMult * (1 + (cbFinish.expPct + msExpPct + (petFinish.expPct || 0)) / 100)));
       if (isEarlyKill) state.bondExp = (state.bondExp || 0) + 2;
+      if (battle.mode === "stage" && (petFinish.bondBonus || 0) > 0) state.bondExp = (state.bondExp || 0) + petFinish.bondBonus;
+      if (battle.mode === "stage" && petFinish.activePets && petFinish.activePets.length > 0) {
+        state.petWalkClears = (state.petWalkClears || 0) + 1;
+      }
 
       // 連勝熱血氣勢 & 幸運戰利品袋
       let winStreakEgg = false;
@@ -4819,7 +4979,12 @@
           state.clearedStages.push(battle.stage.id);
         }
         if (isPerfect) state.perfectClears += 1;
-        syncDailyProgress(false, false, true);
+        syncDailyProgress(false, false, true, {
+          subject: battle.stage ? battle.stage.subject : "",
+          isPerfect,
+          isHighTier: !!(battle.stage && (battle.stage.tier === "elite" || battle.stage.tier === "hero" || battle.isFinalBoss)),
+          isLuckyDouble
+        });
         const mKey = battle.stage.monsterName;
         state.defeatedMonsters[mKey] = (state.defeatedMonsters[mKey] || 0) + 1;
       }
@@ -5249,7 +5414,7 @@
       const unclaimed = getUnclaimedAchievements();
       const unclaimedTotal = unclaimed.reduce((acc, a) => acc + a.reward, 0);
 
-      const cats = ["全部", "冒險通關", "戰鬥技巧", "收集養成", "習慣複習", "挑戰模式"];
+      const cats = ["全部", "冒險通關", "戰鬥技巧", "收集養成", "寵物小屋", "習慣複習", "挑戰模式"];
       const tierStyle = {
         bronze:  { label: "🥉 銅牌", badge: "bg-amber-100 text-amber-800 border-amber-300" },
         silver:  { label: "🥈 銀牌", badge: "bg-slate-100 text-slate-700 border-slate-300" },
@@ -5258,19 +5423,21 @@
       };
 
       const filtered = achCatFilter === "全部" ? ACHIEVEMENTS : ACHIEVEMENTS.filter(a => a.cat === achCatFilter);
-      // Sort: unclaimed first, then unlocked, then locked
+      // Sort: unclaimed (2) -> in-progress/locked (1) -> already claimed (0) so claimed sinks to bottom
       const sorted = [...filtered].sort((a, b) => {
         const aUn = (state.achievements || []).includes(a.id);
         const bUn = (state.achievements || []).includes(b.id);
         const aCl = claimed.includes(a.id);
         const bCl = claimed.includes(b.id);
-        const score = (un, cl) => un ? (cl ? 1 : 2) : 0;
+        const score = (un, cl) => (un && !cl) ? 2 : (!un ? 1 : 0);
         return score(bUn, bCl) - score(aUn, aCl);
       });
 
-      const catBtns = cats.map(c => `
-        <button data-ach-cat="${c}" class="ach-cat-btn px-2.5 py-1 rounded-full text-xs font-black border ${achCatFilter === c ? "bg-emerald-500 text-white border-emerald-600" : "bg-white text-stone-700 border-emerald-200 hover:bg-emerald-50"}">${c}</button>
-      `).join("");
+      const catBtns = cats.map(c => {
+        const list = c === "全部" ? ACHIEVEMENTS : ACHIEVEMENTS.filter(a => a.cat === c);
+        const doneN = list.filter(a => (state.achievements || []).includes(a.id)).length;
+        return `<button data-ach-cat="${c}" class="ach-cat-btn px-2.5 py-1 rounded-full text-xs font-black border ${achCatFilter === c ? "bg-emerald-500 text-white border-emerald-600" : "bg-white text-stone-700 border-emerald-200 hover:bg-emerald-50"}">${c} ${doneN}/${list.length}</button>`;
+      }).join("");
 
       const listHtml = sorted.map(a => {
         const unlocked = (state.achievements || []).includes(a.id);
@@ -5304,7 +5471,7 @@
         <div class="space-y-3 mt-2">
           <div class="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-emerald-50 border-2 border-emerald-200">
             <div class="text-xs sm:text-sm font-black text-emerald-900">
-              🎯 共 60 項成就（總獎金 20,000 ⭐）｜待領取：${unclaimed.length} 項
+              🎯 共 ${ACHIEVEMENTS.length} 項成就（總獎金 ${ACHIEVEMENTS.reduce((s, a) => s + a.reward, 0).toLocaleString()} ⭐）｜待領取：${unclaimed.length} 項
             </div>
             ${unclaimed.length > 0 ? `
               <button id="btn-claim-all-ach" class="sanrio-btn px-3.5 py-1.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-black">
@@ -5839,20 +6006,71 @@
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
 
+    function getWeekKey() {
+      const d = new Date();
+      const day = d.getDay();
+      const diff = (day === 0 ? -6 : 1 - day);
+      const mon = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+      return `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}`;
+    }
+
     function ensureDaily() {
       const today = getTodayStr();
       if (!state.daily || state.daily.date !== today) {
-        const oldStamps = (state.daily && state.daily.stampedDates) ? state.daily.stampedDates : [];
-        state.daily = { date: today, clearCnt: 0, correctCnt: 0, combo3Cnt: 0, stampedDates: oldStamps };
-        saveState();
+        const oldStamps = (state.daily && Array.isArray(state.daily.stampedDates)) ? state.daily.stampedDates : [];
+        state.daily = {
+          date: today, clearCnt: 0, correctCnt: 0, combo3Cnt: 0, stampedDates: oldStamps,
+          claimedTasks: [], claimedChests: [], rerollUsed: false, rerollSeed: 0,
+          subjectClears: {}, perfectClearsToday: 0, purifyToday: 0, petInteractToday: 0,
+          ttsToday: 0, highTierClearsToday: 0, luckyClearsToday: 0
+        };
+      } else {
+        if (!Array.isArray(state.daily.stampedDates)) state.daily.stampedDates = [];
+        if (!Array.isArray(state.daily.claimedTasks)) state.daily.claimedTasks = [];
+        if (!Array.isArray(state.daily.claimedChests)) state.daily.claimedChests = [];
+        if (!state.daily.subjectClears || typeof state.daily.subjectClears !== "object") state.daily.subjectClears = {};
+        ["perfectClearsToday","purifyToday","petInteractToday","ttsToday","highTierClearsToday","luckyClearsToday","rerollSeed"].forEach(k => {
+          if (typeof state.daily[k] !== "number") state.daily[k] = 0;
+        });
+      }
+      const wk = getWeekKey();
+      if (!state.weekly || state.weekly.weekKey !== wk) {
+        state.weekly = { weekKey: wk, correctCnt: 0, subjects: [], activeDays: [], claimed: [] };
+      } else {
+        if (!Array.isArray(state.weekly.subjects)) state.weekly.subjects = [];
+        if (!Array.isArray(state.weekly.activeDays)) state.weekly.activeDays = [];
+        if (!Array.isArray(state.weekly.claimed)) state.weekly.claimed = [];
       }
     }
 
-    function syncDailyProgress(isCorrect, isCombo3, isClear = false) {
+    function markDailyAction(type, n = 1) {
       ensureDaily();
-      if (isCorrect) state.daily.correctCnt += 1;
+      if (type === "petInteract") state.daily.petInteractToday += n;
+      else if (type === "tts") state.daily.ttsToday += n;
+    }
+
+    function syncDailyProgress(isCorrect, isCombo3, isClear = false, meta = null) {
+      ensureDaily();
+      const today = getTodayStr();
+      if (isCorrect) {
+        state.daily.correctCnt += 1;
+        state.weekly.correctCnt = (state.weekly.correctCnt || 0) + 1;
+        if (meta && meta.isPurify) state.daily.purifyToday += 1;
+      }
       if (isCombo3) state.daily.combo3Cnt += 1;
-      if (isClear) state.daily.clearCnt += 1;
+      if (isClear) {
+        state.daily.clearCnt += 1;
+        if (!state.weekly.activeDays.includes(today)) state.weekly.activeDays.push(today);
+        if (meta) {
+          if (meta.subject && ["國語","數學","自然","社會","英文"].includes(meta.subject)) {
+            state.daily.subjectClears[meta.subject] = (state.daily.subjectClears[meta.subject] || 0) + 1;
+            if (!state.weekly.subjects.includes(meta.subject)) state.weekly.subjects.push(meta.subject);
+          }
+          if (meta.isPerfect) state.daily.perfectClearsToday += 1;
+          if (meta.isHighTier) state.daily.highTierClearsToday += 1;
+          if (meta.isLuckyDouble) state.daily.luckyClearsToday += 1;
+        }
+      }
     }
 
     let activeUtterance = null;
@@ -5887,6 +6105,7 @@
     function speakText(text) {
       if (!text) return;
       state.ttsUses = (state.ttsUses || 0) + 1;
+      if (typeof markDailyAction === "function") markDailyAction("tts", 1);
       saveState();
       if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return;
       try {
@@ -5929,67 +6148,243 @@
       } catch (e) {}
     }
 
+    function buildTodayDailyQuests() {
+      ensureDaily();
+      const d = state.daily;
+      const dow = new Date().getDay(); // 0=Sun..6=Sat
+      const daySubjMap = { 1: "國語", 2: "數學", 3: "自然", 4: "社會", 5: "英文" };
+      const targetSubj = daySubjMap[dow] || "";
+
+      // Task 1: 暖身通關
+      const t1 = { id: "d1", icon: "⚔️", name: "完成任意 2 個冒險關卡", cur: Math.min(2, d.clearCnt), goal: 2, rewardStars: 30, rewardEgg: 0, rewardExp: 0, go: "map" };
+
+      // Task 2: 今日指定學科（週間）或今日雙倍關（週末）
+      const t2 = targetSubj
+        ? { id: "d2", icon: "📚", name: `今日【${targetSubj}日】完成 1 關${targetSubj}`, cur: Math.min(1, d.subjectClears[targetSubj] || 0), goal: 1, rewardStars: 50, rewardEgg: 0, rewardExp: 0, go: "subj:" + targetSubj }
+        : { id: "d2", icon: "🔥", name: "挑戰並通關 1 場「今日幸運雙倍關」", cur: Math.min(1, d.luckyClearsToday || 0), goal: 1, rewardStars: 50, rewardEgg: 0, rewardExp: 0, go: "map" };
+
+      // Task 3: 每日輪換趣味互動（可免費重骰 1 次）
+      const seedBase = Number(String(d.date || "").replace(/-/g, "")) || 1;
+      const t3Pool = [
+        { id: "d3_pet", icon: "🐾", name: "回冒險小屋摸摸寵物／互動收禮 1 次", cur: Math.min(1, d.petInteractToday || 0), goal: 1, rewardStars: 40, rewardEgg: 2, rewardExp: 0, go: "cottage" },
+        { id: "d3_perf", icon: "🛡️", name: "達成 1 次滿血無失誤通關", cur: Math.min(1, d.perfectClearsToday || 0), goal: 1, rewardStars: 40, rewardEgg: 2, rewardExp: 0, go: "map" },
+        { id: "d3_tts", icon: "🔊", name: "在戰鬥中使用「語音朗讀」2 次", cur: Math.min(2, d.ttsToday || 0), goal: 2, rewardStars: 40, rewardEgg: 2, rewardExp: 0, go: "map" },
+        { id: "d3_purify", icon: "✨", name: ((state.wrongBank || []).length >= 3 ? "在錯題道場淨化 3 題錯題" : "在戰鬥中達成 1 次 3 連擊"), cur: ((state.wrongBank || []).length >= 3 ? Math.min(3, d.purifyToday || 0) : Math.min(1, d.combo3Cnt || 0)), goal: ((state.wrongBank || []).length >= 3 ? 3 : 1), rewardStars: 40, rewardEgg: 2, rewardExp: 0, go: ((state.wrongBank || []).length >= 3 ? "purify" : "map") }
+      ];
+      const t3Pick = t3Pool[(seedBase + (d.rerollSeed || 0)) % t3Pool.length];
+      const t3 = { ...t3Pick, id: "d3", canReroll: !d.rerollUsed && !d.claimedTasks.includes("d3") };
+
+      // Task 4: 進階挑戰（已解鎖菁英關則挑戰高階關，否則累計答對 15 題）
+      const hasEliteUnlocked = STAGES.some(s => (s.tier === "elite" || s.tier === "hero") && isStageUnlocked(s));
+      const t4 = hasEliteUnlocked
+        ? { id: "d4", icon: "🏆", name: "通關 1 場菁英／英雄／大魔王關卡", cur: Math.min(1, d.highTierClearsToday || 0), goal: 1, rewardStars: 60, rewardEgg: 0, rewardExp: 80, go: "map" }
+        : { id: "d4", icon: "🌟", name: "今日累計答對 15 題冒險題目", cur: Math.min(15, d.correctCnt || 0), goal: 15, rewardStars: 60, rewardEgg: 0, rewardExp: 80, go: "map" };
+
+      return [t1, t2, t3, t4];
+    }
+
     function openDailyModal() {
       ensureDaily();
       const d = state.daily;
-      const tasks = [
-        { name: "完成任意 1 個冒險關卡", cur: Math.min(1, d.clearCnt), goal: 1 },
-        { name: "在戰鬥中答對 5 題題目", cur: Math.min(5, d.correctCnt), goal: 5 },
-        { name: "達成一次 3 連擊以上", cur: Math.min(1, d.combo3Cnt), goal: 1 }
-      ];
-      const allDone = tasks.every(t => t.cur >= t.goal);
-      const alreadyStamped = d.stampedDates.includes(d.date);
+      const w = state.weekly;
+      const tasks = buildTodayDailyQuests();
+      const doneCount = tasks.filter(t => t.cur >= t.goal).length;
+      const activityScore = doneCount * 25;
       const stampCount = d.stampedDates.length;
+      const cyclePos = stampCount === 0 ? 0 : (((stampCount - 1) % 7) + 1);
 
-      const tasksHtml = tasks.map(t => `
-        <div class="p-3 rounded-2xl border-2 ${t.cur >= t.goal ? "bg-emerald-50 border-emerald-300" : "bg-pink-50/40 border-pink-200"} flex items-center justify-between">
-          <span class="text-sm font-black">${t.cur >= t.goal ? "✅" : "⏳"} ${t.name}</span>
-          <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-white border border-pink-200">${t.cur} / ${t.goal}</span>
-        </div>
-      `).join("");
-
-      const stampsHtml = Array.from({length: 7}, (_, i) => {
-        const filled = i < (stampCount % 8);
-        return `<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl border-2 ${filled ? "bg-amber-200 border-amber-400" : "bg-stone-100 border-stone-200"} flex items-center justify-center text-xl">${filled ? "🐾" : (i === 4 || i === 6 ? "🎁" : i + 1)}</div>`;
+      const tasksHtml = tasks.map(t => {
+        const done = t.cur >= t.goal;
+        const claimed = d.claimedTasks.includes(t.id);
+        const rwDesc = `+${t.rewardStars}⭐${t.rewardEgg ? ` +🥚${t.rewardEgg}` : ""}${t.rewardExp ? ` +${t.rewardExp}EXP` : ""}`;
+        let rightHtml = `<button data-dq-go="${t.go}" class="dq-go-btn sanrio-btn px-2.5 py-1 rounded-xl bg-white hover:bg-pink-100 border border-pink-300 text-pink-700 text-[11px] font-black whitespace-nowrap">➜ 前往</button>`;
+        if (claimed) {
+          rightHtml = `<span class="px-2.5 py-1 rounded-xl bg-emerald-500 text-white text-[11px] font-black whitespace-nowrap">✅ 已領</span>`;
+        } else if (done) {
+          rightHtml = `<button data-dq-claim="${t.id}" class="dq-claim-btn sanrio-btn px-2.5 py-1 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-black whitespace-nowrap animate-pulse">🎁 領取</button>`;
+        }
+        return `
+          <div class="p-2.5 rounded-2xl border-2 ${claimed ? "bg-emerald-50/70 border-emerald-200 opacity-80" : (done ? "bg-amber-50 border-amber-400" : "bg-pink-50/40 border-pink-200")} flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="text-xs sm:text-sm font-black text-stone-800">${t.icon} ${t.name}</div>
+              <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                <span class="text-[11px] font-black text-amber-700">${rwDesc}</span>
+                <span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-white border border-pink-200 text-stone-600">${t.cur} / ${t.goal}</span>
+                ${t.canReroll ? `<button id="btn-dq-reroll" class="text-[10px] font-black text-indigo-600 underline">🎲 免費換題(1次)</button>` : ""}
+              </div>
+            </div>
+            ${rightHtml}
+          </div>
+        `;
       }).join("");
 
-      showModal("📖 冒險手冊｜每日委託", `
+      const chests = [
+        { score: 50, icon: "🥉", label: "50分銅箱", desc: "+40⭐" },
+        { score: 75, icon: "🥈", label: "75分銀箱", desc: "+60⭐ +🥚2" },
+        { score: 100, icon: "👑", label: "100分金箱", desc: "蓋章 +80⭐ +100EXP" }
+      ];
+      const chestsHtml = chests.map(c => {
+        const unlocked = activityScore >= c.score;
+        const claimed = d.claimedChests.includes(c.score);
+        return `
+          <button data-chest-score="${c.score}" ${(!unlocked || claimed) ? "disabled" : ""} class="dq-chest-btn sanrio-btn p-2 rounded-2xl border-2 text-center transition-all ${claimed ? "bg-emerald-50 border-emerald-300 opacity-75" : (unlocked ? "bg-gradient-to-br from-amber-100 to-rose-100 border-amber-400 shadow-sm" : "bg-white border-stone-200 opacity-65")}">
+            <div class="text-lg">${claimed ? "✅" : c.icon}</div>
+            <div class="text-[11px] font-black text-stone-800">${c.label}</div>
+            <div class="text-[10px] font-bold ${unlocked && !claimed ? "text-rose-600" : "text-stone-500"}">${claimed ? "已領取" : c.desc}</div>
+          </button>
+        `;
+      }).join("");
+
+      const stampsHtml = Array.from({ length: 7 }, (_, i) => {
+        const filled = i < cyclePos;
+        return `<div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl border-2 ${filled ? "bg-amber-200 border-amber-400" : "bg-stone-100 border-stone-200"} flex items-center justify-center text-lg">${filled ? "🐾" : (i === 4 || i === 6 ? "🎁" : i + 1)}</div>`;
+      }).join("");
+
+      const weeklyList = [
+        { id: "w1", icon: "📝", name: "本週累計答對 60 題", cur: Math.min(60, w.correctCnt || 0), goal: 60, desc: "+200 ⭐", stars: 200, egg: 0, item: false },
+        { id: "w2", icon: "🌈", name: "本週挑戰 3 種以上不同學科", cur: Math.min(3, (w.subjects || []).length), goal: 3, desc: "+150 ⭐ +🥚5", stars: 150, egg: 5, item: false },
+        { id: "w3", icon: "🔥", name: "本週上線闖關或打卡滿 4 天", cur: Math.min(4, (w.activeDays || []).length), goal: 4, desc: "+300 ⭐ +道具", stars: 300, egg: 0, item: true }
+      ];
+      const weeklyHtml = weeklyList.map(wq => {
+        const done = wq.cur >= wq.goal;
+        const claimed = (w.claimed || []).includes(wq.id);
+        return `
+          <div class="p-2.5 rounded-2xl border-2 ${claimed ? "bg-emerald-50/70 border-emerald-200 opacity-80" : (done ? "bg-indigo-50 border-indigo-400" : "bg-white border-sky-200")} flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-black text-stone-800">${wq.icon} ${wq.name}</div>
+              <div class="text-[11px] font-bold text-indigo-700 mt-0.5">${wq.desc}｜進度 ${wq.cur}/${wq.goal}</div>
+            </div>
+            ${claimed
+              ? `<span class="px-2.5 py-1 rounded-xl bg-emerald-500 text-white text-[11px] font-black shrink-0">✅ 已領</span>`
+              : (done
+                ? `<button data-wq-claim="${wq.id}" class="wq-claim-btn sanrio-btn px-2.5 py-1 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-[11px] font-black shrink-0">🎁 領大獎</button>`
+                : `<span class="px-2 py-1 rounded-xl bg-stone-100 text-stone-500 text-[10px] font-black shrink-0">進行中</span>`)}
+          </div>
+        `;
+      }).join("");
+
+      showModal("📖 冒險手冊｜每日＆每週委託", `
         ${getBookHubBar("daily")}
-        <div class="space-y-4 mt-2">
+        <div class="space-y-3.5 mt-2">
+          <div class="p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-pink-50 border-2 border-amber-200 space-y-2">
+            <div class="flex items-center justify-between text-xs font-black text-amber-950">
+              <span>⚡ 今日活躍度：${activityScore} / 100</span>
+              <span class="text-[11px] text-pink-700">100 分金箱自動蓋今日印章！</span>
+            </div>
+            <div class="w-full h-2.5 rounded-full bg-white border border-amber-200 overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-amber-400 to-rose-500 transition-all" style="width:${activityScore}%;"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5">${chestsHtml}</div>
+          </div>
+
           <div class="space-y-2">${tasksHtml}</div>
-          <div class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 text-center space-y-3">
-            <div class="text-sm font-black text-amber-900">7 日集點卡（已累積 ${stampCount} 個印章｜第 5、7 天送星星大禮）</div>
-            <div class="flex flex-wrap justify-center gap-2">${stampsHtml}</div>
-            <button id="btn-claim-stamp" ${(!allDone || alreadyStamped) ? "disabled" : ""} class="sanrio-btn px-5 py-2 rounded-2xl font-black text-sm ${(!allDone || alreadyStamped) ? "bg-stone-200 text-stone-500 cursor-not-allowed" : "bg-rose-500 hover:bg-rose-600 text-white"}">
-              ${alreadyStamped ? "✅ 今日已蓋章" : (allDone ? "🌟 蓋上今日印章 (+20 ⭐)" : "完成 3 項委託即可蓋章")}
-            </button>
+
+          <div class="p-3 rounded-2xl bg-amber-50 border-2 border-amber-200 text-center space-y-2">
+            <div class="text-xs sm:text-sm font-black text-amber-900">🐾 7 日集點卡（累計 ${stampCount} 天｜第 5 天 +100⭐、第 7 天送週全勤禮包）</div>
+            <div class="flex flex-wrap justify-center gap-1.5">${stampsHtml}</div>
+          </div>
+
+          <div class="p-3 rounded-2xl bg-sky-50/80 border-2 border-sky-200 space-y-2">
+            <div class="flex items-center justify-between text-xs sm:text-sm font-black text-sky-900">
+              <span>🏆 每週大委託（每週一自動刷新）</span>
+              <span class="text-[10px] text-sky-700">本週起日 ${w.weekKey}</span>
+            </div>
+            <div class="space-y-1.5">${weeklyHtml}</div>
           </div>
         </div>
       `);
 
       bindBookHubBar();
-      const claimBtn = document.getElementById("btn-claim-stamp");
-      if (claimBtn && allDone && !alreadyStamped) {
-        claimBtn.addEventListener("click", () => {
-          SFX.win();
-          state.daily.stampedDates.push(d.date);
-          let bonus = 20;
-          if (state.daily.stampedDates.length % 7 === 5) bonus += 50;
-          if (state.daily.stampedDates.length % 7 === 0) bonus += 100;
-          state.stars += bonus;
-          grantExp(60);
+
+      const rerollBtn = document.getElementById("btn-dq-reroll");
+      if (rerollBtn) {
+        rerollBtn.addEventListener("click", () => {
+          SFX.click();
+          d.rerollUsed = true;
+          d.rerollSeed = (d.rerollSeed || 0) + 1;
           saveState();
-          renderHUD();
           openDailyModal();
         });
       }
-    }
 
-    let cottagePos = {
-      lead: { left: 32, bottom: 11, face: 1 },
-      partner: { left: 56, bottom: 13, face: -1 }
-    };
-    let selectedFurnId = null;
+      document.querySelectorAll(".dq-go-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          SFX.click();
+          const go = btn.getAttribute("data-dq-go");
+          closeModal();
+          if (go === "cottage") openShopAndCottageModal();
+          else if (go === "purify") startPurifyMode();
+          else if (go && go.startsWith("subj:")) openSubjectStagesModal(go.slice(5));
+        });
+      });
+
+      document.querySelectorAll(".dq-claim-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tid = btn.getAttribute("data-dq-claim");
+          const t = tasks.find(x => x.id === tid);
+          if (!t || t.cur < t.goal || d.claimedTasks.includes(tid)) return;
+          d.claimedTasks.push(tid);
+          state.stars = (state.stars || 0) + t.rewardStars;
+          if (t.rewardEgg && typeof addPetEggProgress === "function") addPetEggProgress(t.rewardEgg);
+          if (t.rewardExp) grantExp(t.rewardExp);
+          saveState();
+          renderHUD();
+          SFX.win();
+          openDailyModal();
+        });
+      });
+
+      document.querySelectorAll(".dq-chest-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sc = Number(btn.getAttribute("data-chest-score"));
+          if (activityScore < sc || d.claimedChests.includes(sc)) return;
+          d.claimedChests.push(sc);
+          if (sc === 50) {
+            state.stars += 40;
+          } else if (sc === 75) {
+            state.stars += 60;
+            if (typeof addPetEggProgress === "function") addPetEggProgress(2);
+          } else if (sc === 100) {
+            state.stars += 80;
+            grantExp(100);
+            if (!d.stampedDates.includes(d.date)) {
+              d.stampedDates.push(d.date);
+              if (!w.activeDays.includes(d.date)) w.activeDays.push(d.date);
+              const totalSt = d.stampedDates.length;
+              if (totalSt % 7 === 5) state.stars += 100;
+              if (totalSt % 7 === 0) {
+                state.stars += 250;
+                if (typeof addPetEggProgress === "function") addPetEggProgress(5);
+                if (typeof grantRandomBattleItem === "function") grantRandomBattleItem();
+              }
+            }
+          }
+          if (typeof confetti === "function") confetti({ particleCount: 50, spread: 60, origin: { y: 0.55 } });
+          saveState();
+          renderHUD();
+          SFX.win();
+          openDailyModal();
+        });
+      });
+
+      document.querySelectorAll(".wq-claim-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const wid = btn.getAttribute("data-wq-claim");
+          const wq = weeklyList.find(x => x.id === wid);
+          if (!wq || wq.cur < wq.goal || w.claimed.includes(wid)) return;
+          w.claimed.push(wid);
+          state.weeklyQuestsDone = (state.weeklyQuestsDone || 0) + 1;
+          state.stars += wq.stars;
+          if (wq.egg && typeof addPetEggProgress === "function") addPetEggProgress(wq.egg);
+          if (wq.item && typeof grantRandomBattleItem === "function") grantRandomBattleItem();
+          if (typeof confetti === "function") confetti({ particleCount: 65, spread: 70, origin: { y: 0.55 } });
+          saveState();
+          renderHUD();
+          SFX.win();
+          openDailyModal();
+        });
+      });
+    }
 
     function calcDepthZ(bottomPct) {
       return Math.max(5, Math.min(58, Math.round(55 - bottomPct)));
@@ -6114,16 +6509,18 @@
           </div>
           ${BAG_ITEMS.map(b => {
             const cnt = (state.bag && state.bag[b.id]) ? state.bag[b.id] : 0;
+            const cap = (typeof BAG_ITEM_CAPS !== "undefined" && BAG_ITEM_CAPS[b.id]) ? BAG_ITEM_CAPS[b.id] : 10;
+            const isFull = cnt >= cap;
             return `
               <div class="p-3 rounded-2xl border-2 border-sky-200 bg-sky-50/40 flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2.5">
                   <span class="text-3xl">${b.icon}</span>
                   <div>
-                    <div class="flex flex-wrap items-center gap-1.5 text-sm font-black"><span>${b.name}</span><span class="text-xs px-2 py-0.5 rounded-full bg-sky-200 text-sky-900 whitespace-nowrap shrink-0">持有 ${cnt} 個</span></div>
+                    <div class="flex flex-wrap items-center gap-1.5 text-sm font-black"><span>${b.name}</span><span class="text-xs px-2 py-0.5 rounded-full ${isFull ? "bg-rose-100 text-rose-700" : "bg-sky-200 text-sky-900"} whitespace-nowrap shrink-0">持有 ${cnt}/${cap}</span></div>
                     <div class="text-xs text-stone-600">${b.desc}</div>
                   </div>
                 </div>
-                <button data-buy-bag="${b.id}" class="buy-bag-btn sanrio-btn shrink-0 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-amber-950 text-xs font-black">⭐ ${b.price} 購買</button>
+                <button data-buy-bag="${b.id}" ${isFull ? "disabled" : ""} class="buy-bag-btn sanrio-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-black ${isFull ? "bg-stone-200 text-stone-500 cursor-not-allowed" : "bg-amber-400 hover:bg-amber-500 text-amber-950"}">${isFull ? `已滿 (${cnt}/${cap})` : `⭐ ${b.price} 購買`}</button>
               </div>
             `;
           }).join("")}
@@ -6225,15 +6622,30 @@
       const eggBtnCls = eggReady
         ? "sanrio-btn px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-400 to-rose-500 text-white text-[11px] font-black whitespace-nowrap shrink-0 shadow-sm animate-pulse"
         : "sanrio-btn px-2.5 py-1 rounded-full bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 text-[11px] font-black whitespace-nowrap shrink-0";
-      const activeMiniPetList = (state.activeMiniPets || []).slice(0, 2).map(pid => (typeof MINI_PETS !== "undefined") ? MINI_PETS.find(p => p.id === pid) : null).filter(Boolean);
+      const maxCottagePets = (typeof getMaxActiveMiniPets === "function") ? getMaxActiveMiniPets() : 2;
+      const activeMiniPetList = (state.activeMiniPets || []).slice(0, maxCottagePets).map(pid => (typeof MINI_PETS !== "undefined") ? MINI_PETS.find(p => p.id === pid) : null).filter(Boolean);
+      const petCottageB = (typeof getActivePetBonuses === "function") ? getActivePetBonuses() : { walkNeed: 3, synergy: null };
+      const walkGiftReady = activeMiniPetList.length > 0 && (state.petWalkClears || 0) >= (petCottageB.walkNeed || 3);
+      const petSpots = [
+        { left: 10, bottom: 5, z: 42, scale: 1.0 },
+        { left: 79, bottom: 5, z: 42, scale: 1.0 },
+        { left: 44, bottom: 24, z: 36, scale: 0.88 }
+      ];
       const miniPetsStageHtml = activeMiniPetList.map((pet, idx) => {
-        const lv = (state.ownedMiniPets && state.ownedMiniPets[pet.id]) || 1;
-        const leftPct = idx === 0 ? 11 : 78;
+        const lv = Math.min(5, (state.ownedMiniPets && state.ownedMiniPets[pet.id]) || 1);
+        const dName = (typeof getMiniPetDisplayName === "function") ? getMiniPetDisplayName(pet) : pet.name;
+        const spot = petSpots[idx] || petSpots[0];
+        const baseW = lv >= 5 ? 13 : (lv >= 3 ? 12.4 : 11.5);
+        const widthPct = (baseW * spot.scale).toFixed(1) + "%";
+        const glowCls = lv >= 5 ? "drop-shadow-[0_0_10px_rgba(244,114,182,0.95)]" : (lv >= 3 ? "drop-shadow-[0_0_7px_rgba(251,191,36,0.9)]" : "");
+        const giftPin = (idx === 0 && walkGiftReady) ? `<span class="absolute -top-5 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-rose-500 text-white text-[10px] font-black shadow animate-bounce whitespace-nowrap">🎁 點我收禮</span>` : "";
+        const crownPin = lv >= 5 ? `<span class="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs sm:text-sm drop-shadow">👑</span>` : "";
         return `
-          <div data-minipet-id="${pet.id}" class="cottage-minipet cottage-waddling cursor-pointer select-none" title="${pet.name}（點我互動！）"
-               style="position:absolute; left:${leftPct}%; bottom:5%; width:11.5%; z-index:42; animation-delay:${idx * 0.45}s;">
-            <img referrerpolicy="no-referrer" src="${pet.img}" alt="${pet.name}" class="w-full h-auto object-contain sprite-cutout ${lv >= 2 ? "drop-shadow-[0_0_6px_rgba(251,191,36,0.9)]" : ""}" />
-            ${lv >= 2 ? `<span class="absolute -top-1.5 -right-1 text-[9px] font-black px-1 rounded-full bg-amber-400 text-white shadow">Lv.${lv}</span>` : ""}
+          <div data-minipet-id="${pet.id}" class="cottage-minipet cottage-waddling cursor-pointer select-none" title="${dName} Lv.${lv}（點我互動！）"
+               style="position:absolute; left:${spot.left}%; bottom:${spot.bottom}%; width:${widthPct}; z-index:${spot.z}; animation-delay:${idx * 0.45}s;">
+            ${giftPin || crownPin}
+            <img referrerpolicy="no-referrer" src="${pet.img}" alt="${dName}" class="w-full h-auto object-contain sprite-cutout ${glowCls}" />
+            ${lv >= 2 ? `<span class="absolute -top-1 -right-1 text-[9px] font-black px-1 rounded-full ${lv >= 5 ? "bg-gradient-to-r from-amber-400 to-pink-500" : "bg-amber-400"} text-white shadow">Lv.${lv}</span>` : ""}
           </div>
         `;
       }).join("");
@@ -6477,10 +6889,12 @@
           const bid = btn.getAttribute("data-buy-bag");
           const item = BAG_ITEMS.find(x => x.id === bid);
           if (!item) return;
+          if (!state.bag) state.bag = { item_candy: 0, item_shield: 0, item_skip: 0 };
+          const cap = (typeof BAG_ITEM_CAPS !== "undefined" && BAG_ITEM_CAPS[bid]) ? BAG_ITEM_CAPS[bid] : 10;
+          if ((state.bag[bid] || 0) >= cap) { btn.textContent = "已滿"; SFX.hit(); return; }
           if (state.stars < item.price) { btn.textContent = "⭐ 不足"; return; }
           SFX.win();
           state.stars -= item.price;
-          if (!state.bag) state.bag = { item_candy: 0, item_shield: 0, item_skip: 0 };
           state.bag[bid] = (state.bag[bid] || 0) + 1;
           saveState();
           renderHUD();
@@ -6571,7 +6985,18 @@
           SFX.click();
           const pid = el.getAttribute("data-minipet-id");
           const pet = MINI_PETS.find(x => x.id === pid);
-          if (pet) showCottageBubble(`${pet.icon} ${getMiniPetDisplayName(pet)}：${pet.quote}`);
+          if (!pet) return;
+          const petBNow = getActivePetBonuses();
+          if ((state.petWalkClears || 0) >= (petBNow.walkNeed || 3)) {
+            const giftMsg = claimPetWalkGift(pet);
+            openShopAndCottageModal();
+            setTimeout(() => showCottageBubble(giftMsg), 60);
+            return;
+          }
+          const lv = (state.ownedMiniPets && state.ownedMiniPets[pet.id]) || 1;
+          if (typeof markDailyAction === "function") markDailyAction("petInteract", 1);
+          const line = (lv >= 5 && pet.maxQuote) ? pet.maxQuote : pet.quote;
+          showCottageBubble(`${pet.icon} ${getMiniPetDisplayName(pet)}：${line}`);
         });
       });
 
@@ -6970,11 +7395,12 @@
       const tb = getTreasureBonuses("");
       const cb = getCollectionBonuses();
       const tr = state.training || { ultLv: 0, atkLv: 0, shieldLv: 0 };
+      const petR = (typeof getActivePetBonuses === "function") ? getActivePetBonuses() : { atkBonus: 0, dmgPct: 0, starPct: 0 };
       const lvAtk = getLevelAtkBonus();
-      const flatAtk = tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + lvAtk;
+      const flatAtk = tb.atkBonus + cb.atkBonus + (tr.atkLv || 0) * 2 + lvAtk + (petR.atkBonus || 0);
       const ultBonus = (tr.ultLv || 0) * 10 + cb.ultBonus;
       const ultNeed = tb.ultThreshold || 5;
-      const dmgMult = tb.dmgMult || 1;
+      const dmgMult = (tb.dmgMult || 1) * (1 + (petR.dmgPct || 0) / 100);
       const cpScore = Math.round((20 + flatAtk) * dmgMult * 12 + (state.level || 1) * 15 + (state.paragonStars || 0) * 120 + (state.treasures || []).length * 10 + (state.ownedItems || []).length * 8);
       const cpRank = cpScore >= 2600 ? { code: "SSS 👑", cls: "from-amber-400 via-pink-500 to-purple-500 text-white" }
         : (cpScore >= 1900 ? { code: "SS 🔥", cls: "from-rose-500 to-amber-400 text-white" }
@@ -7106,7 +7532,7 @@
               <span class="px-2 py-0.5 rounded-full bg-white border border-amber-200">圖鑑 +${tb.atkBonus}</span>
               <span class="px-2 py-0.5 rounded-full bg-white border border-sky-200">魔杖 +${cb.atkBonus}</span>
               <span class="px-2 py-0.5 rounded-full bg-white border border-purple-200">特訓 +${(tr.atkLv || 0) * 2}</span>
-              <span class="px-2 py-0.5 rounded-full bg-white border border-emerald-200">星星 +${tb.starPct + cb.starPct}%</span>
+              <span class="px-2 py-0.5 rounded-full bg-white border border-emerald-200">星星 +${tb.starPct + cb.starPct + (petR.starPct || 0)}%</span>
             </div>
             <div class="grid grid-cols-4 gap-1.5 text-center">
               <div class="p-1.5 rounded-xl bg-white/90 border border-emerald-200"><div class="text-[10px] text-stone-500 font-bold">普通 180</div><div class="text-[11px] font-black ${simNormal.cls}">${simNormal.label}</div></div>
@@ -10978,6 +11404,118 @@
       const custom = (state.miniPetNames && state.miniPetNames[pet.id]) ? String(state.miniPetNames[pet.id]).trim() : "";
       return custom || pet.name;
     }
+
+    const PET_SNACK_COST = 400;
+    const PET_SNACKS_PER_LV = 3;
+    const PET_SLOT3_COST = 3000;
+    const PET_WALK_DAILY_ITEM_CAP = 3;
+
+    function getMaxActiveMiniPets() {
+      const hasRoom2 = Array.isArray(state.unlockedRooms) && state.unlockedRooms.includes("room2");
+      return (state.petSlot3Unlocked || hasRoom2) ? 3 : 2;
+    }
+
+    function getActivePetBonuses() {
+      const owned = state.ownedMiniPets || {};
+      const maxPets = getMaxActiveMiniPets();
+      const activeIds = (state.activeMiniPets || []).slice(0, maxPets).filter(id => (owned[id] || 0) > 0);
+      const activePets = activeIds.map(id => {
+        const p = MINI_PETS.find(x => x.id === id);
+        return p ? { ...p, lv: Math.min(5, owned[id] || 1) } : null;
+      }).filter(Boolean);
+
+      let expPct = 0, starPct = 0, dropBonus = 0, bondBonus = 0, atkBonus = 0, dmgPct = 0, eggBoostPct = 0;
+      let walkNeed = 3, walkBonusStars = 0, walkStarMult = 1, walkItemBonusPct = 0;
+      let synergy = null;
+
+      activePets.forEach(p => {
+        if (p.id === "pet_hood_dog") expPct += p.lv * 2;
+        if (p.id === "pet_mint_hamster") starPct += p.lv * 2;
+        if (p.id === "pet_chinchilla") { dmgPct += p.lv * 1; eggBoostPct += p.lv * 5; }
+        if (p.id === "pet_berry_cat") dropBonus += p.lv * 0.01;
+        if (p.id === "pet_cloud_duck") bondBonus += p.lv * 1;
+        if (p.id === "pet_star_unicorn") atkBonus += p.lv * 1;
+      });
+
+      const has = (id) => activeIds.includes(id);
+      if (has("pet_hood_dog") && has("pet_mint_hamster") && has("pet_chinchilla")) {
+        synergy = { icon: "🎀", name: "毛絨三寶派對", desc: "每 2 場即冒 🎁 叼寶＋收禮額外 +20 ⭐＋道具機率 +15%＋戰鬥 EXP +5%！" };
+        walkNeed = 2;
+        walkBonusStars += 20;
+        walkItemBonusPct += 15;
+        expPct += 5;
+      } else if (has("pet_hood_dog") && has("pet_mint_hamster")) {
+        synergy = { icon: "🌟", name: "汪鼠黃金拍檔", desc: "每 2 場即冒 🎁 叼寶＋收禮額外 +20 ⭐！" };
+        walkNeed = 2;
+        walkBonusStars += 20;
+      } else if (has("pet_chinchilla") && has("pet_mint_hamster")) {
+        synergy = { icon: "🧁", name: "蓬鬆毛球茶會", desc: "每 2 場即冒 🎁 叼寶＋收禮道具機率 +15%！" };
+        walkNeed = 2;
+        walkItemBonusPct += 15;
+      } else if (has("pet_chinchilla") && has("pet_hood_dog")) {
+        synergy = { icon: "🌸", name: "貝雷帽探險隊", desc: "戰鬥額外 EXP +8% ＋ 通關默契 +2！" };
+        expPct += 8;
+        bondBonus += 2;
+      } else if (has("pet_hood_dog") && has("pet_berry_cat")) {
+        synergy = { icon: "✨", name: "貓狗好朋友", desc: "每場通關額外 +3 雙星默契！" };
+        bondBonus += 3;
+      } else if (has("pet_mint_hamster") && has("pet_cloud_duck")) {
+        synergy = { icon: "🍬", name: "點心尋寶隊", desc: "散步叼寶獲得星星 +30%！" };
+        walkStarMult = 1.3;
+      } else if (has("pet_star_unicorn") && activePets.some(p => p.id !== "pet_star_unicorn" && p.lv >= 3)) {
+        synergy = { icon: "🌈", name: "星光守護團", desc: "全科戰鬥傷害額外 +5%！" };
+        dmgPct += 5;
+      }
+
+      const eligibleAssists = activePets.filter(p => p.lv >= 3);
+      const assistPet = eligibleAssists.length ? eligibleAssists[Math.floor(Math.random() * eligibleAssists.length)] : null;
+      return {
+        activePets, maxPets, expPct, starPct, dropBonus, bondBonus, atkBonus, dmgPct, eggBoostPct,
+        walkNeed, walkBonusStars, walkStarMult, walkItemBonusPct, synergy, assistPet
+      };
+    }
+
+    function claimPetWalkGift(pet) {
+      const petB = getActivePetBonuses();
+      const lv = Math.min(5, (state.ownedMiniPets && state.ownedMiniPets[pet.id]) || 1);
+      const baseStars = lv >= 5 ? 80 : (lv >= 3 ? 50 : 35);
+      const totalStars = Math.round((baseStars + petB.walkBonusStars) * petB.walkStarMult);
+      state.stars = (state.stars || 0) + totalStars;
+      state.petWalkClears = 0;
+      state.petWalkGiftCount = (state.petWalkGiftCount || 0) + 1;
+      if (typeof markDailyAction === "function") markDailyAction("petInteract", 1);
+
+      const today = getTodayStr();
+      if (!state.petWalkItemDaily || state.petWalkItemDaily.date !== today) {
+        state.petWalkItemDaily = { date: today, count: 0 };
+      }
+
+      let itemMsg = "";
+      const baseItemPct = lv >= 5 ? 35 : (lv >= 3 ? 20 : 0);
+      const finalItemPct = baseItemPct + (petB.walkItemBonusPct || 0);
+      if (finalItemPct > 0 && Math.random() * 100 < finalItemPct) {
+        if (state.petWalkItemDaily.count < PET_WALK_DAILY_ITEM_CAP && typeof grantRandomBattleItem === "function") {
+          state.petWalkItemDaily.count += 1;
+          const it = grantRandomBattleItem();
+          itemMsg = ` 與 ${it.label}`;
+        } else {
+          state.stars += 25;
+          itemMsg = `（今日叼寶道具已滿 3/3，改送 +25 ⭐！）`;
+        }
+      }
+      saveState();
+      renderHUD();
+      SFX.win();
+      if (typeof confetti === "function") confetti({ particleCount: 40, spread: 55, origin: { y: 0.55 } });
+      const dName = getMiniPetDisplayName(pet);
+      if (petB.synergy && petB.synergy.name === "毛絨三寶派對") {
+        return `🎀 毛絨三寶派對出動！小汪、倉鼠與小龍貓一起帶回 +${totalStars} ⭐${itemMsg}！`;
+      }
+      if (petB.synergy && petB.synergy.name === "汪鼠黃金拍檔") {
+        return `🌟 汪鼠黃金拍檔出動！小汪探路、倉鼠用頰囊裝回 +${totalStars} ⭐${itemMsg}！`;
+      }
+      return `🎁 ${dName} 剛去散步回來，開心送給主人 +${totalStars} ⭐${itemMsg}！`;
+    }
     function openRenameMiniPetModal(petId, returnTo = "egg") {
       const pet = MINI_PETS.find(p => p.id === petId);
       if (!pet || !(state.ownedMiniPets && state.ownedMiniPets[petId] > 0)) return;
@@ -11116,13 +11654,17 @@
                 ${owned ? `<span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">Lv.${lv}</span>` : ""}
               </div>
               <div class="text-[11px] font-bold text-stone-600 mt-0.5 leading-snug">${owned ? p.desc : "購買寵物蛋並答題即可孵化解鎖！"}</div>
+              ${owned && p.skillDesc ? `<div class="text-[10px] font-black text-purple-700 mt-0.5">✨ ${p.skillDesc}</div>` : ""}
             </div>
-            ${owned ? `
+            ${owned ? (() => {
+              const feedCnt = (state.petFeedExp && state.petFeedExp[p.id]) || 0;
+              return `
               <div class="flex flex-col gap-1 shrink-0">
                 <button data-toggle-minipet="${p.id}" class="toggle-minipet-btn sanrio-btn px-2.5 py-1 rounded-xl text-[11px] font-black whitespace-nowrap ${isActive ? "bg-pink-500 text-white" : "bg-stone-100 hover:bg-pink-100 text-stone-700 border border-stone-300"}">${isActive ? "🏠 陪伴中" : "放進小屋"}</button>
                 <button data-rename-minipet="${p.id}" class="rename-minipet-btn sanrio-btn px-2 py-1 rounded-xl text-[10px] font-black whitespace-nowrap ${isFreeRename ? "bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-300" : "bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300"}">${isFreeRename ? "✏️ 免費命名" : `✏️ 改名 ${PET_RENAME_COST}⭐`}</button>
-              </div>
-            ` : ""}
+                ${lv < 5 ? `<button data-feed-minipet="${p.id}" class="feed-minipet-btn sanrio-btn px-2 py-1 rounded-xl text-[10px] font-black whitespace-nowrap bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300">🍓 餵點心 ${PET_SNACK_COST}⭐ (${feedCnt}/${PET_SNACKS_PER_LV})</button>` : `<span class="text-center text-[10px] font-black text-amber-600">👑 已滿等</span>`}
+              </div>`;
+            })() : ""}
           </div>
         `;
       }).join("");
@@ -11133,13 +11675,30 @@
             <span class="text-xs font-black text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded-full">目前 ⭐ ${(state.stars || 0).toLocaleString()}</span>
             <button id="btn-egg-back-cottage" class="sanrio-btn px-3 py-1 rounded-full bg-pink-500 text-white text-xs font-black">🏠 回冒險小屋 ➜</button>
           </div>
+          ${(() => {
+            const pb = getActivePetBonuses();
+            const walkProg = Math.min(pb.walkNeed, state.petWalkClears || 0);
+            const synBox = pb.synergy
+              ? `<div class="p-2.5 rounded-2xl bg-gradient-to-r from-amber-100 via-pink-100 to-purple-100 border-2 border-amber-300 text-xs font-black text-amber-950">${pb.synergy.icon} 雙寵連攜啟用：【${pb.synergy.name}】${pb.synergy.desc}</div>`
+              : `<div class="p-2 rounded-2xl bg-sky-50 border border-sky-200 text-[11px] font-bold text-sky-900">💞 雙寵同行提示：把「🐾小汪＋🐹倉鼠」或「💜龍貓＋🐹倉鼠」放進小屋，可觸發專屬連攜彩蛋！</div>`;
+            const walkBox = pb.activePets.length > 0
+              ? `<div class="text-[11px] font-black text-pink-700 text-center">🎁 散步叼寶進度：${walkProg} / ${pb.walkNeed} 場${walkProg >= pb.walkNeed ? "（已就緒！回小屋點寵物收禮！）" : ""}</div>`
+              : "";
+            return `${synBox}${walkBox}`;
+          })()}
           ${incubatorHtml}
           <div id="egg-msg" class="hidden text-center text-xs font-black text-rose-600"></div>
           <div class="space-y-2">
             <div class="flex items-center justify-between text-xs font-black text-stone-700">
               <span>🐾 小屋迷你跟班圖鑑（已收集 ${ownedCount} / ${MINI_PETS.length}）</span>
-              <span class="text-[11px] text-stone-500">小屋最多同時放 2 隻</span>
+              <span class="text-[11px] text-pink-600">小屋最多同時放 ${getMaxActiveMiniPets()} 隻</span>
             </div>
+            ${getMaxActiveMiniPets() < 3 ? `
+              <div class="p-2.5 rounded-2xl bg-gradient-to-r from-amber-50 to-pink-50 border-2 border-amber-300 flex items-center justify-between gap-2">
+                <div class="text-[11px] font-black text-amber-950 leading-snug">🐾 解鎖第 3 個寵物位（可湊「🎀 毛絨三寶派對」！）<br/><span class="text-[10px] font-bold text-emerald-700">💡 擴建「2 號甜點吧」也會自動免費解鎖喔！</span></div>
+                <button id="btn-unlock-pet-slot3" class="sanrio-btn shrink-0 px-2.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-amber-950 text-[11px] font-black whitespace-nowrap">⭐ ${PET_SLOT3_COST.toLocaleString()} 開通</button>
+              </div>
+            ` : ""}
             <div class="space-y-2">${dexHtml}</div>
           </div>
         </div>
@@ -11172,9 +11731,15 @@
           if (!state.petEgg) return;
           const pet = rollPetFromEgg(state.petEgg.type);
           const prevLv = state.ownedMiniPets[pet.id] || 0;
+          const isOverflowMax = prevLv >= 5;
           const newLv = Math.min(5, prevLv + 1);
           state.ownedMiniPets[pet.id] = newLv;
-          if (state.activeMiniPets.length < 2 && !state.activeMiniPets.includes(pet.id)) {
+          let overflowItemLabel = "";
+          if (isOverflowMax) {
+            state.stars = (state.stars || 0) + 800;
+            if (typeof grantRandomBattleItem === "function") overflowItemLabel = grantRandomBattleItem().label;
+          }
+          if (state.activeMiniPets.length < getMaxActiveMiniPets() && !state.activeMiniPets.includes(pet.id)) {
             state.activeMiniPets.push(pet.id);
           }
           state.petEgg = null;
@@ -11190,7 +11755,7 @@
               </div>
               <div class="text-lg font-black text-pink-700">${pet.icon} ${getMiniPetDisplayName(pet)}（${pet.rarity}）</div>
               <div class="text-xs sm:text-sm font-black ${prevLv > 0 ? "text-amber-700" : "text-emerald-700"}">
-                ${prevLv > 0 ? `✨ 閃耀升級！成長為 Lv.${newLv} 星光小跟班！` : "🌟 新夥伴加入！已自動幫你放進冒險小屋一起散步！"}
+                ${isOverflowMax ? `👑 已滿等 Lv.5！自動轉換成 +800 ⭐ 幸運回饋${overflowItemLabel ? " ＋ " + overflowItemLabel : ""}！` : (prevLv > 0 ? `✨ 閃耀升級！成長為 Lv.${newLv} 星光小跟班！` : "🌟 新夥伴加入！已自動幫你放進冒險小屋一起散步！")}
               </div>
               <p class="text-xs font-bold text-stone-600">${pet.desc}</p>
               ${prevLv === 0 ? `<button id="hatch-rename-now" class="sanrio-btn w-full py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm shadow-sm">✏️ 幫新夥伴取個名字（首次免費！）</button>` : ""}
@@ -11207,6 +11772,55 @@
         });
       }
 
+      const slot3Btn = document.getElementById("btn-unlock-pet-slot3");
+      if (slot3Btn) {
+        slot3Btn.addEventListener("click", () => {
+          if ((state.stars || 0) < PET_SLOT3_COST) {
+            const msg = document.getElementById("egg-msg");
+            if (msg) { msg.classList.remove("hidden"); msg.textContent = `⚠️ 星星不足！提早解鎖第 3 寵物位需要 ${PET_SLOT3_COST.toLocaleString()} ⭐（或擴建 2 號甜點吧免費解鎖）。`; }
+            SFX.hit();
+            return;
+          }
+          state.stars -= PET_SLOT3_COST;
+          state.petSlot3Unlocked = true;
+          saveState();
+          renderHUD();
+          SFX.win();
+          if (typeof confetti === "function") confetti({ particleCount: 55, spread: 65, origin: { y: 0.55 } });
+          openPetEggModal();
+        });
+      }
+
+      document.querySelectorAll(".feed-minipet-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const pid = btn.getAttribute("data-feed-minipet");
+          const curLv = (state.ownedMiniPets && state.ownedMiniPets[pid]) || 0;
+          if (curLv <= 0 || curLv >= 5) return;
+          if ((state.stars || 0) < PET_SNACK_COST) {
+            const msg = document.getElementById("egg-msg");
+            if (msg) { msg.classList.remove("hidden"); msg.textContent = `⚠️ 星星不足！餵一顆星光點心需要 ${PET_SNACK_COST} ⭐。`; }
+            SFX.hit();
+            return;
+          }
+          state.stars -= PET_SNACK_COST;
+          state.petFeedCount = (state.petFeedCount || 0) + 1;
+          if (typeof markDailyAction === "function") markDailyAction("petInteract", 1);
+          if (!state.petFeedExp || typeof state.petFeedExp !== "object") state.petFeedExp = {};
+          const nextFeed = (state.petFeedExp[pid] || 0) + 1;
+          if (nextFeed >= PET_SNACKS_PER_LV) {
+            state.petFeedExp[pid] = 0;
+            state.ownedMiniPets[pid] = Math.min(5, curLv + 1);
+            if (typeof confetti === "function") confetti({ particleCount: 55, spread: 65, origin: { y: 0.55 } });
+          } else {
+            state.petFeedExp[pid] = nextFeed;
+          }
+          saveState();
+          renderHUD();
+          SFX.win();
+          openPetEggModal();
+        });
+      });
+
       document.querySelectorAll(".rename-minipet-btn").forEach(btn => {
         btn.addEventListener("click", () => {
           SFX.click();
@@ -11218,10 +11832,11 @@
         btn.addEventListener("click", () => {
           SFX.click();
           const pid = btn.getAttribute("data-toggle-minipet");
+          const maxP = getMaxActiveMiniPets();
           if (state.activeMiniPets.includes(pid)) {
             state.activeMiniPets = state.activeMiniPets.filter(x => x !== pid);
           } else {
-            if (state.activeMiniPets.length >= 2) state.activeMiniPets.shift();
+            while (state.activeMiniPets.length >= maxP) state.activeMiniPets.shift();
             state.activeMiniPets.push(pid);
           }
           saveState();
@@ -11726,6 +12341,7 @@
           if ((state.stars || 0) < 200) { showCottageBubble("⚠️ 辦下午茶派對需要 200 ⭐ 喔！"); SFX.hit(); return; }
           state.stars -= 200;
           state.teaPartyBuff = true;
+          state.teaPartyCount = (state.teaPartyCount || 0) + 1;
           state.bondExp = (state.bondExp || 0) + 5;
           saveState(); renderHUD(); SFX.win();
           if (typeof confetti === "function") confetti({ particleCount: 45, spread: 60, origin: { y: 0.5 } });
@@ -11742,9 +12358,10 @@
           if ((state.stars || 0) < 300) { showCottageBubble("⚠️ 向流星許願需要 300 ⭐ 喔！"); SFX.hit(); return; }
           state.stars -= 300;
           state.lastWishDate = today;
+          state.wishStarCount = (state.wishStarCount || 0) + 1;
           const fortunes = [
-            { f: "🌟 大吉｜今日靈感大爆發，難題都能迎刃而解！", gift: "🍬 雙倍幸運糖 ×1", fn: () => { if (!state.bag) state.bag = {}; state.bag.item_candy = (state.bag.item_candy || 0) + 1; } },
-            { f: "✨ 上吉｜星光守護著你，連擊手感超級順！", gift: "🛡️ 黃金備用盾 ×1", fn: () => { if (!state.bag) state.bag = {}; state.bag.item_shield = (state.bag.item_shield || 0) + 1; } },
+            { f: "🌟 大吉｜今日靈感大爆發，難題都能迎刃而解！", gift: "🍬 雙倍幸運糖 ×1", fn: () => { addBagItemWithCap("item_candy", "🍬 雙倍幸運糖"); } },
+            { f: "✨ 上吉｜星光守護著你，連擊手感超級順！", gift: "🛡️ 黃金備用盾 ×1", fn: () => { addBagItemWithCap("item_shield", "🛡️ 黃金備用盾"); } },
             { f: "🌈 幸運｜雙星與小跟班今天特別黏你喔！", gift: "💕 雙星默契 +12", fn: () => { state.bondExp = (state.bondExp || 0) + 12; } }
           ];
           const pick = fortunes[Math.floor(Math.random() * fortunes.length)];
@@ -11809,7 +12426,7 @@
     }
 
     // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
-    const APP_VERSION = "v3.5.5";
+    const APP_VERSION = "v3.7.0";
     let _pwaReg = null;
     let _lastUpdateCheckTs = 0;
 
