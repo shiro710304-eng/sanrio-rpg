@@ -2467,6 +2467,7 @@
       weeklyQuestsDone: 0,
       towerDaily: { date: "", runs: 0 },
       towerMilestonesClaimed: [],
+      bestTowerBySubj: {},
       activeRoomId: "room1",
       unlockedRooms: ["room1"],
       cottageRooms: null,
@@ -4660,7 +4661,20 @@
           }
           battle.towerFloor = clearedF + 1;
           battle.monsterHp = 0;
-          if (battle.towerSubj === "ALL" && clearedF > (state.bestTowerFloor || 0)) state.bestTowerFloor = clearedF;
+          if (battle.towerSubj === "ALL") {
+            if (clearedF > (state.bestTowerFloor || 0)) {
+              state.bestTowerFloor = clearedF;
+              const bdg = document.getElementById("battle-stage-badge");
+              if (bdg) bdg.textContent = `🗼 五科綜合塔｜🆕 破紀錄中（第 ${clearedF} 層）！`;
+            }
+          } else {
+            if (!state.bestTowerBySubj || typeof state.bestTowerBySubj !== "object") state.bestTowerBySubj = {};
+            if (clearedF > (state.bestTowerBySubj[battle.towerSubj] || 0)) {
+              state.bestTowerBySubj[battle.towerSubj] = clearedF;
+              const bdg = document.getElementById("battle-stage-badge");
+              if (bdg) bdg.textContent = `🗼 ${battle.towerSubj}衝刺塔｜🆕 破紀錄中（第 ${clearedF} 層）！`;
+            }
+          }
         }
         if (isUlt && typeof confetti === "function") {
           confetti({ particleCount: 45, spread: 70, origin: { y: 0.55 } });
@@ -7278,12 +7292,18 @@
               <img src="./assets/tower_guard.webp" class="w-16 h-16 object-contain sprite-cutout" alt="星塵守衛" />
               <img src="./assets/tower_phoenix.webp" class="w-18 h-18 object-contain sprite-cutout" alt="星穹小鳳凰王" />
             </div>
-            <div class="text-sm font-black text-indigo-900">最高紀錄：第 ${state.bestTowerFloor || 0} / ${TOWER_MAX_FLOOR} 層</div>
+            <div class="text-sm font-black text-indigo-900">
+              ${(() => {
+                const bf = state.bestTowerFloor || 0;
+                if (bf > TOWER_MAX_FLOOR) return `👑 最高紀錄：第 ${TOWER_MAX_FLOOR} / ${TOWER_MAX_FLOOR} 層（歷史傳奇 ${bf} 層）`;
+                return `最高紀錄：第 ${bf} / ${TOWER_MAX_FLOOR} 層${bf >= TOWER_MAX_FLOOR ? " 👑已登頂" : ""}`;
+              })()}
+            </div>
             <div class="inline-block px-3 py-1 rounded-full text-xs font-black ${leftTickets > 0 ? "bg-amber-100 text-amber-900 border border-amber-300" : "bg-stone-200 text-stone-600"}">
-              🎫 今日有獎門票：${leftTickets} / ${TOWER_DAILY_TICKETS} 張${leftTickets === 0 ? "（目前為純練功破紀錄模式）" : ""}
+              🎫 今日有獎門票：${leftTickets} / ${TOWER_DAILY_TICKETS} 張${leftTickets === 0 ? "（純練功破紀錄模式）" : "（結算領獎才扣票）"}
             </div>
             <p class="text-[11px] font-bold text-stone-600 leading-relaxed">
-              1–10 層普通 ➜ 11–25 層菁英 ➜ 26–50 層英雄！每 5 層挑戰「👑 星穹小鳳凰王」拿祝福卡三選一，每 10 層可見好就收，滿 15 分鐘自動護眼溫柔結算！
+              1–10 層普通 ➜ 11–25 層菁英 ➜ 26–50 層英雄！每 5 層挑戰「👑 星穹小鳳凰王」抽祝福卡，每 10 層可見好就收，中途離開或 0 層失敗<strong>不扣門票</strong>！
             </p>
           </div>
           <div class="space-y-1.5">
@@ -7296,7 +7316,10 @@
           <div class="space-y-1.5">
             <div class="text-xs font-black text-stone-700">🎯 考前單科衝刺塔（自由練習該科題庫）：</div>
             <div class="grid grid-cols-5 gap-1.5">
-              ${["國語","數學","自然","社會","英文"].map(s => `<button data-tower-subj="${s}" class="btn-launch-tower-subj sanrio-btn py-2 rounded-xl bg-white hover:bg-pink-50 border-2 border-pink-200 text-xs font-black text-pink-800">${s}</button>`).join("")}
+              ${["國語","數學","自然","社會","英文"].map(s => {
+                const sb = (state.bestTowerBySubj && state.bestTowerBySubj[s]) ? state.bestTowerBySubj[s] : 0;
+                return `<button data-tower-subj="${s}" class="btn-launch-tower-subj sanrio-btn py-1.5 px-1 rounded-xl bg-white hover:bg-pink-50 border-2 border-pink-200 text-center"><div class="text-xs font-black text-pink-800">${s}</div><div class="text-[10px] font-bold text-stone-500">最佳 ${sb}層</div></button>`;
+              }).join("")}
             </div>
           </div>
         </div>
@@ -7311,10 +7334,6 @@
     function launchTowerRun(subjFilter = "ALL") {
       const td = ensureTowerDaily();
       const rewarded = (td.runs || 0) < TOWER_DAILY_TICKETS;
-      if (rewarded) {
-        td.runs = (td.runs || 0) + 1;
-        saveState();
-      }
       const usedSet = new Set();
       const firstQ = pickTowerQuestionForFloor(1, subjFilter, usedSet);
       const tb = getTreasureBonuses(subjFilter === "ALL" ? "" : subjFilter);
@@ -7357,7 +7376,9 @@
         usedHintThisQ: false
       };
       openBattleView();
-      document.getElementById("battle-stage-badge").textContent = `🗼 ${subjFilter === "ALL" ? "五科綜合塔" : subjFilter + "衝刺塔"}｜${rewarded ? "🎫有獎場" : "📚練功場"}`;
+      const initBest = subjFilter === "ALL" ? (state.bestTowerFloor || 0) : ((state.bestTowerBySubj && state.bestTowerBySubj[subjFilter]) || 0);
+      battle.towerStartBest = initBest;
+      document.getElementById("battle-stage-badge").textContent = `🗼 ${subjFilter === "ALL" ? "五科綜合塔" : subjFilter + "衝刺塔"}｜${rewarded ? "🎫有獎場" : "📚練功場"}｜最高 ${initBest} 層`;
     }
 
     function advanceTowerToNextFloor() {
@@ -7466,7 +7487,11 @@
 
       let earnedStars = 0;
       let expAdded = 0;
-      if (battle.towerRewarded) {
+      let ticketConsumed = false;
+      const tdNow = ensureTowerDaily();
+      if (battle.towerRewarded && floorsCleared >= 1 && (tdNow.runs || 0) < TOWER_DAILY_TICKETS) {
+        tdNow.runs = (tdNow.runs || 0) + 1;
+        ticketConsumed = true;
         const rawRunStars = Math.round(floorsCleared * 6 * (1 + (battle.towerStarMultPct || 0) / 100)) + (battle.towerBossStars || 0);
         const cappedRunStars = Math.min(250, rawRunStars);
         earnedStars = (typeof applyReviewStarRate === "function") ? applyReviewStarRate(cappedRunStars) : cappedRunStars;
@@ -7502,7 +7527,7 @@
             <div class="p-2.5 rounded-2xl bg-amber-50 border border-amber-200"><div class="text-stone-500">本輪獲得星星</div><div class="text-base text-amber-600">+${earnedStars + msStars} ⭐</div></div>
             <div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200"><div class="text-stone-500">本輪獲得經驗</div><div class="text-base text-pink-600">+${expAdded} EXP</div></div>
           </div>
-          ${!battle.towerRewarded ? `<div class="p-2 rounded-xl bg-stone-100 text-[11px] font-bold text-stone-600">📚 今日 2 張有獎門票已用完，本場為純練功／刷紀錄模式。</div>` : ""}
+          ${!battle.towerRewarded ? `<div class="p-2 rounded-xl bg-stone-100 text-[11px] font-bold text-stone-600">📚 今日 2 張有獎門票已用完，本場為純練功／刷紀錄模式。</div>` : (floorsCleared === 0 ? `<div class="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-700">🎫 本場尚未突破樓層，門票沒有扣除，放心再挑戰一次吧！</div>` : (ticketConsumed ? `<div class="text-[11px] font-bold text-stone-500">🎫 已消耗 1 張今日有獎門票（剩餘 ${Math.max(0, TOWER_DAILY_TICKETS - (tdNow.runs || 0))} / ${TOWER_DAILY_TICKETS} 張）</div>` : ""))}
           ${newMilestones.length ? `<div class="p-2.5 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-xs font-black text-emerald-800">🎁 領取首次登層大寶箱：${newMilestones.map(m => `${m.icon}${m.floor}層(+${m.stars}⭐)`).join("、")}！</div>` : ""}
           ${battle.towerBlessings.length ? `<div class="text-[11px] font-bold text-purple-700">🃏 本輪祝福：${battle.towerBlessings.join("・")}</div>` : ""}
           <div class="grid grid-cols-2 gap-2 pt-1">
@@ -9462,58 +9487,143 @@
     }
 
     function openGuideModal(tab = null) {
-      if (tab) guideTab = tab;
+      const tabAlias = { stages: "start", coop: "tower", home: "pets" };
+      if (tab) guideTab = tabAlias[tab] || tab;
+      if (!["start","battle","treasure","pets","tower","tips"].includes(guideTab)) guideTab = "start";
+
       const tabs = [
-        ["stages", "⚔️ 關卡熟練"],
-        ["battle", "💞 戰鬥連擊"],
-        ["tower", "⚔️ 八大挑戰"],
-        ["coop", "🎮 雙人共玩"],
-        ["home", "🏠 小屋樂園"]
+        ["start", "🌟 新手3步"],
+        ["battle", "⚔️ 戰鬥打王"],
+        ["treasure", "💎 百寶配裝"],
+        ["pets", "🐾 萌寵小屋"],
+        ["tower", "🗼 無限塔"],
+        ["tips", "💡 變強秘訣"]
       ];
-      const pages = {
-        stages: `
-          <div class="space-y-2.5 text-sm leading-relaxed">
-            <div class="p-3 rounded-2xl bg-pink-50 border border-pink-200"><strong>1. 五科 45 關分階挑戰：</strong>國語、數學、自然、社會、英文各 9 關，分為「普通級（1～3）→ 菁英級（4～6）→ 英雄級（7～9）」，通過前一階級全部 3 關即可解鎖下一階級！</div>
-            <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200"><strong>2. 分階擴充題庫與 👑 殿堂精通：</strong>普通級 40 題、菁英級 50 題、英雄級 80 題、魔王關 100 題（數學另含 ♾️ 動態無限題，且支援雲端試算表加題）。每場抽 6 題，累計答對 15 題拿 ★★（+80 ⭐）、30 題拿 ★★★（+200 ⭐）、50 題拿 👑 殿堂精通（+150 ⭐）！</div>
-            <div class="p-3 rounded-2xl bg-rose-50 border border-rose-200"><strong>3. 🔥 今日幸運雙倍關：</strong>每天從普通／菁英級隨機挑選 3 關提供 <strong>2 倍星星與 EXP</strong>，推薦每天優先挑戰！</div>
-          </div>`,
-        battle: `
-          <div class="space-y-2.5 text-sm leading-relaxed">
-            <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200"><strong>1. 分階護盾與小精靈提示：</strong>普通／菁英級採無挫折保護（答錯扣 1 盾、保底 1 盾不戰敗）；<strong>英雄級（7～9 關）改為真・血條模式，答錯扣 2 護盾且歸 0 挑戰失敗</strong>！每場限用 1 次「💡 小精靈提示」（星光塔每擊敗 1 隻守護靈補充 1 次）。</div>
-            <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200"><strong>2. 🔥 連擊與雙星合體大招：</strong>連續答對 3 題觸發連擊加成；達成 <strong>5 連擊</strong>時，布丁狗與帕恰狗會聯手施放「🌟 雙星合體技」造成超高暴擊傷害！</div>
-            <div class="p-3 rounded-2xl bg-purple-50 border border-purple-200"><strong>3. 寶物技能與語音朗讀：</strong>取得傳說寶物可解鎖「✂️ 刪去 2 個錯選項」與「💖 回復護盾」技能；點「🔊 唸題目／唸解析」可用語音輔助閱讀與英文聽力。</div>
-          </div>`,
-        tower: `
-          <div class="space-y-2 text-xs sm:text-sm leading-relaxed">
-            <div class="p-2.5 rounded-2xl bg-purple-50 border border-purple-200"><strong>1. ✨ 錯題淨化道場：</strong>重新答對冒險中答錯的題目即可淨化，每題 <strong>+5 ⭐ / +8 EXP</strong>（滿 6 題或清倉再加 <strong>+10 ⭐</strong>）。</div>
-            <div class="p-2.5 rounded-2xl bg-indigo-50 border border-indigo-200"><strong>2. 🗼 星光無限塔：</strong>跨五科無盡爬塔！每答對 1 題爬 1 層並即時獲 <strong>+5 ⭐ / +8 EXP</strong>，每擊敗 1 隻守護靈自動補充提示次數。</div>
-            <div class="p-2.5 rounded-2xl bg-rose-50 border border-rose-200"><strong>3. ⚡ 是非快打作戰：</strong>60 秒快節奏 ⭕／❌ 判斷（支援全科或單科），每答對 1 題 <strong>+3 ⭐ / +5 EXP</strong>（單場上限 +90 ⭐）。</div>
-            <div class="p-2.5 rounded-2xl bg-amber-50 border border-amber-200"><strong>4. 🃏 知識配對連連看：</strong>左右配對消除 5 組單字、詞義或科學原理！過關獲 <strong>+25 ⭐ / +40 EXP</strong>，零失誤再加 <strong>+10 ⭐</strong>。</div>
-            <div class="p-2.5 rounded-2xl bg-sky-50 border border-sky-200"><strong>5. 🧮 數學心算大鍵盤：</strong>60 秒三段難度心算衝刺（支援觸控大鍵盤與電腦鍵盤），每答對 1 題 <strong>+4 ⭐ / +6 EXP</strong>（單場上限 +100 ⭐）。</div>
-            <div class="p-2.5 rounded-2xl bg-violet-50 border border-violet-200"><strong>6. 🎧 英文聽力＆拼字：</strong>支援「聽音點字母拼字」與「聽力選答」雙玩法，每局 8 題，每題 <strong>+4 ⭐ / +6 EXP</strong>，零失誤加碼 <strong>+10 ⭐</strong>。</div>
-            <div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200"><strong>7. 🎲 三麗鷗知識大富翁：</strong>16 格手繪地圖每局擲骰 8 次，答對蓋星星章獲 <strong>+10～+20 ⭐</strong>、經過起點 <strong>+15 ⭐</strong>，完賽再送 <strong>+20 ⭐ / +30 EXP</strong>。</div>
-            <div class="p-2.5 rounded-2xl bg-teal-50 border border-teal-200"><strong>8. 🎮 親子／雙人共玩：</strong>同機雙人「協力打大魔王」或「60 秒搶答賽」，結束雙方皆可獲得 <strong>+25 ⭐ / +40 EXP</strong>。</div>
-          </div>`,
-        coop: `
-          <div class="space-y-2.5 text-sm leading-relaxed">
-            <div class="p-3 rounded-2xl bg-teal-50 border border-teal-200"><strong>1. 🤝 協力打大魔王：</strong>P1 布丁狗（左）與 P2 帕恰狗（右）在同一台螢幕輪流答題，合力扣除彩虹水晶龍 100 HP。</div>
-            <div class="p-3 rounded-2xl bg-pink-50 border border-pink-200"><strong>2. ⚡ 60 秒雙人搶答賽：</strong>題目出現後左右兩邊同時開放按鈕，誰先點對就得 1 分！60 秒結束結算勝負，雙方皆可獲得 +25 ⭐、+40 EXP 與 +5 雙星默契。</div>
-          </div>`,
-        home: `
-          <div class="space-y-2.5 text-sm leading-relaxed">
-            <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200"><strong>1. 🏠 冒險小屋與裝扮：</strong>用星星購買帽子、領結、翅膀、魔杖與家具，支持購買前「👁️ 預覽」，擺出的家具可自由拖曳或點地板移動！花掉星星不會影響 Lv.50 永久勇者等級。</div>
-            <div class="p-3 rounded-2xl bg-sky-50 border border-sky-200"><strong>2. 🌟 星星樂園（三大回收機制）：</strong>星星太多時可來轉「學科寶物扭蛋機（300⭐／1,800⭐指定必中）」、強化「雙星特訓室」，或兌換家長自訂的「🎟️ 親子現實獎勵券」！</div>
-          </div>`
+
+      const speechScripts = {
+        start: "歡迎來到布丁狗和帕恰狗的冒險小百科！新手只要記住三步：第一步，每天先打地圖上冒火的雙倍關卡，星星和經驗都會變兩倍！第二步，點開冒險手冊解每日委託，領三個活躍寶箱跟蓋印章！第三步，存夠星星就去冒險小屋孵寵物蛋、開寶物槽，你會越來越強喔！",
+        battle: "戰鬥很簡單！普通到英雄關只要把怪物血量打空就能提早速殺，多拿經驗和默契；就算沒打空，答滿六題對四題以上一樣算成功擊退！第九關彩虹水晶龍大魔王有八題，打到一半會張開兩連擊水晶護罩，連續答對兩題打破護罩當場就送二十五顆星星喔！",
+        treasure: "圖鑑裡有一百種超可愛寶物！普通關掉普通寶物、菁英關掉稀有、傳說寶物限定在英雄關和大魔王掉落！在圖鑑最上方可以裝備最多四格技能寶物，裝兩顆同科寶物還會發動學科共鳴，傷害和星星一起變高喔！",
+        pets: "冒險小屋最多可以放三隻迷你小跟班！小汪加經驗、倉鼠加星星、小龍貓加傷害又幫孵蛋、小貓加掉寶、小鴨加默契、獨角獸加攻擊力！把小汪、倉鼠和小龍貓一起放進小屋會觸發毛絨三寶派對，每打兩場就能回小屋點頭上的禮物收獎喔！",
+        tower: "星光無限塔每天有兩張有獎門票，中途離開或零層失敗都不扣票！每五層會遇到星穹小鳳凰王，打贏可以抽三選一星光祝福卡，每十層可以選擇見好就收，爬滿十五分鐘也會溫柔護眼結算！",
+        tips: "四個省星變強小秘訣：第一，收集滿二十五個寶物就能免費開第二格寶物槽！第二，買二號甜點吧會免費送第三個寵物位！第三，戰鬥道具上限是十個盾、十顆糖、五張跳題卡，滿袋會自動換成五十顆星星！第四，段考前可以去戰力分析點弱點單元直接特訓喔！"
       };
 
+      const pages = {
+        start: {
+          portal: { id: "map", label: "🗺️ 回地圖開打雙倍關", cls: "bg-pink-500 text-white" },
+          html: `
+            <div class="space-y-2.5 text-xs sm:text-sm leading-relaxed">
+              <div class="p-3 rounded-2xl bg-gradient-to-r from-rose-50 to-amber-50 border-2 border-rose-200 flex items-center gap-3">
+                <img src="./assets/purin.webp" class="w-12 h-12 object-contain sprite-cutout shrink-0" alt="布丁狗" />
+                <div><strong class="text-rose-700">第 1 步：先打「🔥 2x 雙倍關」</strong><br/>地圖每天精選 3 關雙倍星星與經驗（每關限領 1 次，失敗不扣），優先打這 3 關升最快！</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-amber-50 border-2 border-amber-200">
+                <strong class="text-amber-900">第 2 步：解「📖 每日＆每週委託」</strong><br/>每天解 4 個小任務拿活躍度，開 50／75／100 分三寶箱兼蓋 7 日集點章！
+              </div>
+              <div class="p-3 rounded-2xl bg-sky-50 border-2 border-sky-200">
+                <strong class="text-sky-900">第 3 步：存星星去「🏠 冒險小屋」變強</strong><br/>買魔杖、孵寵物蛋、開寶物槽，等級一路衝到 <strong>Lv.100 宇宙大宗師（滿百還能無限升 ★ 星階）</strong>！
+              </div>
+            </div>`
+        },
+        battle: {
+          portal: { id: "radar", label: "📊 查看我的速殺戰力", cls: "bg-indigo-500 text-white" },
+          html: `
+            <div class="space-y-2.5 text-xs sm:text-sm leading-relaxed">
+              <div class="p-3 rounded-2xl bg-emerald-50 border-2 border-emerald-200">
+                <strong class="text-emerald-800">⚔️ 速殺擊破 vs. 🛡️ 滿題擊退</strong><br/>1～8 關攻擊力夠高時，把怪血打空就能<strong>提早 3～5 題速殺</strong>（多拿 +10% EXP）；沒打空也沒關係，6 題答對 4 題以上一樣「成功擊退」拿全獎！
+              </div>
+              <div class="p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-pink-50 border-2 border-amber-300 flex items-center gap-3">
+                <img src="./assets/dragon.webp" class="w-12 h-12 object-contain sprite-cutout shrink-0" alt="彩虹水晶龍" />
+                <div><strong class="text-pink-700">🐉 第 9 關大魔王（8 題雙階段）</strong><br/>打到 50% 血會展開<strong>「2 連擊水晶護罩」</strong>，連對 2 題擊碎當場噴 <strong>+25 ⭐</strong> 並解除防禦！</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-rose-50 border-2 border-rose-200">
+                <strong class="text-rose-800">🔥 連勝氣勢＆英雄關注意</strong><br/>連續過關 <strong>5 場以上</strong>每場多 +1 孵蛋！英雄關（7～9 關）答錯扣 2 護盾、歸 0 會戰敗，記得帶「🛡️ 首錯結界」或「💖 回護盾」！
+              </div>
+            </div>`
+        },
+        treasure: {
+          portal: { id: "dex", label: "💎 去百寶圖鑑配裝", cls: "bg-purple-500 text-white" },
+          html: `
+            <div class="space-y-2.5 text-xs sm:text-sm leading-relaxed">
+              <div class="p-3 rounded-2xl bg-amber-50 border-2 border-amber-200">
+                <strong class="text-amber-900">🎁 100 件寶物去哪掉？</strong><br/>打哪一科就掉哪一科的寶物！<strong>普通關</strong>掉普通、<strong>菁英關</strong>掉稀有、<strong>傳說寶物限定英雄關＆第 9 關大魔王</strong>（扭蛋可選學科抽普通／稀有）。
+              </div>
+              <div class="p-3 rounded-2xl bg-purple-50 border-2 border-purple-200">
+                <strong class="text-purple-900">💎 1→4 格寶物槽推薦配法</strong><br/>
+                ・<strong>打王穩過流</strong>：🛡️ 首錯免傷 ＋ ✂️ 刪錯剪刀 ＋ 💖 回護盾<br/>
+                ・<strong>速殺刷星流</strong>：⚡ 4 連大絕 ＋ 🔥 學科爆擊（裝 <strong>2 顆同科</strong>再觸發 ✨ 學科共鳴：傷+10%、星+5%！）
+              </div>
+              <div class="p-2.5 rounded-2xl bg-sky-50 border border-sky-200 text-xs">
+                💡 懶得自己配？進圖鑑點一下<strong>「✨ 一鍵推薦配裝」</strong>，系統立刻幫你裝最強組合！
+              </div>
+            </div>`
+        },
+        pets: {
+          portal: { id: "egg", label: "🥚 去寵物孵育所", cls: "bg-pink-500 text-white" },
+          html: `
+            <div class="space-y-2.5 text-xs sm:text-sm leading-relaxed">
+              <div class="p-3 rounded-2xl bg-pink-50 border-2 border-pink-200 space-y-1">
+                <strong class="text-pink-800">🐾 6 隻迷你小跟班分工（放進小屋就生效）</strong>
+                <div class="grid grid-cols-2 gap-1 text-[11px] font-bold text-stone-700 pt-0.5">
+                  <div>🐾 小汪：EXP +2~10%</div>
+                  <div>🐹 倉鼠：星星 +2~10%</div>
+                  <div>💜 龍貓：傷+5%＋幫孵蛋</div>
+                  <div>🐱 小貓：掉寶率 +1~5%</div>
+                  <div>🐥 小鴨：每場默契 +1~5</div>
+                  <div>🦄 獨角獸：攻擊 +1~5</div>
+                </div>
+              </div>
+              <div class="p-3 rounded-2xl bg-amber-50 border-2 border-amber-300">
+                <strong class="text-amber-900">🎀 超強隱藏連攜＆散步收禮 🎁</strong><br/>同時放 <strong>小汪＋倉鼠（汪鼠拍檔）</strong> 或 <strong>小汪＋倉鼠＋龍貓（毛絨三寶）</strong>，每打 <strong>2 場</strong>就能回小屋點頭上的 <strong>🎁</strong> 收星星與道具！
+              </div>
+              <div class="p-3 rounded-2xl bg-emerald-50 border-2 border-emerald-200">
+                <strong class="text-emerald-800">👑 升 Lv.5 戴皇冠＆免費取名</strong><br/>每隻寵物<strong>首次取名免費</strong>！在孵育所餵 <strong>400⭐ 草莓點心</strong>（3 顆升 1 級），Lv.3 起戰鬥 3 連擊會蹦出來喊名字幫忙打怪，Lv.5 戴皇冠！
+              </div>
+            </div>`
+        },
+        tower: {
+          portal: { id: "tower", label: "🗼 去爬星光無限塔", cls: "bg-indigo-500 text-white" },
+          html: `
+            <div class="space-y-2.5 text-xs sm:text-sm leading-relaxed">
+              <div class="p-3 rounded-2xl bg-indigo-50 border-2 border-indigo-200 flex items-center gap-3">
+                <img src="./assets/tower_phoenix.webp" class="w-12 h-12 object-contain sprite-cutout shrink-0" alt="小鳳凰王" />
+                <div><strong class="text-indigo-900">🗼 星光無限塔（50 層登頂）</strong><br/>每天 2 張門票（中途退出或 0 層失敗不扣票）！每 5 層打<strong>小鳳凰王</strong>抽祝福卡三選一、每 10 層可見好就收、滿 15 分鐘自動護眼結算！</div>
+              </div>
+              <div class="p-3 rounded-2xl bg-purple-50 border-2 border-purple-200 flex items-center gap-3">
+                <img src="./assets/purify_spirit.webp" class="w-11 h-11 object-contain sprite-cutout shrink-0" alt="橡皮擦小精靈" />
+                <div><strong class="text-purple-900">✨ 錯題淨化道場＆英文單字道場</strong><br/>打錯的題目會被橡皮擦小精靈收進道場，重答對就拿星星！英文道場還能拍照建專屬單字卡練聽力拼字。</div>
+              </div>
+              <div class="p-2.5 rounded-2xl bg-teal-50 border border-teal-200 text-xs">
+                🎮 <strong>更多小遊戲</strong>：是非快打、知識連連看、數學心算鍵盤、知識大富翁，以及同機<strong>雙人協力／搶答賽</strong>全都在「⚔️ 特別挑戰」！
+              </div>
+            </div>`
+        },
+        tips: {
+          portal: { id: "daily", label: "📅 去領今日委託獎勵", cls: "bg-rose-500 text-white" },
+          html: `
+            <div class="space-y-2 text-xs sm:text-sm leading-relaxed">
+              <div class="p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200"><strong>1. 免費解鎖省星秘訣：</strong>圖鑑收滿 <strong>25 顆寶物</strong>自動免費開「第 2 格寶物槽」；擴建 <strong>2 號甜點吧</strong>自動免費送「第 3 個寵物位」！</div>
+              <div class="p-2.5 rounded-2xl bg-amber-50 border border-amber-200"><strong>2. 背包道具別囤著不用：</strong>備用盾上限 10、雙倍糖上限 10、跳題卡上限 5；滿袋再撿到會自動換成 <strong>+50 ⭐</strong>，大魔王關放心開雙倍糖最賺！</div>
+              <div class="p-2.5 rounded-2xl bg-sky-50 border border-sky-200"><strong>3. 考前衝刺神器：</strong>點進「📊 戰力分析」，可以直接看到弱點單元並<strong>一鍵直達特訓</strong>，還能複製「親子學習週報」給爸媽看！</div>
+              <div class="p-2.5 rounded-2xl bg-pink-50 border border-pink-200"><strong>4. 跨年級規則：</strong>小屋、100 寶物、6 隻寵物與星星全 6 年級共用；切回低於主修年級複習時星星折算 30% 防溢出。</div>
+            </div>`
+        }
+      };
+
+      const curPage = pages[guideTab] || pages.start;
       const tabBtns = tabs.map(([k, lbl]) => `
         <button data-guide-tab="${k}" class="guide-tab-btn px-2 py-1.5 rounded-xl text-[11px] sm:text-xs font-black border whitespace-nowrap text-center ${guideTab === k ? "bg-sky-500 text-white border-sky-600 shadow-sm" : "bg-white text-stone-700 border-sky-200 hover:bg-sky-50"}">${lbl}</button>
       `).join("");
 
-      showModal("❓ 遊戲玩法說明", `
+      showModal("📘 布丁狗的冒險小百科＆攻略", `
         <div class="space-y-3">
-          <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5">${tabBtns}</div>
-          ${pages[guideTab] || pages.stages}
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5">${tabBtns}</div>
+          <div class="flex justify-end">
+            <button id="btn-guide-speak" class="sanrio-btn px-3 py-1 rounded-full bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 text-xs font-black">🔊 聽布丁狗唸這頁攻略</button>
+          </div>
+          ${curPage.html}
+          ${curPage.portal ? `<button id="btn-guide-portal" class="sanrio-btn w-full py-2.5 rounded-2xl ${curPage.portal.cls} font-black text-sm shadow-sm">${curPage.portal.label} ➜</button>` : ""}
         </div>
       `);
 
@@ -9523,6 +9633,28 @@
           openGuideModal(btn.getAttribute("data-guide-tab"));
         });
       });
+
+      const spkBtn = document.getElementById("btn-guide-speak");
+      if (spkBtn) {
+        spkBtn.addEventListener("click", () => {
+          SFX.click();
+          speakText(speechScripts[guideTab] || speechScripts.start);
+        });
+      }
+
+      const ptBtn = document.getElementById("btn-guide-portal");
+      if (ptBtn && curPage.portal) {
+        ptBtn.addEventListener("click", () => {
+          SFX.click();
+          const pid = curPage.portal.id;
+          closeModal();
+          if (pid === "radar") openRadarAndBackupModal();
+          else if (pid === "dex") openCollectionModal();
+          else if (pid === "egg") openPetEggModal();
+          else if (pid === "tower") startTowerMode();
+          else if (pid === "daily") openDailyModal();
+        });
+      }
     }
 
     // ====== 7. INIT ======
@@ -12752,7 +12884,7 @@
     }
 
     // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
-    const APP_VERSION = "v3.8.1";
+    const APP_VERSION = "v3.8.2";
     // 背景預載本地核心戰鬥圖檔，徹底消除首次切怪延遲
     try {
       ["./assets/purin.webp","./assets/pochacco.webp","./assets/slime.webp","./assets/robot.webp","./assets/owl.webp","./assets/nature.webp","./assets/english.webp","./assets/dragon.webp","./assets/purify_spirit.webp","./assets/tower_guard.webp","./assets/tower_phoenix.webp","./assets/pet_hood_dog.webp","./assets/pet_mint_hamster.webp","./assets/pet_berry_cat.webp","./assets/pet_cloud_duck.webp","./assets/pet_star_unicorn.webp","./assets/pet_chinchilla.webp"].forEach(u => {
