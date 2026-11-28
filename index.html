@@ -2,6 +2,9 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>布丁狗＆帕恰狗的知識大冒險｜國小 1～6 年級全科 RPG</title>
@@ -7162,6 +7165,7 @@
             <div class="flex flex-wrap gap-2">
               <button id="btn-export-save" class="sanrio-btn px-3.5 py-1.5 rounded-xl bg-amber-400 text-amber-950 text-xs font-black">📤 複製存檔代碼</button>
               <button id="btn-import-save" class="sanrio-btn px-3.5 py-1.5 rounded-xl bg-sky-500 text-white text-xs font-black">📥 貼上代碼還原</button>
+              <button id="btn-check-pwa-update" class="sanrio-btn px-3.5 py-1.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white text-xs font-black">🔄 檢查並更新版本（${typeof APP_VERSION !== "undefined" ? APP_VERSION : "v3.5.5"}）</button>
             </div>
             <textarea id="txt-save-code" rows="2" placeholder="點擊「複製存檔代碼」產生備份碼，或在此貼上備份碼後點選「貼上代碼還原」..." class="w-full p-2 rounded-xl border border-amber-300 text-xs font-mono bg-white"></textarea>
             <div id="save-code-msg" class="text-xs font-bold text-emerald-700 min-h-[16px]"></div>
@@ -7212,6 +7216,28 @@
               done();
             }
           } catch (e) { done(); }
+        });
+      }
+
+      const updBtn = document.getElementById("btn-check-pwa-update");
+      if (updBtn) {
+        updBtn.addEventListener("click", () => {
+          SFX.click();
+          const msg = document.getElementById("save-code-msg");
+          if (msg) msg.textContent = "🔍 正在連線檢查最新版本...";
+          if (typeof checkForAppUpdate === "function") {
+            checkForAppUpdate(true).then((res) => {
+              if (!msg) return;
+              if (res && res.hasUpdate) {
+                msg.textContent = `🎉 發現新版 ${res.remoteVer}！正在清除快取並更新...`;
+                forceReloadLatestApp(res.remoteVer);
+              } else {
+                msg.innerHTML = `✅ 目前已是最新版（${APP_VERSION}）！<button id="btn-force-hard-reload" class="ml-2 underline text-pink-600 font-black">點此強制重整畫面</button>`;
+                const hr = document.getElementById("btn-force-hard-reload");
+                if (hr) hr.addEventListener("click", () => forceReloadLatestApp(APP_VERSION));
+              }
+            });
+          }
         });
       }
 
@@ -11782,10 +11808,98 @@
       });
     }
 
-    // PWA Service Worker registration (Network-First; only on https / localhost)
+    // PWA Service Worker & iOS Auto-Update Engine (免重裝自動偵測更新)
+    const APP_VERSION = "v3.5.5";
+    let _pwaReg = null;
+    let _lastUpdateCheckTs = 0;
+
+    // 清除強制更新後留下的 ?v=... 參數，維持網址整潔
+    try {
+      if (location.search && (location.search.includes("v=") || location.search.includes("t="))) {
+        history.replaceState(null, "", location.pathname + location.hash);
+      }
+    } catch (e) {}
+
+    function showPwaUpdateBanner(remoteVer) {
+      if (document.getElementById("pwa-update-banner")) return;
+      const bar = document.createElement("div");
+      bar.id = "pwa-update-banner";
+      bar.className = "fixed top-2 left-1/2 -translate-x-1/2 z-[999] w-[92%] max-w-md px-3.5 py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white shadow-xl border-2 border-white flex items-center justify-between gap-2";
+      bar.innerHTML = `
+        <div class="text-xs sm:text-sm font-black leading-tight">🎉 發現新版本 ${remoteVer}！<br/><span class="text-[10px] font-bold opacity-95">點右方立即更新（免重裝、存檔完全保留）</span></div>
+        <button id="btn-pwa-apply-now" class="sanrio-btn shrink-0 px-3 py-1.5 rounded-xl bg-white text-pink-600 text-xs font-black shadow">立即更新</button>
+      `;
+      document.body.appendChild(bar);
+      const applyBtn = document.getElementById("btn-pwa-apply-now");
+      if (applyBtn) {
+        applyBtn.addEventListener("click", () => {
+          applyBtn.disabled = true;
+          applyBtn.textContent = "更新中...";
+          forceReloadLatestApp(remoteVer);
+        });
+      }
+    }
+
+    async function forceReloadLatestApp(targetVer) {
+      try {
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+      } catch (e) {}
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          await new Promise((resolve) => {
+            const mc = new MessageChannel();
+            mc.port1.onmessage = () => resolve();
+            setTimeout(resolve, 600);
+            navigator.serviceWorker.controller.postMessage({ type: "CLEAR_ALL_CACHES" }, [mc.port2]);
+          });
+        }
+        if (_pwaReg) await _pwaReg.update().catch(() => {});
+      } catch (e) {}
+      const cleanPath = location.origin + location.pathname;
+      location.replace(`${cleanPath}?v=${encodeURIComponent(targetVer || APP_VERSION)}&t=${Date.now()}`);
+    }
+
+    async function checkForAppUpdate(manual = false) {
+      const now = Date.now();
+      if (!manual && now - _lastUpdateCheckTs < 20000) return { hasUpdate: false, remoteVer: APP_VERSION };
+      _lastUpdateCheckTs = now;
+      if (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+        return { hasUpdate: false, remoteVer: APP_VERSION };
+      }
+      try {
+        const res = await fetch(`./index.html?_chk=${now}`, { cache: "no-store" });
+        if (!res || !res.ok) return { hasUpdate: false, remoteVer: APP_VERSION };
+        const txt = await res.text();
+        const m = txt.match(/const\s+APP_VERSION\s*=\s*"(v[^"]+)"/);
+        const remoteVer = m ? m[1] : "";
+        if (remoteVer && remoteVer !== APP_VERSION) {
+          showPwaUpdateBanner(remoteVer);
+          return { hasUpdate: true, remoteVer };
+        }
+        return { hasUpdate: false, remoteVer: remoteVer || APP_VERSION };
+      } catch (e) {
+        return { hasUpdate: false, remoteVer: APP_VERSION };
+      }
+    }
+
     if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1")) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
+        navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
+          .then((reg) => {
+            _pwaReg = reg;
+            reg.update().catch(() => {});
+          })
+          .catch(() => {});
+        setTimeout(() => checkForAppUpdate(false), 1800);
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          if (_pwaReg) _pwaReg.update().catch(() => {});
+          checkForAppUpdate(false);
+        }
       });
     }
   </script>
